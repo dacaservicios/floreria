@@ -1,0 +1,9 @@
+cambia entorno
+export NODE_ENV=production --linux
+export NODE_ENV=development -- linux
+export:DEBUG=app --linux
+export:PORT=5000 --linux
+$env:NODE_ENV="development" --powershell
+$env:NODE_ENV="production" --powershell
+$env:DEBUG="app" --powershell
+$env:PORT="5000" --powershell

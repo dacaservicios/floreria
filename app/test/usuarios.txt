@@ -1,0 +1,17 @@
+{
+    "id":"0",
+    "apellidoPaterno":"alarcon",
+    "apellidoMaterno":"palomino",
+    "nombre1":"pedro",
+    "nombre2":"miguel",
+    "dni":"07660657",
+    "fijo":"3613503",
+    "celular":"963754038",
+    "correo":"marcohijo@gmail.com",
+    "fechaNacimiento":"1979-03-03",
+    "turno":"1",
+    "nivel":"2",
+    "usuarioFoto":"",
+    "fechaInicio":"2020-08-21",
+    "tipo":"crea"
+}
