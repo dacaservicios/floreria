@@ -261,9 +261,8 @@ const schemaPedidoPagar=joi.object({
 const schemaProductosucursal=joi.object({
     id:joi.number().allow(''),
     producto: joi.number().required(),
-    proveedor: joi.number().required(),
-    stock: joi.number().required(),
-    precioCompra:joi.string().min(1).max(10).required(),
+    stockMin: joi.number().required(),
+    stockMax: joi.number().required(),
     precioVenta:joi.string().min(1).max(10).required(),
     sesId:joi.number().required()
 });
@@ -329,7 +328,7 @@ const schemaMovimiento=joi.object({
 const schemaProveedor=joi.object({
     id:joi.number().allow(''),
     razon: joi.string().min(1).max(200).required(),
-    nombre: joi.string().min(1).max(200).required(),
+    nombre: joi.string().min(0).max(200).allow(''),
     direccion: joi.string().min(0).max(250).allow(''),
     fijo: joi.string().min(0).max(7).allow(''),
     celular: joi.string().min(0).max(9).allow(''),
@@ -410,6 +409,7 @@ const schemaCompra=joi.object({
     id:joi.number().allow(''),
     tipoPago:joi.number().required(),
     comprobante:joi.number().required(),
+    proveedor:joi.number().required(),
     serie:joi.string().min(0).max(10).allow(''),
     numero:joi.string().min(0).max(10).allow(''),
     comentario: joi.string().min(0).max(255).allow(''),

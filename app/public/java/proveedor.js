@@ -39,9 +39,8 @@ async function vistaProveedor(){
 								<div class="formato oculto">¡Formato Incorrecto!</div>
 							</div>
 							<div class="form-group col-md-5">
-								<label>Nombre (*)</label>
+								<label>Nombre</label>
 								<input name="nombre" autocomplete="off" maxlength="200" type="text" class="form-control p-1 muestraMensaje" placeholder="Ingrese el nombre">
-								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
 						</div>
 						<div class="row">
@@ -56,9 +55,8 @@ async function vistaProveedor(){
 								<input name="fijo" autocomplete="off" maxlength="7" type="tel" class="form-control p-1" placeholder="Ingrese el fijo">
 							</div> 
 							<div class="form-group col-md-6">
-								<label>Celular (*)</label>
+								<label>Celular</label>
 								<input name="celular" autocomplete="off" maxlength="9" type="tel" class="form-control p-1" placeholder="Ingrese el celular">
-								<div class="vacio oculto">¡Campo obligatorio!</div>
 								<div class="formato oculto">¡Formato Incorrecto!</div>
 							</div>
 						</div>
@@ -70,9 +68,8 @@ async function vistaProveedor(){
 								<div class="formato oculto">¡Formato Incorrecto!</div>
 							</div>
 							<div class="form-group col-md-6">
-								<label>Email (*)</label>
+								<label>Email</label>
 								<input name="email" autocomplete="off" maxlength="100" type="text" class="form-control p-1" placeholder="Ingrese el email">
-								<div class="vacio oculto">¡Campo obligatorio!</div>
 								<div class="formato oculto">¡Formato Incorrecto!</div>
 							</div>
 						</div>
@@ -153,13 +150,15 @@ function eventosProveedor(objeto){
     $('#'+objeto.tabla+' div').on( 'keyup','input[type=text]',function(){
 		let name=$(this).attr('name');
 		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
-		if(name=='razon' || name=='nombre'){
+		if(name=='razon'){
 			textoNumeroRegex(elemento);
 			validaVacio(elemento);
+		}else if(name=='nombre'){
+			textoNumeroRegex(elemento);
 		}else if(name=='direccion'){
 			comentarioRegex(elemento);
 		}else if(name=='email'){
-			validaCorreo(elemento);
+			validaCorreoNo(elemento);
 		}
 	});
 
@@ -170,7 +169,7 @@ function eventosProveedor(objeto){
 		if(name=='ruc'){
 			validaRuc(elemento);
 		}else if(name=='celular'){
-			validaCelular(elemento);
+			validaCelularSolo(elemento);
 		}else if(name=='fijo'){
 			fijoRegex(elemento);
 		}
@@ -235,10 +234,9 @@ async function proveedorEdita(objeto){
 
 function validaFormularioProveedor(objeto){	
 	validaVacio(objeto.razon);
-	validaVacio(objeto.nombre);
 	let vruc=validaRuc(objeto.ruc);
-	let vcel=validaCelular(objeto.celular);
-	let vemai=validaCorreo(objeto.email);
+	let vcel=validaCelularSolo(objeto.celular);
+	let vemai=validaCorreoNo(objeto.email);
 
 	if(objeto.razon.val()=="" || objeto.nombre.val()=="" || vruc==false || vcel==false || vemai==false){
 		return false;

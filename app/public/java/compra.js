@@ -16,9 +16,7 @@ async function vistaCompra(){
 	let totalCompra=0;
 	let lista;
 	let compras;
-	let proveedor;
 	let resp;
-	let resp2;
 	const busca =  await axios.get('/api/'+tabla+'/buscar/0/'+verSesion(),{ 
 		headers:{authorization: `Bearer ${verToken()}`} 
 	});
@@ -38,12 +36,6 @@ async function vistaCompra(){
 		} 
 	});
 
-	proveedor =  await axios.get("/api/proveedor/listar/0/"+verSesion(),{ 
-		headers:{
-			authorization: `Bearer ${verToken()}`
-		} 
-	});
-
 	compras= await axios.get('/api/'+tabla+'/inicio/listar/'+verSesion()+"/reporteComprasPorFecha",{
 		headers: 
 		{ 
@@ -52,7 +44,6 @@ async function vistaCompra(){
 	});
 
 	resp=lista.data.valor.info;
-	resp2=proveedor.data.valor.info;
 	resp3=compras.data.valor.info;
 
 	desbloquea();
@@ -66,7 +57,7 @@ async function vistaCompra(){
 					<div id="${tabla}" class="needs-validation" novalidate>
 						<span class='oculto muestraId'>${ idCompra}</span>
 						<span class='oculto muestraNombre'></span>
-						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-coins"></i> COMPRA</div>
+						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient py-1"><i class="las la-coins"></i> COMPRA</div>
 						<ul class="nav nav-pills mb-3 mt-3" id="pills-tab" role="tablist">
 							<li class="nav-item" role="presentation">
 								<button class="nav-link active" id="pills-comprar-tab" data-bs-toggle="pill" data-bs-target="#pills-comprar" type="button" role="tab" aria-controls="pills-comprar" aria-selected="true">COMPRAR</button>
@@ -82,25 +73,12 @@ async function vistaCompra(){
 										<div  id="${tabla}Info" class="pb-0 pt-2 pr-3 pl-3">
 											<div class="text-right d-flex justify-content-between">
 												<h4>TOTAL: S/. <span class="totalCompra">${parseFloat(totalCompra).toFixed(2)}</span></h4>
-												<span>${borrar()+compra()}</span>
+												<span>${borrar2()+compra()}</span>
 											</div>
-											
 											<div class="row">
-												<div class="form-group col-md-6">
-													<label>Proveedor</label>
-													<select name="proveedor" class="form-control select2">
-														<option value="">Select...</option>`;
-														for(var i=0;i<resp2.length;i++){
-															if(resp2[i].ES_VIGENTE==1){
-														listado+=`<option value="${resp2[i].ID_PROVEEDOR}">${resp2[i].RAZON_PROVEEDOR+" - "+resp2[i].RUC}</option>`;
-															}
-														}
-											listado+=`</select>
-									<div class="vacio oculto">¡Campo obligatorio!</div>
-												</div>
-												<div class="form-group col-md-6">
+												<div class="form-group col-md-12">
 													<label>Producto</label>
-													<input id="autocompletaProd" disabled name="autocompletaProd" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Busque el producto">
+													<input id="autocompletaProd" name="autocompletaProd" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Busque el producto">
 													<input type="hidden" name="idProductoSucursal" id="idProductoSucursal">
 												</div>
 											</div>
@@ -165,6 +143,7 @@ async function vistaCompra(){
 															<tr>
 																<th>Tipo documento</th>
 																<th>Fecha compra</th>
+																<th>Proveedor</th>
 																<th>Total</th>
 																<th>Usuario</th>
 																<th class="nosort nosearch">Acciones</th>
@@ -179,6 +158,10 @@ async function vistaCompra(){
 																</td>
 																<td>
 																	<div class="fechaCompra">${ moment(resp3[i].FECHA_COMPRA).format('DD/MM/YYYY') }</div>
+																</td>
+																<td>
+																	<div class="proveedor">${ resp3[i].RAZON}</div>
+																	<div class="comentario badge bg-secondary">${ resp3[i].COMENTARIO }</div>
 																</td>
 																<td>
 																	<div class="total">${ parseFloat(resp3[i].TOTAL).toFixed(2) }</div>
@@ -217,6 +200,7 @@ async function vistaCompra(){
 		dropdownAutoWidth: true,
 		width: '100%'
 	});
+
 	$('.datepicker').datepicker({
 		language: 'es',
 		changeMonth: true,
@@ -238,14 +222,12 @@ async function vistaCompra(){
 function eventosCompra(objeto){
 	$('#autocompletaProd').autocomplete({
 		source: async function(request, response){
-			let idProveedor=$('#'+objeto.tabla+' select[name=proveedor]').val();
 			$.ajax({
 				url:"/autocompleta/producto",
 				type: "POST",
 				dataType: "json",
 				data:{
 					producto:request.term,
-					idProveedor:idProveedor,
 					tipo:'autocompletaCompra',
 					sesId:verSesion(),
 					token:verToken()
@@ -255,15 +237,13 @@ function eventosCompra(objeto){
 					response( $.map( datos, function( item ){
 						return objeto={
 							idCompra:objeto.idCompra,
-							idProductoSucursal:	item.ID_PRODUCTO_SUCURSAL,
+							idProducto:	item.ID_PRODUCTO,
 							codigo:	item.CODIGO_PRODUCTO,
 							nombre:	item.NOMBRE,
-							precioVenta: item.PRECIO_VENTA,
-							precioCompra: item.PRECIO_COMPRA,
 							cantidad:1,
 							tabla:objeto.tabla,
-							label: item.NOMBRE+" ("+item.STOCK+")",
-							value: item.NOMBRE+" ("+item.STOCK+")"
+							label: item.CODIGO_PRODUCTO+" - "+item.NOMBRE,
+							value: item.CODIGO_PRODUCTO+" - "+item.NOMBRE
 						}
 					}));
 				},
@@ -276,7 +256,6 @@ function eventosCompra(objeto){
 			return false;
 		}	
 	});
-
 	
 	$('#'+objeto.tabla+' div').off( 'keyup');
     $('#'+objeto.tabla+' div').on( 'keyup','input[type=text]',function(){
@@ -319,7 +298,10 @@ function eventosCompra(objeto){
 	$('#'+objeto.tabla+'Info').on( 'click','button[name=btnCompra]',function(){//compra
 		objeto.id= $("#"+objeto.tabla+" span.muestraId").text();
 		objeto.total= $("#"+objeto.tabla+"Info .totalCompra").text();
-		if(objeto.total>0){
+		let pcompra=verificarPreciosDeCompraCero({tabla:objeto.tabla});
+		if(pcompra){
+			mensajeSistema('¡Hay productos con precio de compra en CERO.!');
+		}else if(objeto.total>0){
 			procesaFormularioPago(objeto);
 		}else{
 			mensajeSistema('¡No hay productos para cerrar la compra!')
@@ -357,14 +339,69 @@ function eventosCompra(objeto){
 	$('#'+objeto.tabla+'TablaLista tbody').on( 'click','td a.detalle',function(){//detalle
 		let evento=$(this).parents("tr")
 		let id=evento.attr('id');
-		let nombre=evento.find("td div.tipoDocumento").text()+": "+evento.find("td div.serie").text()+" - "+evento.find("td div.numero").text();
+		let nombre=evento.find("td div.tipoDocumento").text()+": "+evento.find("td div.serie").text();
+		let comentario=evento.find("td div.comentario").text();
 		let objeto2={
 			tabla:objeto.tabla,
 			id:id,
 			nombreEdit:nombre,
+			comentario:comentario
 		}
 		compraDetalle(objeto2);
 	});
+
+}
+
+function verificarPreciosDeCompraCero(objeto) {
+	let hayPrecioCero = false;
+	$('#'+objeto.tabla+'Tabla td .precioCompra').each(function() {
+		let precioTexto = $(this).text().trim();
+		let precioNumero = parseFloat(precioTexto);
+		if (precioNumero === 0 || isNaN(precioNumero)) {
+			hayPrecioCero = true;
+			return false;
+		}
+	});
+	return hayPrecioCero;
+}
+
+async function agregaNuevoProveedor(objeto){
+	bloquea();
+	let tipo;
+	let numero;
+	if(objeto.razonSocial){
+		tipo=2516;
+		numero=objeto.ruc;
+	}else{
+		tipo=35;
+		numero=objeto.dni;
+	}
+
+	let body={
+		nombre:'',
+		razon:objeto.razonSocial,
+		ruc: numero,
+		direccion:(objeto.direccion==null)?'':objeto.direccion,
+		fijo:'',
+		celular:'', 
+		email:'',
+		sesId:verSesion()
+	}
+	let crea = await axios.post("/api/proveedor/crear",body,{ 
+		headers:{
+			authorization: `Bearer ${verToken()}`
+		} 
+	});
+	desbloquea();
+	let resp=crea.data.valor.info;
+	let idProveedor=resp.ID_PROVEEDOR;
+	let numeroProveedor=resp.RUC;
+	let nombreProveedor=resp.RAZON_SOCIAL;
+
+	const nuevoProveedor = new Option(numeroProveedor+' - '+nombreProveedor, idProveedor, true, true);
+                
+	$('#select2Proveedor').append(nuevoProveedor);
+	$('#select2Proveedor').val(idProveedor).trigger('change');
 
 }
 
@@ -389,15 +426,34 @@ async function procesaFormularioPago(objeto){
 		} 
 		});
 
+		proveedor =  await axios.get("/api/proveedor/listar/0/"+verSesion(),{ 
+		headers:{
+			authorization: `Bearer ${verToken()}`
+		} 
+	});
+
 		desbloquea();
 		const resp=busca.data.valor.info;
+		const resp2=proveedor.data.valor.info;
 		const resp3=tipoPago.data.valor.info;
 		const resp4=comprobante.data.valor.info;
 		let listado=`
 		<form id="pago">
 			<h4>TOTAL: S/. <span class="totalCompra">${parseFloat(resp.TOTAL).toFixed(2)}</span></h4>
 			<div class="row">
-				<div class="form-group col-md-12">
+				<div class="form-group col-md-8">
+					<label>Proveedor</label>
+					<select name="proveedor" class="form-control" id="select2Proveedor">
+						<option value="">Select...</option>`;
+						for(var i=0;i<resp2.length;i++){
+							if(resp2[i].ES_VIGENTE==1){
+						listado+=`<option value="${resp2[i].ID_PROVEEDOR}">${resp2[i].RUC+" - "+resp2[i].RAZON_PROVEEDOR}</option>`;
+							}
+						}
+			listado+=`</select>
+						<div class="vacio oculto">¡Campo obligatorio!</div>
+				</div>
+				<div class="form-group col-md-4">
 					<label>Tipo pago (*)</label>
 					<select name="tipoPago" class="form-control select2">
 						<option value="">Select...</option>`;
@@ -437,7 +493,7 @@ async function procesaFormularioPago(objeto){
 			<div class="row">
 				<div class="form-group col-md-12">
 					<label>Comentario</label>
-					<input name="comentario" autocomplete="off" maxlength="255" type="text" class="form-control p-1" placeholder="Ingrese un comentario">
+					<textarea  rows="3" autocomplete="off" class="form-control p-1" maxlength="500" name="comentario" placeholder="Ingrese el comentario"></textarea>
 				</div>
 			</div>
 			<div class="form-section p-0"></div>
@@ -454,12 +510,57 @@ async function procesaFormularioPago(objeto){
 			dropdownParent: $('#general1')
 		});
 
+		$("#select2Proveedor").select2({
+			//allowClear: true,
+			dropdownAutoWidth: true,
+			dropdownParent: $('#general1'),
+			width: '100%',
+			placeholder: "Select...",
+			tags: true,
+			createTag: function (params) {
+				// params.term es el DNI/RUC que el usuario escribió
+				const documento = params.term;
+				const tipo = identificarTipoDocumento(documento);
+
+				// 1. Recorrer las opciones ya existentes en el Select2
+					let exists = false;
+					$('#select2Proveedor option').each(function() {
+						// 2. Comprobar si el texto de la opción contiene el DNI/RUC buscado
+						// (Ej: Busca '12345678' en '12345678 - JUAN PÉREZ')
+						if ($(this).text().includes(documento)) {
+							exists = true;
+							return false; // Salir del .each()
+						}
+					});
+
+					// 3. Si ya existe, NO creamos el tag de consulta
+					if (exists) {
+						//console.log(`DNI/RUC ${documento} ya existe en la lista.`);
+						return null; 
+					}
+
+
+				if (tipo === 'DNI' || tipo === 'RUC') {
+					return {
+						id: 'NUEVO_' + tipo + '_' + documento, // Nuevo formato de ID
+						text: `🔎 Consultar ${tipo}: ${documento}`, 
+						isNew: true 
+					};
+				} else {
+					// No crear el tag si es un formato inválido (menos de 8 o distinto de 11)
+					return null; 
+				}
+			},
+		});
+
+
 		let objeto2={
 			tipoPago:$('#pago select[name=tipoPago]'),
 			comprobante:$('#pago select[name=comprobante]'),
 			serie:$('#pago input[name=serie]'),
 			numero:$('#pago input[name=numero]'),
-			comentario:$('#pago input[name=comentario]'),
+			comentario:$('#pago textarea[name=comentario]'),
+			proveedor:$('#pago select[name=proveedor]'),
 			tabla:'pago',
 			id:objeto.id
 		}
@@ -477,20 +578,38 @@ function eventosPago(objeto){
     $('#'+objeto.tabla+' div').on( 'change','select',function(){
 		let name=$(this).attr('name');
 		let elemento=$("#"+objeto.tabla+" select[name="+name+"]");
-		if(name=='comprobante'){
-			validaVacioSelect(elemento);
+		validaVacioSelect(elemento);		
+	});
+
+	$('#select2Proveedor').on('select2:select', async function (e) {
+		var data = e.params.data;
+		if (data.id && data.id.startsWith('NUEVO_')) {
+			const partes = data.id.split('_'); 
+			const tipoDocumento = partes[1].toLowerCase(); // 'DNI' o 'RUC'
+			const numeroDocumento = partes[2]; // El número
+
+			// Deseleccionar el tag y consultar
+        	$('#select_cliente').val(null).trigger('change'); 
+			let cliente=await consultarReniecSunat({tipo:tipoDocumento, documento:numeroDocumento});
+			
+			agregaNuevoProveedor(cliente);
 		}
-		
 	});
 
 	$('#'+objeto.tabla+' div').off( 'keyup');
     $('#'+objeto.tabla+' div').on( 'keyup','input[type=text]',function(){
 		let name=$(this).attr('name');
 		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
+		if(name=='serie' || name=='numero'){
+			validaVacio(elemento);
+		}
+	});
+
+    $('#'+objeto.tabla+' div').on( 'keyup','textarea',function(){
+		let name=$(this).attr('name');
+		let elemento=$("#"+objeto.tabla+" textarea[name="+name+"]");
 		if(name=='comentario'){
 			comentarioRegex(elemento);
-		}else if(name=='serie' || name=='numero'){
-			validaVacio(elemento);
 		}
 	});
 
@@ -504,10 +623,11 @@ function eventosPago(objeto){
 function validaFormularioPago(objeto){	
 	validaVacioSelect(objeto.tipoPago);
 	validaVacioSelect(objeto.comprobante);
+	validaVacioSelect(objeto.proveedor);
 	validaVacio(objeto.serie);
 	validaVacio(objeto.numero);
 
-	if(objeto.tipoPago.val()=="" || objeto.comprobante.val()=="" || objeto.serie.val()=="" || objeto.numero.val()==""){
+	if(objeto.tipoPago.val()=="" || objeto.comprobante.val()=="" || objeto.serie.val()=="" || objeto.numero.val()=="" || objeto.proveedor.val()==""){
 		return false;
 	}else{
 		enviaFormularioPago(objeto);
@@ -579,11 +699,11 @@ async function agregaCompra(objeto){
 	bloquea();
 	try{
 		let body={
-			idProductoSucursal: objeto.idProductoSucursal,
+			idProducto:objeto.idProducto,
 			codigo: objeto.codigo,
 			nombre: objeto.nombre,
-			precioVenta: objeto.precioVenta,
-			precioCompra: objeto.precioCompra,
+			precioVenta: 0,
+			precioCompra: 0,
 			cantidad: objeto.cantidad,
 			tabla: objeto.tabla,
 			idCompra: objeto.idCompra,
@@ -744,6 +864,8 @@ function enviaFormularioDetalleCompra(objeto){
 
 			desbloquea();
 			$("#general1").modal("hide");
+			$("#contenidoGeneral1").html('');
+			$("#subtituloGeneral1").html('');
 			resp=edita.data.valor;
 			if(resp.resultado){
 				$("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioCompra").text(parseFloat(resp.info.PRECIO_COMPRA).toFixed(2));
@@ -906,6 +1028,7 @@ async function compraDetalle(objeto){
 									</tbody>
 								</table>
 							</div>
+							<div><strong>Comentario: </strong>${objeto.comentario}</div>
 						</div>
 					</div>
 				</div>

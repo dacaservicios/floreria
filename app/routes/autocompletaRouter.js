@@ -7,7 +7,7 @@ const config = require('../config/config');
 router.post('/autocompleta/producto', isLogin  , async(req, res) => {
     const sesId=req.session.passport.user.id;
     try {
-        let autocompleta = await axios.get(config.URL_SISTEMA+"/api/productosucursal/autocompleta/"+req.body.producto+"/"+req.body.idProveedor+"/"+req.body.tipo+"/"+req.body.sesId,{ 
+        let autocompleta = await axios.get(config.URL_SISTEMA+"/api/productosucursal/autocompleta/"+req.body.producto+"/"+req.body.tipo+"/"+req.body.sesId,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 

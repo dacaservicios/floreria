@@ -37,7 +37,7 @@ const crearVentaDetalle = async (body)=>{
         body.idProductoSucursal,
         body.cantidad,
         body.precioVenta,
-        null,
+        '',
         'crea',
         body.sesId
     ]);
@@ -86,7 +86,7 @@ const editarVentaDetalle = async (id,body)=>{
         0,
         body.cantidad,
         body.descuento,
-        (body.comentario===null)?'':body.comentario,
+        body.comentario,
         'edita',
         body.sesId
     ]);

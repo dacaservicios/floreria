@@ -5,7 +5,7 @@ const crearProveedor = async (body)=>{
     const row= await pool.query(query,
     [
         0,
-        body.nombre,
+        (body.nombre=='')?null:body.nombre,
         body.razon,
         (body.direccion=='')?null:body.direccion,  
         (body.fijo=='')?null:body.fijo, 
@@ -29,7 +29,7 @@ const editarProveedor = async (id,body)=>{
     const row = await pool.query(query,
     [
         id,
-        body.nombre,
+        (body.nombre=='')?null:body.nombre,
         body.razon,
         (body.direccion=='')?null:body.direccion,  
         (body.fijo=='')?null:body.fijo, 

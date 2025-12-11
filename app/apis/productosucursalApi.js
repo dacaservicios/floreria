@@ -7,7 +7,7 @@ const {caracter, validaSchema} = require('../middlewares/auth');
 
 
 router.get('/api/productosucursal/listar/:id/:sesId', verificarToken, listar);
-router.get('/api/productosucursal/autocompleta/:producto/:idProveedor/:tipo/:sesId', verificarToken, autocompleta);
+router.get('/api/productosucursal/autocompleta/:producto/:tipo/:sesId', verificarToken, autocompleta);
 router.get('/api/productosucursal/detalle/listar/:id/:sesId', verificarToken, listarId);
 router.get('/api/productosucursal/buscar/codigo/:codigobarra/:sesId', verificarToken, codigoBarra);
 router.get('/api/productosucursal/buscar/:id/:sesId', verificarToken, buscar);

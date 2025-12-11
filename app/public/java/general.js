@@ -434,6 +434,15 @@ function borrar(){
     return boton;
 }
 
+function borrar2(){
+    let boton=`
+    <button type='Borrar' name='btnBorrar' class='mr-1 btn btn-danger-gradient btn-md borrar'>
+        <i class='las la-trash'></i>
+        <span class='p-1'>Eliminar</span>
+    </button>`;
+    return boton;
+}
+
 function compra(){
     let boton=`
     <button type='Compra' name='btnCompra' class='mr-1 btn btn-primary-gradient btn-md compra'>

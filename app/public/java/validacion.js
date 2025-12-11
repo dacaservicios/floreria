@@ -326,13 +326,8 @@ function validaCorreoNo(correo){
 			formato(correo);
 			return true;
 		}else{
-			if(correo.val()==''){
-				vacio(correo);
-				return false;
-			}else{
-				noformato(correo);
-				return false;
-			}
+			noformato(correo);
+			return false;
 		}
 	}
 }

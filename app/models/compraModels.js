@@ -2,7 +2,7 @@ const pool = require('../config/connections');
 const moment = require('moment');
 
 const crearCompra = async (body)=>{
-    const query = `CALL USP_UPD_TRS_COMPRA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_TRS_COMPRA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         0,
@@ -12,6 +12,7 @@ const crearCompra = async (body)=>{
         null,
         null,
         null,
+        0,
         0,
         0,
         0,
@@ -33,13 +34,13 @@ const crearCompraDetalle = async (body)=>{
     const row= await pool.query(query,
     [
         0,
+        body.idProducto,
         body.idCompra,
-        body.idProductoSucursal,
         body.cantidad,
-        body.precioCompra,
-        body.precioVenta,
         0,
-        null,
+        0,
+        0,
+        '',
         'crea',
         body.sesId
     ]);
@@ -52,7 +53,7 @@ const crearCompraDetalle = async (body)=>{
 }
 
 const editarCompra = async (id,body)=>{
-    const query = `CALL USP_UPD_TRS_COMPRA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_TRS_COMPRA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
@@ -60,12 +61,13 @@ const editarCompra = async (id,body)=>{
         body.tipoPago,
         body.serie,
         body.numero,
-        (body.comentario=='')?null:body.comentario,
+        body.comentario,
         null,
         1,
         0,
         0,
         0,
+        body.proveedor,
         'cierre',
         body.sesId
     ]);
@@ -90,7 +92,7 @@ const editarCompraDetalle = async (id,body)=>{
         body.precioCompra,
         body.precioVenta,
         null,
-        (body.comentario=='')?null:body.comentario,
+        body.comentario,
         'edita',
         body.sesId
     ]);

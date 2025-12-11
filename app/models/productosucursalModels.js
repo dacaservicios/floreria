@@ -1,14 +1,13 @@
 const pool = require('../config/connections');
 
 const crearProductosucursal = async (body)=>{
-    const query = `CALL USP_UPD_TRS_PRODUCTO_SUCURSAL(?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_TRS_PRODUCTO_SUCURSAL(?, ?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         0,
         body.producto,
-        body.proveedor,
-        body.stock,
-        body.precioCompra,
+        body.stockMin,
+        body.stockMax,
         body.precioVenta,
         'crea',
         body.sesId
@@ -23,14 +22,13 @@ const crearProductosucursal = async (body)=>{
 
 const editarProductosucursal = async (id,body)=>{
 
-    const query = `CALL USP_UPD_TRS_PRODUCTO_SUCURSAL(?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_TRS_PRODUCTO_SUCURSAL(?, ?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
         body.producto,
-        body.proveedor,
-        body.stock,
-        body.precioCompra,
+        body.stockMin,
+        body.stockMax,
         body.precioVenta,
         'edita',
         body.sesId
@@ -82,7 +80,7 @@ const autocompletaProductosucursal = async (producto,idProveedor,tabla,sesId)=>{
     const row =  await pool.query(query,
     [
         0,
-        idProveedor,
+        0,
         producto,
         tabla,
         sesId

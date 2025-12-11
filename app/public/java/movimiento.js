@@ -39,7 +39,7 @@ async function vistaMovimiento(){
 						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-dolly"></i> MOVIMIENTO</div>
 						<div class="row pt-3">
 							<div class="form-group col-md-6">
-								<label>Producto (Lote - Stock)</label>
+								<label>Producto (Stock) (*)</label>
 								<input id="autocompletaProd" name="autocompletaProd" autocomplete="off" maxlength="10" type="tel" class="form-control p-1 muestraMensaje" placeholder="Busque el producto">
 								<input type="hidden" name="producto" id="producto">
 								<input type="hidden" name="idProductoDetalle" id="idProductoDetalle">
@@ -167,6 +167,7 @@ function eventosMovimiento(objeto){
 				dataType: "json",
 				data:{
 					producto:request.term,
+					idProveedor:0,
 					tipo:'autocompletaVenta',
 					sesId:verSesion(),
 					token:verToken()
@@ -175,8 +176,8 @@ function eventosMovimiento(objeto){
 					let datos=data.valor.info;
 					response( $.map( datos, function( item ){
 						return {
-							idProductoDetalle:item.ID_PRODUCTO_DETALLE,
-							idProductoSucursal:	item.ID_PRODUCTO_SUCURSAL,
+							idProductoDetalle:item.ID_PRODUCTO_SUCURSAL,
+							idProducto:	item.ID_PRODUCTO,
 							codigo:	item.CODIGO_PRODUCTO,
 							nombre:	item.NOMBRE,
 							idLote: item.ID_DETALLE,
@@ -184,8 +185,8 @@ function eventosMovimiento(objeto){
 							precioCompra: item.PRECIO_COMPRA,
 							cantidad:1,
 							tabla:objeto.tabla,
-							label: item.NOMBRE+" ("+item.LOTE+" - "+item.STOCK+")",
-							value: item.NOMBRE+" ("+item.LOTE+" - "+item.STOCK+")"
+							label: item.NOMBRE+" ("+item.STOCK+")",
+							value: item.NOMBRE+" ("+item.STOCK+")"
 						}
 					}));
 				},
@@ -194,7 +195,7 @@ function eventosMovimiento(objeto){
 		minLength:3,
 		select:function(event,ui){
 			objeto.autocompletaProd.val(ui.item.nombre);
-			objeto.producto.val(ui.item.idProductoSucursal);
+			objeto.producto.val(ui.item.idProducto);
 			objeto.idProductoDetalle.val(ui.item.idProductoDetalle);
 			return false;
 		}	

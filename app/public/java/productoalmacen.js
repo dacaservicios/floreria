@@ -29,8 +29,6 @@ async function vistaProductoSucursal(){
 	const resp=lista.data.valor.info;
 	const resp2=producto.data.valor.info;
 
-	const idsEnSucursal = resp.map(producto => producto.ID_PRODUCTO);
-	const setIdsExcluidos = new Set(idsEnSucursal);
 	let listado=`
 	<div class="row row-sm mg-t-10">
 		<div class="col-lg-12">
@@ -39,14 +37,14 @@ async function vistaProductoSucursal(){
 					<form id="${tabla}" class="needs-validation" novalidate>
 						<span class='oculto muestraId'>0</span>
 						<span class='oculto muestraNombre'></span>
-						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-shopping-cart"></i> PRODUCTO x TIENDA</div>
+						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-shopping-cart"></i> PRODUCTO x ALMACEN</div>
 						<div class="row pt-3">
 							<div class="form-group col-md-12">
 								<label>Producto (*)</label>
-								<select name="producto" class="form-control select2 muestraMensaje" id="productoSeleccionado">
+								<select name="producto" class="form-control select2 muestraMensaje">
 									<option value="">Select...</option>`;
 									for(var i=0;i<resp2.length;i++){
-										if(resp2[i].ES_VIGENTE==1 && !setIdsExcluidos.has(resp2[i].ID_PRODUCTO)){
+										if(resp2[i].ES_VIGENTE==1){
 									listado+=`<option value="${resp2[i].ID_PRODUCTO}">${resp2[i].CODIGO_PRODUCTO+" - "+resp2[i].NOMBRE}</option>`;
 										}
 									}
@@ -56,13 +54,13 @@ async function vistaProductoSucursal(){
 						</div>
 						<div class="row">
 							<div class="form-group col-md-4">
-								<label>Stock mínimo (*)</label>
-								<input name="stockMin" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese el stock">
+								<label>Stock inicial (*)</label>
+								<input name="stock" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese el stock">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
 							<div class="form-group col-md-4">
-								<label>Stock máximo (*)</label>
-								<input name="stockMax" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese el stock">
+								<label>P. Compra (*)</label>
+								<input name="precioCompra" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese el p. compra">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
 							<div class="form-group col-md-4">
@@ -82,9 +80,10 @@ async function vistaProductoSucursal(){
 							<thead>
 								<tr>
 									<th style="width: 10%;">Código</th>
-									<th style="width: 45%;">Nombre</th>
-									<th style="width: 10%;">Stock min.</th>
-									<th style="width: 10%;">Stock max.</th>
+									<th style="width: 30%;">Nombre</th>
+									<th style="width: 10%;">Stock Ini.</th>
+									<th style="width: 10%;">Stock</th>
+									<th style="width: 15%;">P. Compra</th>
 									<th style="width: 15%;">P. Venta</th>
 									<th style="width: 10%;" class="nosort nosearch">Acciones</th>
 								</tr>
@@ -105,16 +104,19 @@ async function vistaProductoSucursal(){
 										<div class="estadoTachado nombre muestraMensaje ${mestado}">${resp[i].NOMBRE}</div>
 									</td>
 									<td>
-										<div class="estadoTachado stockMin ${mestado}">${ resp[i].STOCK_MINIMO }</div>
+										<div class="estadoTachado stockInicial ${mestado}">${ resp[i].STOCK_INICIAL }</div>
 									</td>
 									<td>
-										<div class="estadoTachado stockMax ${mestado}">${ resp[i].STOCK_MAXIMO }</div>
+										<div class="estadoTachado stock ${mestado}">${ resp[i].STOCK }</div>
+									</td>
+									<td>
+										<div class="estadoTachado precioCompra ${mestado}">${parseFloat(resp[i].PRECIO_COMPRA).toFixed(2)}</div>
 									</td>
 									<td>
 										<div class="estadoTachado precioVenta ${mestado}">${parseFloat(resp[i].PRECIO_VENTA).toFixed(2)}</div>
 									</td>
 									<td>
-										${estado()+modifica()+elimina()}
+										${estado()/*+modifica()+elimina()*/}
 									</td>
 								</tr>`;
 								}
@@ -136,8 +138,9 @@ async function vistaProductoSucursal(){
 	$('#'+tabla+'Tabla').DataTable(valoresTabla);
 	let objeto={
 		producto:$('#'+tabla+' select[name=producto]'),
-		stockMin:$('#'+tabla+' input[name=stockMin]'),
-		stockMax:$('#'+tabla+' input[name=stockMax]'),
+		stock:$('#'+tabla+' input[name=stock]'),
+		stockInicial:$('#'+tabla+' input[name=stockInicial]'),
+		precioCompra:$('#'+tabla+' input[name=precioCompra]'),
 		precioVenta:$('#'+tabla+' input[name=precioVenta]'),
 		tabla:tabla,
 	}
@@ -149,7 +152,7 @@ function eventosProductoSucursal(objeto){
     $('#'+objeto.tabla+' div').on( 'keyup','input[type=tel]',function(){
 		let name=$(this).attr('name');
 		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
-		if(name=='precioVenta' || name=='stockMin' || name=='stockMax'){
+		if(name=='precioCompra' || name=='precioVenta' || name=='stock' || name=='stockInicial'){
 			validaVacio(elemento);
 			decimalRegex(elemento);
 		}
@@ -210,19 +213,21 @@ async function productoSucursalEdita(objeto){
 	});
 	desbloquea();
 	const resp=busca.data.valor.info;
-	objeto.stockMin.val(resp.STOCK_MINIMO);
-	objeto.stockMax.val(resp.STOCK_MAXIMO);
+	objeto.stockInicial.val(resp.STOCK_INICIAL);
+	objeto.stock.val(resp.STOCK);
+	objeto.precioCompra.val(parseFloat(resp.PRECIO_COMPRA).toFixed(2));
 	objeto.precioVenta.val(parseFloat(resp.PRECIO_VENTA).toFixed(2));
 	objeto.producto.val(resp.ID_PRODUCTO).trigger('change.select2');
 }
 
 function validaFormularioProductoSucursal(objeto){	
+	validaVacio(objeto.precioCompra);
 	validaVacio(objeto.precioVenta);
-	validaVacio(objeto.stockMin);
-	validaVacio(objeto.stockMax);
+	validaVacio(objeto.stockInicial);
+	validaVacio(objeto.stock);
 	validaVacioSelect(objeto.producto);
 
-	if(objeto.precioVenta.val()=="" || objeto.stockMax.val()=="" ||  objeto.stockMin.val()=="" || objeto.producto.val()==""){
+	if(objeto.precioCompra.val()=="" || objeto.precioVenta.val()=="" || objeto.stockInicial.val()=="" ||  objeto.stock.val()=="" || objeto.producto.val()==""){
 		return false;
 	}else{
 		enviaFormularioProductoSucursal(objeto);
@@ -262,8 +267,8 @@ function enviaFormularioProductoSucursal(objeto){
 			if(resp.resultado){
 				if(objeto.id>0){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .producto").text(resp.info.NOMBRE_PRODUCTO);
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .stockMin").text(resp.info.STOCK_MINIMO);
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .stockMax").text(resp.info.STOCK_MAXIMO);
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .stock").text(resp.info.STOCK);
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioCompra").text(parseFloat(resp.info.PRECIO_COMPRA).toFixed(2));
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioVenta").text(parseFloat(resp.info.PRECIO_VENTA).toFixed(2));
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
 					
@@ -273,17 +278,14 @@ function enviaFormularioProductoSucursal(objeto){
 					let rowNode =t.row.add( [
 						`<div class="estadoTachado codigo">${resp.info.CODIGO_PRODUCTO}</div>`,
 						`<div class="estadoTachado producto muestraMensaje">${resp.info.NOMBRE_PRODUCTO}</div>`,
-						`<div class="estadoTachado stockMin">${resp.info.STOCK_MINIMO}</div>`,
-						`<div class="estadoTachado stockMax">${resp.info.STOCK_MAXIMO}</div>`,
+						`<div class="estadoTachado stockInicial">${resp.info.STOCK}</div>`,
+						`<div class="estadoTachado stock">${resp.info.STOCK}</div>`,
+						`<div class="estadoTachado precioCompra">${parseFloat(resp.info.PRECIO_COMPRA).toFixed(2)}</div>`,
 						`<div class="estadoTachado precioVenta">${parseFloat(resp.info.PRECIO_VENTA).toFixed(2)}</div>`,
 						estado()/*+modifica()+elimina()*/
 					] ).draw( false ).node();
 					$( rowNode ).attr('id',resp.info.ID_PRODUCTO_SUCURSAL);
 					
-					$('#productoSeleccionado').val(null).trigger('change');
-					$(`#productoSeleccionado option[value="${resp.info.ID_PRODUCTO}"]`).remove();
-					$('#productoSeleccionado').trigger('change.select2');
-
 					//success("Creado","¡Se ha creado el registro: "+dato+"!");
 				}
 				limpiaTodo(objeto.tabla);
