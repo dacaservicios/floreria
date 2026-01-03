@@ -15,7 +15,6 @@ async function vistaCompra(){
 	let idCompra=0;
 	let totalCompra=0;
 	let lista;
-	let compras;
 	let resp;
 	const busca =  await axios.get('/api/'+tabla+'/buscar/0/'+verSesion(),{ 
 		headers:{authorization: `Bearer ${verToken()}`} 
@@ -36,15 +35,7 @@ async function vistaCompra(){
 		} 
 	});
 
-	compras= await axios.get('/api/'+tabla+'/inicio/listar/'+verSesion()+"/reporteComprasPorFecha",{
-		headers: 
-		{ 
-			authorization: `Bearer ${verToken()}`
-		} 
-	});
-
 	resp=lista.data.valor.info;
-	resp3=compras.data.valor.info;
 
 	desbloquea();
 
@@ -58,125 +49,64 @@ async function vistaCompra(){
 						<span class='oculto muestraId'>${ idCompra}</span>
 						<span class='oculto muestraNombre'></span>
 						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient py-1"><i class="las la-coins"></i> COMPRA</div>
-						<ul class="nav nav-pills mb-3 mt-3" id="pills-tab" role="tablist">
-							<li class="nav-item" role="presentation">
-								<button class="nav-link active" id="pills-comprar-tab" data-bs-toggle="pill" data-bs-target="#pills-comprar" type="button" role="tab" aria-controls="pills-comprar" aria-selected="true">COMPRAR</button>
-							</li>
-							<li class="nav-item" role="presentation">
-								<button class="nav-link" id="pills-listaCompra-tab" data-bs-toggle="pill" data-bs-target="#pills-listaCompra" type="button" role="tab" aria-controls="pills-listaCompra" aria-selected="false">LISTA DE COMPRAS</button>
-							</li>
-						</ul>
-						<div class="tab-content" id="pills-tabContent">
-							<div class="tab-pane fade show active" id="pills-comprar" role="tabpanel" aria-labelledby="pills-comprar-tab">
-								<div class="row">
-									<div class="col-12">
-										<div  id="${tabla}Info" class="pb-0 pt-2 pr-3 pl-3">
-											<div class="text-right d-flex justify-content-between">
-												<h4>TOTAL: S/. <span class="totalCompra">${parseFloat(totalCompra).toFixed(2)}</span></h4>
-												<span>${borrar2()+compra()}</span>
-											</div>
-											<div class="row">
-												<div class="form-group col-md-12">
-													<label>Producto</label>
-													<input id="autocompletaProd" name="autocompletaProd" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Busque el producto">
-													<input type="hidden" name="idProductoSucursal" id="idProductoSucursal">
-												</div>
-											</div>
+							<div class="row">
+								<div class="col-12">
+									<div  id="${tabla}Info" class="pb-0 pt-2 pr-3 pl-3">
+										<div class="text-right d-flex justify-content-between">
+											<h4>TOTAL: S/. <span class="totalCompra">${parseFloat(totalCompra).toFixed(2)}</span></h4>
+											<span>${borrar2()+compra()}</span>
 										</div>
-										<div class="card-content collapse show">
-											<div class="card-body card-dashboard">
-												<div class="table-responsive">
-													<table id="${tabla}Tabla" class="pt-3 table table-striped text-center">
-														<thead>
-															<tr>
-																<th>Código</th>
-																<th>Producto</th>
-																<th>P. Compra</th>
-																<th>P. Venta</th>
-																<th>Cantidad</th>
-																<th>Total</th>
-																<th class="nosort nosearch">Acciones</th>
-															</tr>
-														</thead>
-														<tbody>`;
-															for(var i=0;i<resp.length;i++){
-												listado+=`<tr id="${ resp[i].ID_DETALLE }">
-																<td>
-																	<div class="codigo">${ (resp[i].CODIGO_PRODUCTO===null)?'':resp[i].CODIGO_PRODUCTO}</div>
-																</td>
-																<td>
-																	<div class="nombre muestraMensaje">${ resp[i].NOMBRE }</div>
-																</td>
-																<td>
-																	<div class="precioCompra">${ parseFloat(resp[i].PRECIO_COMPRA).toFixed(2) }</div>
-																</td>
-																<td>
-																	<div class="precioVenta">${ parseFloat(resp[i].PRECIO_VENTA).toFixed(2) }</div>
-																</td>
-																<td>
-																	<div class="cantidad">${ resp[i].CANTIDAD }</div>
-																</td>
-																<td>
-																	<div class="total">${ parseFloat(resp[i].MONTO_TOTAL).toFixed(2) }</div>
-																</td>
-																<td>
-																	${modifica()+elimina()}
-																</td>
-															</tr>`;
-															}
-											listado+=`</tbody>
-													</table>
-												</div>
+										<div class="row">
+											<div class="form-group col-md-12">
+												<label>Producto</label>
+												<input id="autocompletaProd" name="autocompletaProd" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Busque el producto">
+												<input type="hidden" name="idProductoSucursal" id="idProductoSucursal">
 											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-							<div class="tab-pane fade" id="pills-listaCompra" role="tabpanel" aria-labelledby="pills-listaCompra-tab">
-								<div class="row pt-3">
-									<div class="col-12">
-										<div class="card-content collapse show">
-											<div class="card-body card-dashboard">
-												<div class="table-responsive">
-													<table id="${tabla}TablaLista" class="pt-3 table table-striped text-center">
-														<thead>
-															<tr>
-																<th>Tipo documento</th>
-																<th>Fecha compra</th>
-																<th>Proveedor</th>
-																<th>Total</th>
-																<th>Usuario</th>
-																<th class="nosort nosearch">Acciones</th>
-															</tr>
-														</thead>
-														<tbody>`;
-															for(var i=0;i<resp3.length;i++){
-												listado+=`<tr id="${ resp3[i].ID_COMPRA }">
-																<td>
-																	<div class="tipoDocumento">${ resp3[i].TIPO_DOCUMENTO}</div>
-																	<div class="serie"><span class="badge bg-primary">${ resp3[i].SERIE+" - "+resp3[i].NUMERO_DOCUMENTO }</span></div>
-																</td>
-																<td>
-																	<div class="fechaCompra">${ moment(resp3[i].FECHA_COMPRA).format('DD/MM/YYYY') }</div>
-																</td>
-																<td>
-																	<div class="proveedor">${ resp3[i].RAZON}</div>
-																	<div class="comentario badge bg-secondary">${ resp3[i].COMENTARIO }</div>
-																</td>
-																<td>
-																	<div class="total">${ parseFloat(resp3[i].TOTAL).toFixed(2) }</div>
-																</td>
-																<td>
-																	<div class="usuario">${ resp3[i].USUARIO}</div>
-																</td>
-																<td>
-																	${detalle()}
-																</td>
-															</tr>`;
-															}
-											listado+=`</tbody>
-													</table>
-												</div>
+									<div class="card-content collapse show">
+										<div class="card-body card-dashboard">
+											<div class="table-responsive">
+												<table id="${tabla}Tabla" class="pt-3 table table-striped text-center">
+													<thead>
+														<tr>
+															<th>Código</th>
+															<th>Producto</th>
+															<th>P. Compra</th>
+															<th>P. Venta</th>
+															<th>Cantidad</th>
+															<th>Total</th>
+															<th class="nosort nosearch">Acciones</th>
+														</tr>
+													</thead>
+													<tbody>`;
+														for(var i=0;i<resp.length;i++){
+											listado+=`<tr id="${ resp[i].ID_DETALLE }">
+															<td>
+																<div class="codigo">${ (resp[i].CODIGO_PRODUCTO===null)?'':resp[i].CODIGO_PRODUCTO}</div>
+															</td>
+															<td>
+																<div class="nombre muestraMensaje">${ resp[i].NOMBRE }</div>
+															</td>
+															<td>
+																<div class="precioCompra">${ parseFloat(resp[i].PRECIO_COMPRA).toFixed(2) }</div>
+															</td>
+															<td>
+																<div class="precioVenta">${ parseFloat(resp[i].PRECIO_VENTA).toFixed(2) }</div>
+															</td>
+															<td>
+																<div class="cantidad">${ resp[i].CANTIDAD }</div>
+															</td>
+															<td>
+																<div class="total">${ parseFloat(resp[i].MONTO_TOTAL).toFixed(2) }</div>
+															</td>
+															<td>
+																${modifica()+elimina()}
+															</td>
+														</tr>`;
+														}
+										listado+=`</tbody>
+												</table>
 											</div>
 										</div>
 									</div>
@@ -212,8 +142,7 @@ async function vistaCompra(){
 
 	//$("#"+tabla+" span#botonGuardar").text('Crear');
 	let objeto={
-		tabla:tabla,
-		idCompra:$('#'+tabla+' span.muestraId').text()
+		tabla:tabla
 	}
 	eventosCompra(objeto);
 }
@@ -222,6 +151,7 @@ async function vistaCompra(){
 function eventosCompra(objeto){
 	$('#autocompletaProd').autocomplete({
 		source: async function(request, response){
+			let id=$('#'+objeto.tabla+' span.muestraId').text()
 			$.ajax({
 				url:"/autocompleta/producto",
 				type: "POST",
@@ -236,14 +166,14 @@ function eventosCompra(objeto){
 					let datos=data.valor.info;
 					response( $.map( datos, function( item ){
 						return objeto={
-							idCompra:objeto.idCompra,
+							idCompra:id,
 							idProducto:	item.ID_PRODUCTO,
 							codigo:	item.CODIGO_PRODUCTO,
 							nombre:	item.NOMBRE,
 							cantidad:1,
 							tabla:objeto.tabla,
-							label: item.CODIGO_PRODUCTO+" - "+item.NOMBRE,
-							value: item.CODIGO_PRODUCTO+" - "+item.NOMBRE
+							label: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+"<br><strong>Stock: </strong>"+item.STOCK,
+							value: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+"<br><strong>Stock: </strong>"+item.STOCK,
 						}
 					}));
 				},
@@ -255,7 +185,11 @@ function eventosCompra(objeto){
 			$(this).val(''); 
 			return false;
 		}	
-	});
+	}).data("ui-autocomplete")._renderItem = function(ul, item){
+		return $("<li>")
+			.append("<div>" + item.label + "</div>")
+			.appendTo(ul);
+	};
 	
 	$('#'+objeto.tabla+' div').off( 'keyup');
     $('#'+objeto.tabla+' div').on( 'keyup','input[type=text]',function(){
@@ -334,22 +268,6 @@ function eventosCompra(objeto){
 		let nombre=evento.find("td div.nombre ").text();
 		compraEliminaDetalle({id:id,nombre:nombre,tabla:objeto.tabla});
 	});
-
-	$('#'+objeto.tabla+'TablaLista tbody').off( 'click');
-	$('#'+objeto.tabla+'TablaLista tbody').on( 'click','td a.detalle',function(){//detalle
-		let evento=$(this).parents("tr")
-		let id=evento.attr('id');
-		let nombre=evento.find("td div.tipoDocumento").text()+": "+evento.find("td div.serie").text();
-		let comentario=evento.find("td div.comentario").text();
-		let objeto2={
-			tabla:objeto.tabla,
-			id:id,
-			nombreEdit:nombre,
-			comentario:comentario
-		}
-		compraDetalle(objeto2);
-	});
-
 }
 
 function verificarPreciosDeCompraCero(objeto) {
@@ -940,104 +858,5 @@ function compraElimina(objeto){
 			mensajeError(message);
 		}
 	});
-}
-
-async function compraDetalle(objeto){
-	bloquea();
-	try {
-		lista= await axios.get('/api/'+objeto.tabla+'/detalle/listar/'+objeto.id+'/'+verSesion(),{
-			headers: 
-			{ 
-				authorization: `Bearer ${verToken()}`
-			} 
-		});
-		lista2= await axios.get('/api/'+objeto.tabla+'/buscar/totales/'+objeto.id+'/'+verSesion(),{
-			headers: 
-			{ 
-				authorization: `Bearer ${verToken()}`
-			} 
-		});
-		resp=lista.data.valor.info;
-		resp2=lista2.data.valor.info;
-		desbloquea();
-		let listado=`
-			<div class="row">
-				<div class="col-12">
-					<div class="card-content collapse show">
-						<div class="card-body card-dashboard pt-0">
-							<div class="table-responsive">
-								<table id='detalleTablaCompra' class="pt-3 table table-striped text-center">
-									<thead>
-										<tr>
-											<th>Código</th>
-											<th>Producto</th>
-											<th>P. Compra</th>
-											<th>Cantidad</th>
-											<th>Total</th>
-										</tr>
-									</thead>
-									<tbody>`;
-										for(var i=0;i<resp.length;i++){
-								listado+=`<tr id="${ resp[i].ID_DETALLE }">
-											<td>
-												<div class="codigo">${ (resp[i].CODIGO_PRODUCTO===null)?'':resp[i].CODIGO_PRODUCTO}</div>
-											</td>
-											<td>
-												<div class="nombre muestraMensaje">${ resp[i].NOMBRE }</div>
-											</td>
-											<td>
-												<div class="precio">${ parseFloat(resp[i].PRECIO_COMPRA).toFixed(2) }</div>
-											</td>
-											<td>
-												<div class="cantidad">${ parseFloat(resp[i].CANTIDAD).toFixed(2) }</div>
-											</td>
-											<td>
-												<div class="total">${ parseFloat(resp[i].MONTO_TOTAL).toFixed(2) }</div>
-											</td>
-										</tr>`;
-										}
-						listado+=`
-										<tr>
-											<td colspan='3'></td>
-											<td><strong>DESCUENTO</strong></td>
-											<td>
-												<div class="descuento">${parseFloat(resp2.DESCUENTO).toFixed(2)}</div>
-											</td>
-										</tr>
-										<tr>
-											<td colspan='3'></td>
-											<td><strong>SUBTOTAL</strong></td>
-											<td>
-												<div class="subtotal">${parseFloat(resp2.SUBTOTAL).toFixed(2)}</div>
-											</td>
-										</tr>
-										<tr>
-											<td colspan='3'></td>
-											<td><strong>IGV ${resp2.IGV*100+'%'}</strong></td>
-											<td>
-												<div class="igv">${parseFloat(resp2.IMPUESTO).toFixed(2)}</div>
-											</td>
-										</tr>
-										<tr>
-											<td colspan='3'></td>
-											<td><strong>TOTAL</strong></td>
-											<td>
-												<div class="total">${parseFloat(resp2.TOTAL).toFixed(2)}</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div><strong>Comentario: </strong>${objeto.comentario}</div>
-						</div>
-					</div>
-				</div>
-			</div>`;
-		mostrar_general1({titulo:'DETALLE DE COMPRA',nombre:objeto.nombreEdit,msg:listado,ancho:600});
-	}catch (err) {
-		desbloquea();
-		message=(err.response)?err.response.data.error:err;
-		mensajeError(message);
-	}
 }
 

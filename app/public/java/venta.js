@@ -15,9 +15,7 @@ async function vistaVenta(){
 	let idVenta=0;
 	let totalVenta=0;
 	let lista;
-	let ventas;
 	let resp;
-	let resp2;
 	const busca =  await axios.get('/api/'+tabla+'/buscar/0/'+verSesion(),{ 
 		headers:{authorization: `Bearer ${verToken()}`} 
 	});
@@ -38,13 +36,6 @@ async function vistaVenta(){
 		} 
 	});
 	
-
-	ventas= await axios.get('/api/'+tabla+'/inicio/listar/'+verSesion()+"/reporteVentasPorFecha",{
-		headers: 
-		{ 
-			authorization: `Bearer ${verToken()}`
-		}
-	});
 
 	const cliente =  await axios.get("/api/cliente/listar/0/"+verSesion(),{ 
 			headers:{
@@ -67,9 +58,8 @@ async function vistaVenta(){
 	resp3=cliente.data.valor.info;
 	resp4=tipoPago.data.valor.info;
 	resp5=comprobante.data.valor.info;
-	resp2=ventas.data.valor.info;
 	desbloquea();
-	let noMostrar=(verNivel()==5)?'oculto':'';
+
 	let listado=`
 	<div class="row row-sm mg-t-10">
 		<div class="col-lg-12 p-0">
@@ -78,184 +68,126 @@ async function vistaVenta(){
 					<div id="${tabla}" class="needs-validation" novalidate>
 						<span class='oculto muestraId'>${ idVenta}</span>
 						<span class='oculto muestraNombre'></span>
-						<ul class="nav nav-pills mb-3 mt-3 ${noMostrar}" id="pills-tab" role="tablist">
-							<li class="nav-item" role="presentation">
-								<button class="nav-link active" id="pills-vender-tab" data-bs-toggle="pill" data-bs-target="#pills-vender" type="button" role="tab" aria-controls="pills-vender" aria-selected="true">VENDER</button>
-							</li>
-							<li class="nav-item" role="presentation">
-								<button class="nav-link" id="pills-listaVenta-tab" data-bs-toggle="pill" data-bs-target="#pills-listaVenta" type="button" role="tab" aria-controls="pills-listaVenta" aria-selected="false">LISTA DE VENTAS</button>
-							</li>
-						</ul>
-						<div class="tab-content" id="pills-tabContent">
-							<div class="tab-pane fade show active" id="pills-vender" role="tabpanel" aria-labelledby="pills-vender-tab">
-								<div class="row">
-									<div class="form-group col-md-12">
-										<label>Cliente (*)</label>
-										<select name="cliente" class="form-control muestraMensaje" id="select2Cliente">
-											<option value="">Select...</option>`;
-											for(var i=0;i<resp3.length;i++){
-												if(resp3[i].ES_VIGENTE==1){
-											listado+=`<option value="${resp3[i].ID_CLIENTE}">${resp3[i].NUMERO_DOCUMENTO+" - "+resp3[i].APELLIDO_PATERNO+" "+resp3[i].APELLIDO_MATERNO+" "+resp3[i].NOMBRE}</option>`;
-												}
-											}
-								listado+=`</select>
-										<div class="vacio oculto">¡Campo obligatorio!</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="form-group col-5">
-										<div class="btn-group" role="group">`;
-											for(var i=0;i<resp4.length;i++){
-												if(resp4[i].ES_VIGENTE==1){
-											listado+=`<button type="button" class="btn btn-outline-success tipo_pago" data-pago="${resp4[i].ID_PARAMETRO_DETALLE}">
-														${resp4[i].DESCRIPCIONDETALLE}
-													</button>`;
-												}
-											}
-								listado+=`</div>
-										<div id="pagoVacio" class="vacio oculto ">¡Dato obligatorio!</div>
-									</div>
-									<div class="form-group col-2 text-center">
-										<label><strong>PAGA CON:</strong></label>
-										<input name="pagacon" autocomplete="off" maxlength="10" type="tel" class="form-control p-1 focus tamano text-center" placeholder="Ingrese pago" value="0.00">
-										<span class="vuelto oculto">0.00</span>
-									</div>
-									<div class="form-group col-5 text-end">
-										<div class="btn-group" role="group">`;
-											for(var i=0;i<resp5.length;i++){
-												if(resp5[i].ES_VIGENTE==1){
-											listado+=`<button type="button" class="btn btn-outline-secondary tipo_comprobante" data-comprobante="${resp5[i].ID_COMPROBANTE}">
-														${resp5[i].TIPO_DOCUMENTO}
-													</button>`;
-												}
-											}
-								listado+=`</div>
-										<div id="comprobanteVacio" class="vacio oculto">¡Dato obligatorio!</div>
-									</div>
-								</div>
-								<div  id="${tabla}Info" class="pb-0 pt-2 pr-3 pl-3">
-											<div class="text-right d-flex justify-content-between">
-												<h4>TOTAL: S/. <strong><span class="totalVenta">${parseFloat(totalVenta).toFixed(2)}</span></strong></h4>
-												<h4>DESCUENTO: S/. <strong><span class="totalDescuento">${parseFloat(totalDescuento).toFixed(2)}</span></strong></h4>
-											</div>
-											<div class="row">
-												<div class="form-group col-6">
-													${borrar()}
-												</div>
-												<div class="form-group col-6">
-													${venta()}
-												</div>
-											</div>
-										</div>
-								<div class="row">
-									<div class="col-12">
-										<div  id="${tabla}Barra" class="pb-0 pt-2 pr-3 pl-3">
-											<div class="row">
-												<div class="form-group col-12">
-													<label>Codigo de barra</label>
-													<input id="codigoBarra" name="codigoBarra" autocomplete="off" maxlength="10" type="text" class="form-control p-1" placeholder="Busque el producto">
-												</div>
-												
-											</div>
-										</div>
-										<div class="card-content collapse show">
-											<div class="card-body card-dashboard p-0">
-												<div class="table-responsive">
-													<table id="${tabla}Tabla" class="table-striped table border-top-0  table-bordered text-nowrap border-bottom">
-														<thead>
-															<tr>
-																<th>Producto</th>
-																<th>P. Venta</th>
-																<th>Cantidad</th>
-																<th>Total</th>
-																<th class="nosort nosearch"></th>
-															</tr>
-														</thead>
-														<tbody>`;
-															for(var i=0;i<resp.length;i++){
-												listado+=`<tr id="${ resp[i].ID_DETALLE }">
-																<td>
-																	<div class="nombre muestraMensaje">
-																		<span class="badge bg-primary">${ resp[i].CODIGO_PRODUCTO}</span> ${resp[i].NOMBRE }
-																	</div>
-																</td>
-																<td>
-																	<div class="precio">${ parseFloat(resp[i].PRECIO_VENTA).toFixed(2) }</div>
-																	<div class="descuento"><span class="badge bg-danger">${ parseFloat(resp[i].DESCUENTO).toFixed(2)}</span></div>
-																</td>
-																<td>
-																	<input id="spinner${resp[i].ID_DETALLE}" class="mispinner cantidad focus" type="number" value="${ resp[i].CANTIDAD}" min="1" max="100" step="1" class="form-control">
-																</td>
-																<td>
-																	<div class="total">${ parseFloat(resp[i].MONTO_TOTAL).toFixed(2) }</div>
-																</td>
-																<td>
-																	${elimina()}
-																</td>
-															</tr>`;
-															}
-											listado+=`</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="form-group col-12">
-												<label>Comentario</label>
-												<textarea  rows="3" autocomplete="off" class="form-control p-1" maxlength="500" name="comentario" placeholder="Ingrese el comentario"></textarea>
-											</div>
-										</div>
-									</div>
-								</div>
+
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label>Cliente (*)</label>
+								<select name="cliente" class="form-control muestraMensaje" id="select2Cliente">
+									<option value="">Select...</option>`;
+									for(var i=0;i<resp3.length;i++){
+										if(resp3[i].ES_VIGENTE==1){
+									listado+=`<option value="${resp3[i].ID_CLIENTE}">${resp3[i].NUMERO_DOCUMENTO+" - "+resp3[i].APELLIDO_PATERNO+" "+resp3[i].APELLIDO_MATERNO+" "+resp3[i].NOMBRE}</option>`;
+										}
+									}
+						listado+=`</select>
+								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
-							<div class="tab-pane fade" id="pills-listaVenta" role="tabpanel" aria-labelledby="pills-listaVenta-tab">
-								<div class="row pt-3">
-									<div class="col-12">
-										<div class="card-content collapse show">
-											<div class="card-body card-dashboard">
-												<div class="table-responsive">
-													<table id="${tabla}TablaLista" class="pt-3 table table-striped text-center">
-														<thead>
-															<tr>
-																<th>Tipo documento</th>
-																<th>Fecha venta</th>
-																<th>cliente</th>
-																<th>Total</th>
-																<th>Usuario</th>
-																<th class="nosort nosearch">Acciones</th>
-															</tr>
-														</thead>
-														<tbody>`;
-															for(var i=0;i<resp2.length;i++){
-																let descuento=(parseInt(resp2[i].DESCUENTO)>0)?'<span class="badge bg-info" data-bs-toggle="tooltip" data-bs-placement="top" title="Tiene descuento"><i class="las la-user-tag"></i></span>':'';
-												listado+=`<tr id="${ resp2[i].ID_VENTA }">
-																<td>
-																	<div class="tipoDocumento">${ resp2[i].TIPO_DOCUMENTO}</div>
-																	<div class="serie"><span class="badge bg-primary">${ resp2[i].SERIE+" - "+resp2[i].NUMERO_DOCUMENTO }</span></div>
-																</td>
-																<td>
-																	<div class="fechaVenta">${ moment(resp2[i].FECHA_VENTA).format('DD/MM/YYYY') }</div>
-																</td>
-																<td>
-																	<div class="cliente">${ resp2[i].CLIENTE}</div>
-																	<div class="comentario badge bg-secondary">${ resp2[i].COMENTARIO }</div>
-																</td>
-																<td>
-																	<div class="total">${ parseFloat(resp2[i].TOTAL).toFixed(2)+" "+descuento}</div>
-																</td>
-																<td>
-																	<div class="usuario">${ resp2[i].USUARIO}</div>
-																</td>
-																<td>
-																	${detalle()}
-																</td>
-															</tr>`;
-															}
-											listado+=`</tbody>
-													</table>
-												</div>
-											</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-5">
+								<div class="btn-group" role="group">`;
+									for(var i=0;i<resp4.length;i++){
+										if(resp4[i].ES_VIGENTE==1){
+									listado+=`<button type="button" class="btn btn-outline-success tipo_pago" data-pago="${resp4[i].ID_PARAMETRO_DETALLE}">
+												${resp4[i].DESCRIPCIONDETALLE}
+											</button>`;
+										}
+									}
+						listado+=`</div>
+								<div id="pagoVacio" class="vacio oculto ">¡Dato obligatorio!</div>
+							</div>
+							<div class="form-group col-2 text-center">
+								<label><strong>PAGA CON:</strong></label>
+								<input name="pagacon" autocomplete="off" maxlength="10" type="tel" class="form-control p-1 focus tamano text-center" placeholder="Ingrese pago" value="0.00">
+								<span class="vuelto oculto">0.00</span>
+							</div>
+							<div class="form-group col-5 text-end">
+								<div class="btn-group" role="group">`;
+									for(var i=0;i<resp5.length;i++){
+										if(resp5[i].ES_VIGENTE==1){
+									listado+=`<button type="button" class="btn btn-outline-secondary tipo_comprobante" data-comprobante="${resp5[i].ID_COMPROBANTE}">
+												${resp5[i].TIPO_DOCUMENTO}
+											</button>`;
+										}
+									}
+						listado+=`</div>
+								<div id="comprobanteVacio" class="vacio oculto">¡Dato obligatorio!</div>
+							</div>
+						</div>
+						<div  id="${tabla}Info" class="pb-0 pt-2 pr-3 pl-3">
+									<div class="text-right d-flex justify-content-between">
+										<h4>TOTAL: S/. <strong><span class="totalVenta">${parseFloat(totalVenta).toFixed(2)}</span></strong></h4>
+										<h4>DESCUENTO: S/. <strong><span class="totalDescuento">${parseFloat(totalDescuento).toFixed(2)}</span></strong></h4>
+									</div>
+									<div class="row">
+										<div class="form-group col-6">
+											${borrar()}
 										</div>
+										<div class="form-group col-6">
+											${venta()}
+										</div>
+									</div>
+								</div>
+						<div class="row">
+							<div class="col-12">
+								<div  id="${tabla}Barra" class="pb-0 pt-2 pr-3 pl-3">
+									<div class="row">
+										<div class="form-group col-6">
+											<label>Codigo de barra</label>
+											<input id="codigoBarra" name="codigoBarra" autocomplete="off" maxlength="10" type="text" class="form-control p-1" placeholder="Busque el producto">
+										</div>
+										<div class="form-group col-md-6">
+											<label>Producto</label>
+											<input id="autocompletaProd" name="autocompletaProd" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Busque el producto">
+											<input type="hidden" name="idProductoSucursal" id="idProductoSucursal">
+										</div>
+									</div>
+								</div>
+								<div class="card-content collapse show">
+									<div class="card-body card-dashboard p-0">
+										<div class="table-responsive">
+											<table id="${tabla}Tabla" class="table-striped table border-top-0  table-bordered text-nowrap border-bottom">
+												<thead>
+													<tr>
+														<th>Producto</th>
+														<th>P. Venta</th>
+														<th>Cantidad</th>
+														<th>Total</th>
+														<th class="nosort nosearch"></th>
+													</tr>
+												</thead>
+												<tbody>`;
+													for(var i=0;i<resp.length;i++){
+										listado+=`<tr id="${ resp[i].ID_DETALLE }">
+														<td>
+															<div class="nombre muestraMensaje">
+																<span class="badge bg-primary">${ resp[i].CODIGO_PRODUCTO}</span> ${resp[i].NOMBRE }
+															</div>
+														</td>
+														<td>
+															<div class="precio">${ parseFloat(resp[i].PRECIO_VENTA).toFixed(2) }</div>
+															<div class="descuento"><span class="badge bg-danger">${ parseFloat(resp[i].DESCUENTO).toFixed(2)}</span></div>
+														</td>
+														<td>
+															<input id="spinner${resp[i].ID_DETALLE}" class="mispinner cantidad focus" type="number" value="${ resp[i].CANTIDAD}" min="1" max="100" step="1" class="form-control">
+														</td>
+														<td>
+															<div class="total">${ parseFloat(resp[i].MONTO_TOTAL).toFixed(2) }</div>
+														</td>
+														<td>
+															${elimina()}
+														</td>
+													</tr>`;
+													}
+									listado+=`</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-12">
+										<label>Comentario</label>
+										<textarea  rows="3" autocomplete="off" class="form-control p-1" maxlength="500" name="comentario" placeholder="Ingrese el comentario"></textarea>
 									</div>
 								</div>
 							</div>
@@ -271,11 +203,14 @@ async function vistaVenta(){
 	tooltip();
 
 	$('#'+tabla+'Tabla').DataTable(valoresTabla);
-	$('#'+tabla+'TablaLista').DataTable(valoresTabla);
-	
+		
 	$("input[type='number']").inputSpinner();
 
 	$('[data-toggle="tooltip"]').tooltip();
+
+	$('#ventaTabla_length').addClass('oculto');
+	$('#ventaTabla_info').addClass('oculto');
+	$('#ventaTabla_filter').addClass('oculto');
 
 	$(".select2").select2({
 		dropdownAutoWidth: true,
@@ -353,6 +288,49 @@ function focusBarra(elemento){
 
 function eventosVenta(objeto){
 	focusInput();
+	$('#autocompletaProd').autocomplete({
+		source: async function(request, response){
+			$.ajax({
+				url:"/autocompleta/producto",
+				type: "POST",
+				dataType: "json",
+				data:{
+					producto:request.term,
+					idProveedor:0,
+					tipo:'autocompletaventa',
+					sesId:verSesion(),
+					token:verToken()
+				},
+				success: function(data){
+					let datos=data.valor.info;
+					response( $.map( datos, function( item ){
+						return {
+							idVenta: objeto.id,
+							idProducto: item.ID_PRODUCTO,
+							codigo: item.CODIGO_PRODUCTO,
+							nombre: item.NOMBRE,
+							precioVenta: item.PRECIO_VENTA,
+							cantidad: 1,
+							tabla: objeto.tabla,
+							label: item.NOMBRE+" <br>"+item.STOCK+")",
+							value: item.NOMBRE+" ("+item.STOCK+")",
+							sesId: verSesion()
+						}
+					}));
+				},
+			});
+		},
+		minLength:3,
+		select:function(event,ui){
+			agregaVenta(ui.item);
+			$(this).val(''); 
+			return false;
+		}	
+	}).data("ui-autocomplete")._renderItem = function(ul, item){
+		return $("<li>")
+			.append("<div>" + item.label + "</div>")
+			.appendTo(ul);
+	};
 
 	$('#select2Cliente').on('select2:select', async function (e) {
 		var data = e.params.data;
@@ -539,21 +517,6 @@ function eventosVenta(objeto){
 		ventaEliminaDetalle({id:id,nombre:nombre,tabla:objeto.tabla});
 	});
 
-	$('#'+objeto.tabla+'TablaLista tbody').off( 'click');
-	$('#'+objeto.tabla+'TablaLista tbody').on( 'click','td a.detalle',function(){//detalle
-		let evento=$(this).parents("tr")
-		let id=evento.attr('id');
-		let nombre=evento.find("td div.tipoDocumento").text()+": "+evento.find("td div.serie").text();
-		let comentario=evento.find("td div.comentario").text();			
-		let objeto2={
-			tabla:objeto.tabla,
-			id:id,
-			nombreEdit:nombre,
-			comentario:comentario
-		}
-		ventaDetalle(objeto2);
-	});
-
 }
 
 async function agregaNuevoCliente(objeto){
@@ -640,7 +603,7 @@ async function ventaBusca(objeto){
 			mensajeSistema('¡No hay productos para vender!');
 		}else{
 			let body={
-				idProductoSucursal: resp.ID_PRODUCTO_SUCURSAL,
+				idProducto: resp.ID_PRODUCTO,
 				codigo: resp.CODIGO_PRODUCTO,
 				nombre: resp.NOMBRE,
 				precioVenta: resp.PRECIO_VENTA,
@@ -980,107 +943,5 @@ function ventaElimina(objeto){
 			mensajeError(message);
 		}
 	});
-}
-
-async function ventaDetalle(objeto){
-	bloquea();
-	try {
-		lista= await axios.get('/api/'+objeto.tabla+'/detalle/listar/'+objeto.id+'/'+verSesion(),{
-			headers: 
-			{ 
-				authorization: `Bearer ${verToken()}`
-			} 
-		});
-		lista2= await axios.get('/api/'+objeto.tabla+'/buscar/totales/'+objeto.id+'/'+verSesion(),{
-			headers: 
-			{ 
-				authorization: `Bearer ${verToken()}`
-			} 
-		});
-		resp=lista.data.valor.info;
-		resp2=lista2.data.valor.info;
-		desbloquea();
-		let listado=`
-			<div class="row">
-				<div class="col-12">
-					<div class="card-content collapse show">
-						<div class="card-body card-dashboard pt-0">
-							<div class="table-responsive">
-								<table id='detalleTablaVenta' class="pt-3 table table-striped text-center">
-									<thead>
-										<tr>
-											<th>Código</th>
-											<th>Producto</th>
-											<th>P. Venta</th>
-											<th>Cantidad</th>
-											<th>Descuento</th>
-											<th>Total</th>
-										</tr>
-									</thead>
-									<tbody>`;
-										for(var i=0;i<resp.length;i++){
-								listado+=`<tr id="${ resp[i].ID_DETALLE }">
-											<td>
-												<div class="codigo">${ (resp[i].CODIGO_PRODUCTO===null)?'':resp[i].CODIGO_PRODUCTO}</div>
-											</td>
-											<td>
-												<div class="nombre muestraMensaje">${ resp[i].NOMBRE }</div>
-											</td>
-											<td>
-												<div class="precio">${ parseFloat(resp[i].PRECIO_VENTA).toFixed(2) }</div>
-											</td>
-											<td>
-												<div class="cantidad">${ parseFloat(resp[i].CANTIDAD).toFixed(2) }</div>
-											</td>
-											<td>
-												<div class="descuento">${ parseFloat(resp[i].DESCUENTO).toFixed(2) }</div>
-											</td>
-											<td>
-												<div class="total">${ parseFloat(resp[i].MONTO_TOTAL).toFixed(2) }</div>
-											</td>
-										</tr>`;
-										}
-						listado+=`		<tr>
-											<td colspan='4'></td>
-											<td><strong>DESCUENTO</strong></td>
-											<td>
-												<div class="descuento"><strong>${parseFloat(resp2.DESCUENTO).toFixed(2)}</strong></div>
-											</td>
-										</tr>
-										<tr>
-											<td colspan='4'></td>
-											<td><strong>SUBTOTAL</strong></td>
-											<td>
-												<div class="subtotal"><strong>${parseFloat(resp2.SUBTOTAL).toFixed(2)}</strong></div>
-											</td>
-										</tr>
-										<tr>
-											<td colspan='4'></td>
-											<td><strong>IGV ${resp2.IGV*100+'%'}</strong></td>
-											<td>
-												<div class="igv"><strong>${parseFloat(resp2.IMPUESTO).toFixed(2)}</strong></div>
-											</td>
-										</tr>
-										<tr>
-											<td colspan='4'></td>
-											<td><strong>TOTAL</strong></td>
-											<td>
-												<div class="total"><strong>${parseFloat(resp2.TOTAL).toFixed(2)}</strong></div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div><strong>Comentario: </strong>${objeto.comentario}</div>
-						</div>
-					</div>
-				</div>
-			</div>`;
-		mostrar_general1({titulo:'DETALLE DE VENTA',nombre:objeto.nombreEdit,msg:listado,ancho:600});
-	}catch (err) {
-		desbloquea();
-		message=(err.response)?err.response.data.error:err;
-		mensajeError(message);
-	}
 }
 

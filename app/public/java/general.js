@@ -452,6 +452,15 @@ function compra(){
     return boton;
 }
 
+function pedido(){
+    let boton=`
+    <button type='Pedido' name='btnPedido' class='mr-1 btn btn-primary-gradient btn-md pedido'>
+        <i class="las la-clipboard-list"></i>
+        <span class='p-1'>Pedir</span>
+    </button>`;
+    return boton;
+}
+
 function buscar(){
     let boton=`
     <button type='Buscar' name='btnBuscar' class='mr-1 btn btn-primary-gradient btn-md buscar'>

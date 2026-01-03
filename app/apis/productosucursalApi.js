@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {crear,editar,buscar,listar,estado, eliminar,listarId,autocompleta,codigoBarra} = require('../controllers/productosucursalControllers');
+const {crear,editar,buscar,listar,estado, eliminar,listarId,autocompleta,codigoBarra,listarAlmacen} = require('../controllers/productosucursalControllers');
 const {verificarToken} = require('../middlewares/jwt');
 const {schemaProductosucursal} = require('../middlewares/schema');
 const {caracter, validaSchema} = require('../middlewares/auth');
@@ -16,4 +16,7 @@ router.put('/api/productosucursal/editar/:id', caracter, validaSchema(schemaProd
 router.put('/api/productosucursal/estado/:id', verificarToken, estado);
 router.delete('/api/productosucursal/eliminar/:id', verificarToken, eliminar);
 
+
+//ALMACEN
+router.get('/api/productosucursal/listar/almacen/:id/:sesId', verificarToken, listarAlmacen);
 module.exports = router;

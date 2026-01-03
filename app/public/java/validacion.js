@@ -682,7 +682,7 @@ function quitaCaracter(valor,cadena){
 }
 
 function comprobanteRegex(valor){
-	valor.inputmask({regex: "[A-Z]{1}[0-9]{3}"});
+	valor.inputmask({regex: "[A-Z]{1,2}[0-9]{2,3}"});
 }
 
 

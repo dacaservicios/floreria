@@ -2,26 +2,33 @@ const pool = require('../config/connections');
 const moment = require('moment');
 
 const crearPedido = async (body)=>{
-    const query = `CALL USP_UPD_TRS_VENTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_TRS_PEDIDO(?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         0,
-        (body.idCliente==0)?null:parseInt(body.idCliente),
-        (body.idMesa==0)?null:parseInt(body.idMesa),
-        (body.idMozo==0)?null:parseInt(body.idMozo),
         null,
         null,
-        body.estadoVenta,
-        null,
-        null,
-        parseInt(body.esDelivery),
         0,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
+        'crea',
+        body.sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0][0],
+        mensaje : '¡Registro creado!'
+    }; 
+}
+
+const crearPedidoDetalle = async (body)=>{
+    query = `CALL USP_UPD_TRS_PEDIDO_DETALLE(?, ?, ?, ?, ?, ?, ?)`;
+    const row= await pool.query(query,
+    [
+        0,
+        body.idProducto,
+        body.idPedido,
+        body.cantidad,
+        '',
         'crea',
         body.sesId
     ]);
@@ -34,94 +41,13 @@ const crearPedido = async (body)=>{
 }
 
 const editarPedido = async (id,body)=>{
-    const query = `CALL USP_UPD_TRS_VENTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?)`;
+    const query = `CALL USP_UPD_TRS_PEDIDO(?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
-        (body.idCliente==0)?null:parseInt(body.idCliente),
-        (body.idMesa==0)?null:parseInt(body.idMesa),
-        (body.idMozo=='')?null:parseInt(body.idMozo),
-        null,
-        null,
-        body.estadoVenta,
-        null,
-        null,
-        parseInt(body.esDelivery),
-        0,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        'edita',
-        body.sesId
-    ]);
-
-    return { 
-        resultado : true,
-        info : row[0][0],
-        mensaje : '¡Registro editado!'
-    }; 
-    
-}
-
-const descuentoPedido = async (id,body)=>{
-    const query = `CALL USP_UPD_TRS_VENTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const row = await pool.query(query,
-    [
-        id,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        (body.descuento=='')?0:body.descuento,
-        null,
-        null,
-        'descuento',
-        body.sesId
-    ]);
-
-    return { 
-        resultado : true,
-        info : row[0][0],
-        mensaje : '¡Registro editado!'
-    }; 
-    
-}
-
-
-const editarPedidoVenta = async (id,body)=>{
-
-const query = `CALL USP_UPD_TRS_VENTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const row = await pool.query(query,
-    [
-        id,
-        body.idCliente,
-        null,
-        body.sunat,
-        body.tipoDocumento,
-        null,
-        body.idEstado,
-        null,
-        null,
+        body.comentario,
         null,
         1,
-        null,
-        null,
-        null,
-        null,
-        body.comentario,
-        moment(body.fechaVenta,'YYYY-MM-DD').format('YYYY-MM-DD'), 
         'cierre',
         body.sesId
     ]);
@@ -132,6 +58,188 @@ const query = `CALL USP_UPD_TRS_VENTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         mensaje : '¡Registro editado!'
     }; 
     
+}
+
+const editarPedidoDetalle = async (id,body)=>{
+    query = `CALL USP_UPD_TRS_PEDIDO_DETALLE(?, ?, ?, ?, ?, ?, ?)`;
+    
+    const row= await pool.query(query,
+    [
+        id,
+        0,
+        0,
+        body.cantidad,
+        body.comentario,
+        'edita',
+        body.sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0][0],
+        mensaje : '¡Registro creado!'
+    }; 
+}
+
+const corrigePedido = async (body)=>{
+    const query = `CALL USP_UPD_TRS_PEDIDO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const row= await pool.query(query,
+    [
+        body.id,
+        body.idCliente,
+        null,
+        null,
+        body.tipoDocumento,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        'corrige',
+        body.sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0][0],
+        mensaje : '¡Registro creado!'
+    }; 
+}
+
+const filtrarPedido = async (body)=>{
+    /*console.log('CALL USP_UPD_INS_TABLA_DINAMICA (',null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        moment(body.fechaInicio,'YYYY-MM-DD').format('YYYY-MM-DD'),",",
+        moment(body.fechaFin,'YYYY-MM-DD').format('YYYY-MM-DD'),",", 
+        null,",",
+        null,",",
+        'reportePedidosPorFecha',",", 
+        body.sesId,')')
+        return*/
+
+    const query = `CALL USP_UPD_INS_TABLA_DINAMICA (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const row= await pool.query(query,
+    [
+        null,
+        null,
+        null,
+        null,
+        null, 
+        null,
+        null, 
+        null, 
+        moment(body.fechaInicio,'DD-MM-YYYY').format('YYYY-MM-DD'),
+        moment(body.fechaFin,'DD-MM-YYYY').format('YYYY-MM-DD'),
+        null,
+        null,
+        'reportePedidosPorFecha',
+        body.sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0],
+        mensaje : '¡Listado correcto!'
+    }; 
+}
+
+const filtrarPedido2 = async (body)=>{
+    /*console.log('CALL USP_UPD_INS_TABLA_DINAMICA (',null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        moment(body.fechaInicio,'YYYY-MM-DD').format('YYYY-MM-DD'),",",
+        moment(body.fechaFin,'YYYY-MM-DD').format('YYYY-MM-DD'),",", 
+        null,",",
+        null,",",
+        'reportePedidosPorFechaDesagregado',",", 
+        body.sesId,')')
+        return*/
+
+    const query = `CALL USP_UPD_INS_TABLA_DINAMICA (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const row= await pool.query(query,
+    [
+        null,
+        null,
+        null,
+        null,
+        null, 
+        null,
+        null, 
+        null, 
+        moment(body.fechaInicio,'DD-MM-YYYY').format('YYYY-MM-DD'),
+        moment(body.fechaFin,'DD-MM-YYYY').format('YYYY-MM-DD'),
+        null,
+        null,
+        'reportePedidosPorFechaDesagregado',
+        body.sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0],
+        mensaje : '¡Listado correcto!'
+    }; 
+}
+
+const listarPedidoInicio = async (sesId,tipo)=>{
+    /*console.log('CALL USP_UPD_INS_TABLA_DINAMICA (',null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        null,",",
+        moment(body.fechaInicio,'YYYY-MM-DD').format('YYYY-MM-DD'),",",
+        moment(body.fechaFin,'YYYY-MM-DD').format('YYYY-MM-DD'),",", 
+        null,",",
+        null,",",
+        'reportePedidosPorFecha',",", 
+        body.sesId,')')
+        return*/
+
+    const query = `CALL USP_UPD_INS_TABLA_DINAMICA (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const row= await pool.query(query,
+    [
+        null,
+        null,
+        null,
+        null,
+        null, 
+        null,
+        null, 
+        null, 
+        moment().format('YYYY-MM-DD'),
+        moment().format('YYYY-MM-DD'),
+        null,
+        null,
+        tipo,
+        sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0],
+        mensaje : '¡Listado correcto!'
+    }; 
 }
 
 const buscarPedido = async(id,tabla,sesId)=>{
@@ -184,12 +292,15 @@ const eliminarPedido = async(id,tabla)=>{
     
 }
 
-const estadoPedido = async(id,tabla)=>{
-    const query = `CALL USP_UPD_ESTADO(?, ?)`;
+const estadoPedido = async(id,body)=>{
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ? ,?)`;
     const row =  await pool.query(query,
     [
         id,
-        tabla
+        0,
+        body.motivo,
+        'pedido',
+        body. sesId
     ]);
 
     return { 
@@ -202,9 +313,13 @@ const estadoPedido = async(id,tabla)=>{
 
 module.exports = {
     crearPedido,
+    crearPedidoDetalle,
     editarPedido,
-    descuentoPedido,
-    editarPedidoVenta,
+    editarPedidoDetalle,
+    corrigePedido,
+    filtrarPedido,
+    filtrarPedido2,
+    listarPedidoInicio,
     buscarPedido,
     listarPedido,
     estadoPedido,

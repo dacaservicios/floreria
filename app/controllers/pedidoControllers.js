@@ -1,24 +1,4 @@
-const {crearPedido,editarPedido,buscarPedido,listarPedido,estadoPedido,eliminarPedido, editarPedidoVenta,descuentoPedido } = require('../models/pedidoModels');
-
-const listar=(req, res)=>{
-    const id =  req.params.id;
-    const sesId=req.params.sesId;
-    listarPedido(id,'pedido',sesId)
-    .then(valor => {
-        res.json({
-            valor : valor
-        });
-    })
-    .catch(error => {
-        res.status(400).json({
-            error : {
-                message:error.message,
-                errno: error.errno,
-                code : error.code
-            }
-        });
-    }); 
-}
+const {buscarPedido,listarPedido,crearPedido,editarPedido, crearPedidoDetalle, editarPedidoDetalle,crearPedidoDetallePago, editarPedidoPedido, eliminarPedido, listarPedidoInicio} = require('../models/pedidoModels');
 
 const buscar=(req, res)=>{
     const sesId =  req.params.sesId;
@@ -40,10 +20,110 @@ const buscar=(req, res)=>{
     }); 
 }
 
-const atencion=(req, res)=>{
+const buscarTotales=(req, res)=>{
     const sesId =  req.params.sesId;
     const id =  req.params.id;
-    buscarPedido(id,'atencion',sesId)
+    buscarPedido(id,'buscarPedido',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const listar=(req, res)=>{
+    const id =  req.params.id;
+    const sesId=req.params.sesId;
+    listarPedido(id,'pedido',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const listarDetalle=(req, res)=>{
+    const id =  req.params.id;
+    const sesId=req.params.sesId;
+    listarPedido(id,'pedidoDetalle',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const listarInicio=(req, res)=>{
+    const sesId =  req.params.sesId;
+    const tipo =  req.params.tipo;
+    listarPedidoInicio(sesId,tipo)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    });
+}
+
+const listarPago=(req, res)=>{
+    const id =  req.params.id;
+    const sesId=req.params.sesId;
+    listarPedido(id,'pagosPedido',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const buscarPago=(req, res)=>{
+    const sesId =  req.params.sesId;
+    const id =  req.params.id;
+    buscarPedido(id,'pagosPedido',sesId)
     .then(valor => {
         res.json({
             valor : valor
@@ -97,9 +177,28 @@ const editar=(req, res)=>{
     });
 }
 
-const descuento=(req, res)=>{
-    const id=req.params.id;
-    descuentoPedido(id,req.body)
+const buscarDetalle=(req, res)=>{
+    const sesId =  req.params.sesId;
+    const id =  req.params.id;
+    buscarPedido(id,'detallePedido',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const crearDetalle=(req, res)=>{
+    crearPedidoDetalle(req.body)
     .then(valor => {
         res.json({
             valor : valor
@@ -116,9 +215,85 @@ const descuento=(req, res)=>{
     });
 }
 
-const venta=(req, res)=>{
+const editarDetalle=(req, res)=>{
     const id=req.params.id;
-    editarPedidoVenta(id,req.body)
+    editarPedidoDetalle(id,req.body)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    });
+}
+
+const eliminarDetalle=(req, res)=>{
+    const id =  req.params.id;
+    eliminarPedido(id,'detallePedido')
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const eliminarPago=(req, res)=>{
+    const id =  req.params.id;
+    eliminarPedidoDetalle(id,'pagoPedido')
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const pagar=(req, res)=>{
+    crearPedidoDetallePago(req.body)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    });
+}
+
+
+const cierre=(req, res)=>{
+    const id=req.params.id;
+    editarPedidoPedido(id,req.body)
     .then(valor => {
         res.json({
             valor : valor
@@ -154,48 +329,10 @@ const eliminar=(req, res)=>{
     }); 
 }
 
-const eliminarAtencion=(req, res)=>{
-    const id =  req.params.id;
-    eliminarPedido(id,'atencion')
-    .then(valor => {
-        res.json({
-            valor : valor
-        });
-    })
-    .catch(error => {
-        res.status(400).json({
-            error : {
-                message:error.message,
-                errno: error.errno,
-                code : error.code
-            }
-        });
-    }); 
-}
-
-const estado=(req, res)=>{
-    const id =  req.params.id;
-    estadoPedido(id,'pedido')
-    .then(valor => {
-        res.json({
-            valor : valor
-        });
-    })
-    .catch(error => {
-        res.status(400).json({
-            error : {
-                message:error.message,
-                errno: error.errno,
-                code : error.code
-            }
-        });
-    }); 
-}
-
 const documento=(req, res)=>{
     const sesId =  req.params.sesId;
     const id =  req.params.id;
-    buscarPedido(id,'documentoVenta',sesId)
+    buscarPedido(id,'documentoPedido',sesId)
     .then(valor => {
         res.json({
             valor : valor
@@ -213,15 +350,23 @@ const documento=(req, res)=>{
 }
 
 module.exports = {
-    listar,
+    cierre,
     buscar,
-    atencion,
+    buscarTotales,
+    listar,
+    listarDetalle,
+    listarInicio,
+    buscarDetalle,
     crear,
+    crearDetalle,
     editar,
-    descuento,
-    venta,
-    estado,
     eliminar,
-    eliminarAtencion,
+    crearDetalle,
+    editarDetalle,
+    eliminarDetalle,
+    eliminarPago,
+    listarPago,
+    buscarPago,
+    pagar,
     documento
 }

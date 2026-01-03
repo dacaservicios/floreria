@@ -20,12 +20,31 @@ const listar=(req, res)=>{
     }); 
 }
 
+const listarAlmacen=(req, res)=>{
+    const id =  req.params.id;
+    const sesId=req.params.sesId;
+    listarProductosucursal(id,'productoAlmacen',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
 const autocompleta=(req, res)=>{
     const producto =  req.params.producto;
-    const idProveedor =  req.params.idProveedor;
     const tipo =  req.params.tipo;
     const sesId=req.params.sesId;
-    autocompletaProductosucursal(producto,idProveedor,tipo,sesId)
+    autocompletaProductosucursal(producto,tipo,sesId)
     .then(valor => {
         res.json({
             valor : valor
@@ -187,5 +206,6 @@ module.exports = {
     editar,
     estado,
     eliminar,
-    codigoBarra
+    codigoBarra,
+    listarAlmacen
 }

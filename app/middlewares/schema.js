@@ -230,23 +230,17 @@ const schemaMesa=joi.object({
 
 const schemaPedido=joi.object({
     id:joi.number().allow(''),
-    idMesa:joi.number().required(),
-    idZona:joi.number().required(),
-    idCliente:joi.number().required(),
-    idMozo:joi.number().required(),
-    esDelivery:joi.number().required(),
-    estadoVenta:joi.number().required(),
+    comentario: joi.string().min(0).max(255).allow(''),
     sesId:joi.number().required()
 });
 
 
-const schemaPedidodetalle=joi.object({
+const schemaPedidoDetalle=joi.object({
     id:joi.number().allow(''),
-    idVenta:joi.number().allow(''),
-    idProductoSucursal:joi.number().required(),
-    cantidad:joi.number().allow(''),
+    idProducto:joi.number().allow(''),
+    idPedido:joi.number().allow(''),
+    cantidad:joi.number().required(),
     comentario:joi.string().min(0).max(500).allow(''),
-    monto:joi.number().required(),
     sesId:joi.number().required()
 });
 
@@ -264,6 +258,7 @@ const schemaProductosucursal=joi.object({
     stockMin: joi.number().required(),
     stockMax: joi.number().required(),
     precioVenta:joi.string().min(1).max(10).required(),
+    descuento:joi.string().min(0).max(10).allow(''),
     sesId:joi.number().required()
 });
 
@@ -484,7 +479,7 @@ module.exports = {
     schemaPedido,
     schemaAbastecerDetalle,
     schemaPedidoPagar,
-    schemaPedidodetalle,
+    schemaPedidoDetalle,
     schemaProductosucursal,
     schemaServiciosucursal,
     schemaComprobante,
