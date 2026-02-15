@@ -110,25 +110,11 @@ async function vistaPedido(){
 	</div>`;
 		
 	$("#cuerpoPrincipal").html(listado);
-	tooltip();
 	$('#'+tabla+'Tabla').DataTable(valoresTabla);
 	
+	tooltip();
 	$('[data-toggle="tooltip"]').tooltip();
-	/*$(".select2").select2({
-		placeholder:'Select...',
-		dropdownAutoWidth: true,
-		width: '100%'
-	});
-
-	$('.datepicker').datepicker({
-		language: 'es',
-		changeMonth: true,
-		changeYear: true,
-		todayHighlight: true
-	}).on('changeDate', function(e){
-		$(this).datepicker('hide');
-	});*/
-
+	
 	let objeto={
 		tabla:tabla
 	}
@@ -342,7 +328,7 @@ function enviaFormularioPedido(objeto){
 			$("#general1").modal("hide");
 			resp=edita.data.valor;
 			if(resp.info.EXISTE_SERIE==0){
-				mensajeSistema('¡No se ha registrado el documento para los pedidos de tienda!');
+				mensajeSistema('¡No se ha registrado el documento (comprobante) para realizar esta transacción!');
 			}else{
 				if(resp.resultado){
 					vistaPedido();

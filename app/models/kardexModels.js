@@ -122,50 +122,7 @@ const filtrarKardex = async (body)=>{
         moment(body.fechaFin,'DD-MM-YYYY').format('YYYY-MM-DD'),
         null,
         null,
-        'reporteKardexPorFecha',
-        body.sesId
-    ]);
-
-    return { 
-        resultado : true,
-        info : row[0],
-        mensaje : '¡Listado correcto!'
-    }; 
-}
-
-const filtrarKardex2 = async (body)=>{
-    /*console.log('CALL USP_UPD_INS_TABLA_DINAMICA (',null,",",
-        null,",",
-        null,",",
-        null,",",
-        null,",",
-        null,",",
-        null,",",
-        null,",",
-        moment(body.fechaInicio,'YYYY-MM-DD').format('YYYY-MM-DD'),",",
-        moment(body.fechaFin,'YYYY-MM-DD').format('YYYY-MM-DD'),",", 
-        null,",",
-        null,",",
-        'reporteKardexsPorFechaDesagregado',",", 
-        body.sesId,')')
-        return*/
-
-    const query = `CALL USP_UPD_INS_TABLA_DINAMICA (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const row= await pool.query(query,
-    [
-        null,
-        null,
-        null,
-        null,
-        null, 
-        null,
-        null, 
-        null, 
-        moment(body.fechaInicio,'DD-MM-YYYY').format('YYYY-MM-DD'),
-        moment(body.fechaFin,'DD-MM-YYYY').format('YYYY-MM-DD'),
-        null,
-        null,
-        'reporteKardexsPorFechaDesagregado',
+        body.tipo,
         body.sesId
     ]);
 
@@ -270,12 +227,13 @@ const eliminarKardex = async(id,tabla)=>{
 }
 
 const estadoKardex = async(id,body)=>{
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ? ,?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ? ,?, ?)`;
     const row =  await pool.query(query,
     [
         id,
         0,
         body.motivo,
+        0,
         'kardex',
         body. sesId
     ]);
@@ -293,7 +251,6 @@ module.exports = {
     editarKardex,
     corrigeKardex,
     filtrarKardex,
-    filtrarKardex2,
     filtrarKardexInicio,
     buscarKardex,
     listarKardex,

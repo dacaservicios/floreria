@@ -310,12 +310,13 @@ const eliminarVenta = async(id,tabla)=>{
 }
 
 const estadoVenta = async(id,body)=>{
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ? ,?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ? ,?, ?)`;
     const row =  await pool.query(query,
     [
         id,
         0,
         body.motivo,
+        0,
         'venta',
         body. sesId
     ]);

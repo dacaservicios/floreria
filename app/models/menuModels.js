@@ -113,12 +113,13 @@ const crearMenuDetalle = async (body)=>{
         body.sesId,')')
         return*/
         
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         body.id,
         body.submenu, 
-        0,  
+        0,
+        0,
         'menuSubmenu',
         body.sesId
     ]);

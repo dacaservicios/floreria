@@ -111,12 +111,13 @@ const estadoMensajeria = async(id,tabla)=>{
 }
 
 const enviarCorreo = async(body)=>{
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         body.id,
         0,
         body.asunto,
+        0,
         'mensajeria',
         body.sesId
     ]);

@@ -108,12 +108,13 @@ const estadoSubmenu = async(id,tabla)=>{
 }
 
 const crearSubmenuDetalle = async (body)=>{
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         body.idP,
         body.idDet, 
-        0,  
+        0,
+        0,
         'submenuOpcion',
         body.sesId
     ]);

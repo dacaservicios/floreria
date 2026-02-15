@@ -72,12 +72,13 @@ const listarServiciosucursal = async (id, tabla,sesId)=>{
 }
 
 const autocompletaServiciosucursal = async (servicio, tabla,sesId)=>{
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row =  await pool.query(query,
     [
         0,
         0,
         servicio,
+        0,
         tabla,
         sesId
     ]);

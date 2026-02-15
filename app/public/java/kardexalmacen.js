@@ -12,7 +12,7 @@ $(document).ready(function() {
 async function vistaKardex(){
 	bloquea();
 	let tabla="kardex";
-	const lista =  await axios.get("/api/productotienda/listar/0/"+verSesion(),{ 
+	const lista =  await axios.get("/api/productoalmacen/listar/0/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 
@@ -29,7 +29,7 @@ async function vistaKardex(){
 					<form id="${tabla}" class="needs-validation" novalidate>
 						<span class='oculto muestraId'>0</span>
 						<span class='oculto muestraNombre'></span>
-						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-file-invoice-dollar"></i> KARDEX DE TIENDA</div>
+						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-file-invoice-dollar"></i> KARDEX DE ALMACEN</div>
 						<div class="row pt-3">
 							<div class="form-group col-md-6">
 								<label>Producto (*)</label>
@@ -179,7 +179,7 @@ async function reporteKardex(objeto){
 				producto:objeto.producto.val(),
 				fechaInicio:objeto.fechaInicio.val(),
 				fechaFin:objeto.fechaFin.val(),
-				tipo:'reporteKardexPorFecha',
+				tipo:'reporteKardexAlmacenPorFecha',
 				sesId:verSesion(),
 				token:verToken()
 			}
@@ -226,7 +226,7 @@ async function busquedaFiltroKardex(objeto){
 				producto:objeto.producto.val(),
 				fechaInicio:objeto.fechaInicio.val(),
 				fechaFin:objeto.fechaFin.val(),
-				tipo:'reporteKardexPorFecha',
+				tipo:'reporteKardexAlmacenPorFecha',
 				sesId:verSesion()
 			}
 			let lista =  await axios.post('/api/'+objeto.tabla+'/filtro',body,{ 

@@ -1,4 +1,4 @@
-const {crearKardex,editarKardex,buscarKardex,listarKardex,estadoKardex,eliminarKardex, filtrarKardex,filtrarKardex2, filtrarKardexInicio, corrigeKardex} = require('../models/kardexModels');
+const {crearKardex,editarKardex,buscarKardex,listarKardex,estadoKardex,eliminarKardex, filtrarKardex, filtrarKardexInicio, corrigeKardex} = require('../models/kardexModels');
 
 const listar=(req, res)=>{
     const id =  req.params.id;
@@ -153,24 +153,6 @@ const filtrar=(req, res)=>{
     });
 }
 
-const filtrar2=(req, res)=>{
-    filtrarKardex2(req.body)
-    .then(valor => {
-        res.json({
-            valor : valor
-        });
-    })
-    .catch(error => {
-        res.status(400).json({
-            error : {
-                message:error.message,
-                errno: error.errno,
-                code : error.code
-            }
-        });
-    });
-}
-
 const eliminar=(req, res)=>{
     const id =  req.params.id;
     eliminarKardex(id,'kardex')
@@ -218,7 +200,6 @@ module.exports = {
     editar,
     corrige,
     filtrar,
-    filtrar2,
     filtrarInicio,
     estado,
     eliminar

@@ -46,7 +46,7 @@ const editarPedido = async (id,body)=>{
     [
         id,
         body.comentario,
-        null,
+        moment().format('YYYY-MM-DD HH:mm:ss'),
         1,
         'cierre',
         body.sesId
@@ -293,23 +293,48 @@ const eliminarPedido = async(id,tabla)=>{
 }
 
 const estadoPedido = async(id,body)=>{
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ? ,?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ? ,?, ?)`;
     const row =  await pool.query(query,
     [
         id,
         0,
-        body.motivo,
-        'pedido',
-        body. sesId
+        body.comentario,
+        body.abrevBoton,
+        body.tabla,
+        body.sesId
     ]);
 
     return { 
         resultado : true,
         info : row[0][0],
-        mensaje : '¡Registro eliminado!'
+        mensaje : '¡Registro actualizado!'
     }; 
     
 }
+
+const estadoPedido2 = async(id,body)=>{
+    const query = `CALL USP_UPD_INS_DETALLE2(?, ?, ?, ? ,?, ?,?, ?, ?)`;
+    const row =  await pool.query(query,
+    [
+        id,
+        body.idDetalle,
+        body.dato1,
+        body.dato2,
+        body.dato3,
+        body.dato4,
+        body.dato5,
+        body.tabla,
+        body.sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0][0],
+        mensaje : '¡Registro actualizado!'
+    }; 
+    
+}
+
 
 module.exports = {
     crearPedido,
@@ -323,6 +348,7 @@ module.exports = {
     buscarPedido,
     listarPedido,
     estadoPedido,
+    estadoPedido2,
     eliminarPedido
 }
 

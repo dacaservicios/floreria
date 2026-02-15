@@ -20,6 +20,46 @@ const listar=(req, res)=>{
     }); 
 }
 
+const listarTienda=(req, res)=>{
+    const id =  req.params.id;
+    const sesId=req.params.sesId;
+    listarProducto(id,'productoTienda',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const listarAlmacen=(req, res)=>{
+    const id =  req.params.id;
+    const sesId=req.params.sesId;
+    listarProducto(id,'productoAlmacen',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
 const listarId=(req, res)=>{
     const id =  req.params.id;
     const sesId=req.params.sesId;
@@ -138,6 +178,8 @@ const estado=(req, res)=>{
 
 module.exports = {
     listar,
+    listarTienda,
+    listarAlmacen,
     listarId,
     buscar,
     crear,

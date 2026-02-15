@@ -403,10 +403,7 @@ const schemaVentaPagar=joi.object({
 const schemaCompra=joi.object({
     id:joi.number().allow(''),
     tipoPago:joi.number().required(),
-    comprobante:joi.number().required(),
     proveedor:joi.number().required(),
-    serie:joi.string().min(0).max(10).allow(''),
-    numero:joi.string().min(0).max(10).allow(''),
     comentario: joi.string().min(0).max(255).allow(''),
     sesId:joi.number().required()
 });

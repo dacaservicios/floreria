@@ -22,7 +22,6 @@ async function vistaListapedido(){
 
 	desbloquea();
 	const resp3=pedidos.data.valor.info;
-
 	let listado=`
 	<div class="row row-sm mg-t-10">
 		<div class="col-lg-12">
@@ -50,22 +49,37 @@ async function vistaListapedido(){
                                             </thead>
                                             <tbody>`;
                                                 for(var i=0;i<resp3.length;i++){
+													let estados;
+													if(resp3[i].ABREVIATURA=='SOLI' && verNivel()==14){
+														estados=recibido()+rechazado();
+													}else if(resp3[i].ABREVIATURA=='RCHA' ||resp3[i].ABREVIATURA=='DETO'){
+														estados='';
+													}else if(resp3[i].ABREVIATURA=='RECB' && verNivel()==14){
+														estados=atendido();
+													}else if(resp3[i].ABREVIATURA=='ENAT' && verNivel()==14){
+														estados=enviado();
+													}else if(resp3[i].ABREVIATURA=='EVIA' && verNivel()==15){
+														estados=entregado()+devuelto();
+													}else{
+														estados='';
+													}
                                     listado+=`<tr id="${ resp3[i].ID_PEDIDO }">
                                                     <td>
                                                         <div class="tipoDocumento">${ resp3[i].TIPO_DOCUMENTO}</div>
-                                                        <div class="serie"><span class="badge bg-primary">${ resp3[i].SERIE+" - "+resp3[i].NUMERO_DOCUMENTO }</span></div>
+                                                        <div class="serie cursor"><span class="badge bg-primary">${ resp3[i].SERIE+" - "+resp3[i].NUMERO_DOCUMENTO }</span></div>
                                                     </td>
                                                     <td>
                                                         <div class="fechaCompra">${ moment(resp3[i].FECHA_PEDIDO).format('DD/MM/YYYY HH:mm:ss') }</div>
                                                     </td>
                                                     <td>
                                                         <div class="usuario">${ resp3[i].USUARIO}</div>
+														<div class="abreviatura oculto">${ resp3[i].ABREVIATURA}</div>
                                                     </td>
                                                     <td>
                                                         <div class="estado"><span class="badge bg-${resp3[i].COLOR}">${ resp3[i].DESCRIPCION}</span></div>
                                                     </td>
                                                     <td>
-                                                        ${detalle()}
+                                                        ${historial()+"<span class='estadosMov'>"+estados+"</span>"}
                                                     </td>
                                                 </tr>`;
                                                 }
@@ -90,31 +104,35 @@ async function vistaListapedido(){
 
 	$('#'+tabla+'Tabla').DataTable(valoresTabla);
 
+	tooltip();
+	$('[data-toggle="tooltip"]').tooltip();
+
 	let objeto={
-		tabla:tabla,
-		idPedido:$('#'+tabla+' span.muestraId').text()
+		tabla:tabla
 	}
 	
-	eventosProductosucursal(objeto);
+	eventosListaPedido(objeto);
 }
 
-function eventosProductosucursal(objeto){
-	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.estado',function(){//estado
-		let evento=$(this).parents("tr")
-    	let id=evento.attr('id');
-		let nombre=evento.find("td div.nombre").text();
-		productosucursalEstado({id:id,nombre:nombre,tabla:objeto.tabla});
+function eventosListaPedido(objeto){
+	$('#'+objeto.tabla+'Tabla tbody').off( 'click');
+	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.verbo',function(){//recibido/rechazado/atencion/enviado
+		let evento=$(this).parents("tr");
+		objeto.verbo=$(this).attr('verbo');
+		objeto.abrevBoton=$(this).attr('abrev');
+    	objeto.id=evento.attr('id');
+		objeto.nombre=evento.find("td div.tipoDocumento").text()+": "+evento.find("td div.serie").text();
+		objeto.sesId=verSesion();
+		objeto.comentario='';
+		if(objeto.abrevBoton=='RCHA'){
+			modalPedidoRechazado(objeto);
+		}else{
+			enviaPedidoEstado(objeto);
+		}
 	});
 
-	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.elimina',function(){//elimina
-		let evento=$(this).parents("tr")
-    	let id=evento.attr('id');
-		let nombre=evento.find("td div.nombre ").text();
-		productosucursalElimina({id:id,nombre:nombre,tabla:objeto.tabla});
-	});
 
-	$('#'+objeto.tabla+'TablaLista tbody').off( 'click');
-	$('#'+objeto.tabla+'TablaLista tbody').on( 'click','td a.detalle',function(){//detalle
+	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td .serie',function(){//detalle
 		let evento=$(this).parents("tr")
 		let id=evento.attr('id');
 		let nombre=evento.find("td div.tipoDocumento").text()+": "+evento.find("td div.serie").text();
@@ -125,27 +143,37 @@ function eventosProductosucursal(objeto){
 			nombreEdit:nombre,
 			comentario:comentario
 		}
-		compraDetalle(objeto2);
+		pedidoDetalle(objeto2);
 	});
+
+	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.historial',function(){//historial
+		let evento=$(this).parents("tr")
+		let id=evento.attr('id');
+		let nombre=evento.find("td div.tipoDocumento").text()+": "+evento.find("td div.serie").text();
+		let comentario=evento.find("td div.comentario").text();
+		let objeto2={
+			tabla:objeto.tabla,
+			id:id,
+			nombreEdit:nombre,
+			comentario:comentario
+		}
+		pedidoHistorial(objeto2);
+	});
+
 }
 
-async function compraDetalle(objeto){
+async function pedidoDetalle(objeto){
 	bloquea();
 	try {
-		lista= await axios.get('/api/compra/detalle/listar/'+objeto.id+'/'+verSesion(),{
+		lista= await axios.get('/api/'+objeto.tabla+'/detalle/listar/'+objeto.id+'/'+verSesion(),{
 			headers: 
 			{ 
 				authorization: `Bearer ${verToken()}`
 			} 
 		});
-		lista2= await axios.get('/api/compra/buscar/totales/'+objeto.id+'/'+verSesion(),{
-			headers: 
-			{ 
-				authorization: `Bearer ${verToken()}`
-			} 
-		});
+
 		resp=lista.data.valor.info;
-		resp2=lista2.data.valor.info;
+
 		desbloquea();
 		let listado=`
 			<div class="row">
@@ -153,14 +181,12 @@ async function compraDetalle(objeto){
 					<div class="card-content collapse show">
 						<div class="card-body card-dashboard pt-0">
 							<div class="table-responsive">
-								<table id='detalleTablaCompra' class="pt-3 table table-striped text-center">
+								<table id='${objeto.tabla}DetalleTabla' class="pt-3 table table-striped text-center">
 									<thead>
 										<tr>
 											<th>Código</th>
 											<th>Producto</th>
-											<th>P. Compra</th>
 											<th>Cantidad</th>
-											<th>Total</th>
 										</tr>
 									</thead>
 									<tbody>`;
@@ -173,57 +199,174 @@ async function compraDetalle(objeto){
 												<div class="nombre muestraMensaje">${ resp[i].NOMBRE }</div>
 											</td>
 											<td>
-												<div class="precio">${ parseFloat(resp[i].PRECIO_COMPRA).toFixed(2) }</div>
-											</td>
-											<td>
 												<div class="cantidad">${ parseFloat(resp[i].CANTIDAD).toFixed(2) }</div>
-											</td>
-											<td>
-												<div class="total">${ parseFloat(resp[i].MONTO_TOTAL).toFixed(2) }</div>
 											</td>
 										</tr>`;
 										}
 						listado+=`
-										<tr>
-											<td colspan='3'></td>
-											<td><strong>DESCUENTO</strong></td>
-											<td>
-												<div class="descuento">${parseFloat(resp2.DESCUENTO).toFixed(2)}</div>
-											</td>
-										</tr>
-										<tr>
-											<td colspan='3'></td>
-											<td><strong>SUBTOTAL</strong></td>
-											<td>
-												<div class="subtotal">${parseFloat(resp2.SUBTOTAL).toFixed(2)}</div>
-											</td>
-										</tr>
-										<tr>
-											<td colspan='3'></td>
-											<td><strong>IGV ${resp2.IGV*100+'%'}</strong></td>
-											<td>
-												<div class="igv">${parseFloat(resp2.IMPUESTO).toFixed(2)}</div>
-											</td>
-										</tr>
-										<tr>
-											<td colspan='3'></td>
-											<td><strong>TOTAL</strong></td>
-											<td>
-												<div class="total">${parseFloat(resp2.TOTAL).toFixed(2)}</div>
-											</td>
-										</tr>
 									</tbody>
 								</table>
 							</div>
-							<div><strong>Comentario: </strong>${objeto.comentario}</div>
 						</div>
 					</div>
 				</div>
 			</div>`;
-		mostrar_general1({titulo:'DETALLE DE COMPRA',nombre:objeto.nombreEdit,msg:listado,ancho:600});
+		mostrar_general1({titulo:'DETALLE DE PEDIDO',nombre:objeto.nombreEdit,msg:listado,ancho:500});
+
 	}catch (err) {
 		desbloquea();
 		message=(err.response)?err.response.data.error:err;
 		mensajeError(message);
 	}
+}
+
+async function pedidoHistorial(objeto){
+	bloquea();
+	try {
+		lista= await axios.get('/api/pedido/historial/listar/'+objeto.id+'/'+verSesion(),{
+			headers: 
+			{ 
+				authorization: `Bearer ${verToken()}`
+			} 
+		});
+		
+		resp=lista.data.valor.info;
+		desbloquea();
+		let listado=`
+			<div class="row">
+				<div class="col-12">
+					<div class="card-content collapse show">
+						<div class="card-body card-dashboard pt-0">
+							<div class="table-responsive">
+								<table id='detalleTablaCompra' class="pt-3 table table-striped text-center">
+									<thead>
+										<tr>
+											<th>Documento</th>
+											<th>Serie-Numero</th>
+											<th>Fecha</th>
+											<th>Comentario</th>
+											<th>Estado</th>
+										</tr>
+									</thead>
+									<tbody>`;
+										for(var i=0;i<resp.length;i++){
+								listado+=`<tr id="${ resp[i].ID_HISTORIAL_PEDIDO }">
+											<td>
+												<div class="documento">${ resp[i].DOCUMENTO}</div>
+											</td>
+											<td>
+												<div class="serieNumero">${ resp[i].SERIE_DOCUMENTO+" - "+resp[i].NRO_DOCUMENTO }</div>
+											</td>
+											<td>
+												<div class="fecha">${ moment(resp[i].FECHA_ESTADO).utc().local().format('DD/MM/YYYY HH:mm:ss') }</div>
+											</td>
+											<td>
+												<div class="comentario">${ resp[i].COMENTARIO }</div>
+											</td>
+											<td>
+												<div class="estado">${ resp[i].ESTADO }</div>
+											</td>
+										</tr>`;
+										}
+						listado+=`
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>`;
+		mostrar_general1({titulo:'HISTORIAL DE PEDIDO',nombre:objeto.nombreEdit,msg:listado,ancho:600});
+	}catch (err) {
+		desbloquea();
+		message=(err.response)?err.response.data.error:err;
+		mensajeError(message);
+	}
+}
+
+function modalPedidoRechazado(objeto){
+	let listado=`
+	<form id="${objeto.tabla}Rechazado">
+		<div class="row">
+			<div class="form-group col-md-12">
+				<label>Comentario (*)</label>
+				<textarea  rows="3" autocomplete="off" class="form-control p-1" maxlength="500" name="comentario" placeholder="Ingrese el comentario"></textarea>
+				<div class="vacio oculto">¡Campo obligatorio!</div>
+			</div>
+		</div>
+		<div class="form-section p-0"></div>
+		<div class="col-md-12 pl-0 pr-0 text-center">
+			${cancela()+guarda()}
+		</div>
+		<div class="h8 text-center pt-2">(*) Los campos con asteriso son obligatorios.</div>
+	</form>`;
+	mostrar_general1({titulo:'RECHAZADO',nombre:objeto.nombreMsg,msg:listado,ancho:400});
+
+	eventosPedidoRechazado(objeto);
+}
+
+function eventosPedidoRechazado(objeto){
+$('#'+objeto.tabla+'Rechazado div').off( 'keyup');
+    $('#'+objeto.tabla+' div').on( 'keyup','textarea',function(){
+		let name=$(this).attr('name');
+		let elemento=$("#"+objeto.tabla+" textarea[name="+name+"]");
+		validaVacio(elemento);
+	});
+
+	$('#'+objeto.tabla+'Rechazado div').on( 'click','button[name=btnGuarda]',function(){//guarda
+		objeto.comentario= $("#"+objeto.tabla+"Rechazado textarea[name=comentario]");
+		validaPedidoRechazado(objeto)
+	});
+}
+
+function validaPedidoRechazado(objeto){	
+	validaVacio(objeto.comentario);
+
+	if(objeto.comentario.val()==""){
+		return false;
+	}else{
+		enviaPedidoEstado(objeto);
+	}
+}
+
+function enviaPedidoEstado(objeto){
+	$("#general1").modal("hide");
+	$("#contenidoGeneral1").html('');
+	$("#subtituloGeneral1").html('');
+	confirm("Va a "+objeto.verbo+": "+objeto.nombre+"!",function(){
+		return false;
+	},async function(){
+		bloquea();
+		let body=objeto
+
+		try {
+			const estado = await axios.put("/api/"+objeto.tabla+"/estado/"+objeto.id,body,{ 
+				headers:{authorization: `Bearer ${verToken()}`} 
+			});
+			desbloquea();
+			resp=estado.data.valor;
+			if(resp.resultado){
+				$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estado").html(`<span class="badge bg-${resp.info.COLOR}">${resp.info.DESCRIPCION}</span>`);
+				if(objeto.abrevBoton=='RECB' && verNivel()==14){
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html(atendido());
+				}else if(objeto.abrevBoton=='RCHA' || objeto.abrevBoton=='DETO'){
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .comentario").text(resp.info.COMENTARIO);
+				}else if(objeto.abrevBoton=='ENAT' && verNivel()==14){
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html(enviado());
+				}else if(objeto.abrevBoton=='EVIA' && verNivel()==14){
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
+				}else{
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
+				}
+				//success("Estado","¡Se ha cambiado el estado del registro: "+objeto.nombre+"!");
+			}else{
+				mensajeSistema(resp.mensaje);
+			}
+		}catch (err) {
+			desbloquea();
+			message=(err.response)?err.response.data.error:err;
+			mensajeError(message);
+		}
+	});
 }

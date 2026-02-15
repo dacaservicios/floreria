@@ -78,12 +78,13 @@ const listarProductosucursal = async (id, tabla,sesId)=>{
 }
 
 const autocompletaProductosucursal = async (producto,tabla,sesId)=>{
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row =  await pool.query(query,
     [
         0,
         0,
         producto,
+        0,
         tabla,
         sesId
     ]);
@@ -96,12 +97,13 @@ const autocompletaProductosucursal = async (producto,tabla,sesId)=>{
 }
 
 const buscarCodigoBarra = async (producto,tabla,sesId)=>{
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row =  await pool.query(query,
     [
         0,
         0,
         producto,
+        0,
         tabla,
         sesId
     ]);

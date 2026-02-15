@@ -116,12 +116,13 @@ const estadoSucursal = async(id,tabla)=>{
 }
 
 const listarSucursalDetalle = async (id,empresa,sesId)=>{        
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         id,
         empresa, 
-        0,  
+        0,
+        0,
         'sucursalDetalle',
         sesId
     ]);

@@ -1,4 +1,4 @@
-const {buscarCompra,listarCompra,crearCompra,editarCompra, crearCompraDetalle, editarCompraDetalle,crearCompraDetallePago, editarPedidoCompra, eliminarCompra, listarCompraInicio} = require('../models/compraModels');
+const {buscarCompra,listarCompra,crearCompra,editarCompra, estadoCompra, estadoCompra2,crearCompraDetalle, editarCompraDetalle,crearCompraDetallePago, editarPedidoCompra, eliminarCompra, listarCompraInicio} = require('../models/compraModels');
 
 const buscar=(req, res)=>{
     const sesId =  req.params.sesId;
@@ -64,6 +64,26 @@ const listarDetalle=(req, res)=>{
     const id =  req.params.id;
     const sesId=req.params.sesId;
     listarCompra(id,'compraDetalle',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const listarHistorial=(req, res)=>{
+    const id =  req.params.id;
+    const sesId=req.params.sesId;
+    listarCompra(id,'compraHistorial',sesId)
     .then(valor => {
         res.json({
             valor : valor
@@ -349,17 +369,58 @@ const documento=(req, res)=>{
     }); 
 }
 
+const estado=(req, res)=>{
+    const id =  req.params.id;
+    estadoCompra(id,req.body)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const estado2=(req, res)=>{
+    const id =  req.params.id;
+    estadoCompra2(id,req.body)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
 module.exports = {
     cierre,
     buscar,
     buscarTotales,
     listar,
     listarDetalle,
+    listarHistorial,
     listarInicio,
     buscarDetalle,
     crear,
     crearDetalle,
     editar,
+    estado,
+    estado2,
     eliminar,
     crearDetalle,
     editarDetalle,

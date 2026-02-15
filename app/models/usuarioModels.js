@@ -272,12 +272,13 @@ const estadoUsuarioSucursal = async (body)=>{
         body.sesId,')')
         return*/
         
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         body.id,
         body.idDetalle, 
-        0,  
+        0,
+        0,
         'sucursal',
         body.sesId
     ]);
@@ -291,12 +292,13 @@ const estadoUsuarioSucursal = async (body)=>{
 
 const asignaUsuarioSucursal = async (body)=>{
         
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         body.id,
         body.idDetalle, 
-        0,  
+        0,
+        0,
         'asignaSucursal',
         body.sesId
     ]);

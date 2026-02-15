@@ -2,13 +2,10 @@ const pool = require('../config/connections');
 const moment = require('moment');
 
 const crearCompra = async (body)=>{
-    const query = `CALL USP_UPD_TRS_COMPRA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_TRS_COMPRA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         0,
-        null,
-        null,
-        null,
         null,
         null,
         null,
@@ -53,16 +50,13 @@ const crearCompraDetalle = async (body)=>{
 }
 
 const editarCompra = async (id,body)=>{
-    const query = `CALL USP_UPD_TRS_COMPRA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_TRS_COMPRA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
-        body.comprobante,
         body.tipoPago,
-        body.serie,
-        body.numero,
         body.comentario,
-        null,
+        moment().format('YYYY-MM-DD HH:mm:ss'),
         1,
         0,
         0,
@@ -316,20 +310,44 @@ const eliminarCompra = async(id,tabla)=>{
 }
 
 const estadoCompra = async(id,body)=>{
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ? ,?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ? ,?, ?)`;
     const row =  await pool.query(query,
     [
         id,
         0,
-        body.motivo,
-        'compra',
-        body. sesId
+        body.comentario,
+        body.abrevBoton,
+        body.tabla,
+        body.sesId
     ]);
 
     return { 
         resultado : true,
         info : row[0][0],
-        mensaje : '¡Registro eliminado!'
+        mensaje : '¡Registro actualizado!'
+    }; 
+    
+}
+
+const estadoCompra2 = async(id,body)=>{
+    const query = `CALL USP_UPD_INS_DETALLE2(?, ?, ?, ? ,?, ?,?, ?, ?)`;
+    const row =  await pool.query(query,
+    [
+        id,
+        body.idDetalle,
+        body.dato1,
+        body.dato2,
+        body.dato3,
+        body.dato4,
+        body.dato5,
+        body.tabla,
+        body.sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0][0],
+        mensaje : '¡Registro actualizado!'
     }; 
     
 }
@@ -346,6 +364,7 @@ module.exports = {
     buscarCompra,
     listarCompra,
     estadoCompra,
+    estadoCompra2,
     eliminarCompra
 }
 

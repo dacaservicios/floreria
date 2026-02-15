@@ -338,12 +338,6 @@ async function procesaFormularioPago(objeto){
 		} 
 		});
 
-		const comprobante =  await axios.get("/api/comprobante/listar/pago/2545/"+verSesion(),{ 
-			headers:{
-				authorization: `Bearer ${verToken()}`
-		} 
-		});
-
 		proveedor =  await axios.get("/api/proveedor/listar/0/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
@@ -354,7 +348,6 @@ async function procesaFormularioPago(objeto){
 		const resp=busca.data.valor.info;
 		const resp2=proveedor.data.valor.info;
 		const resp3=tipoPago.data.valor.info;
-		const resp4=comprobante.data.valor.info;
 		let listado=`
 		<form id="pago">
 			<h4>TOTAL: S/. <span class="totalCompra">${parseFloat(resp.TOTAL).toFixed(2)}</span></h4>
@@ -381,30 +374,6 @@ async function procesaFormularioPago(objeto){
 							}
 						}
 			listado+=`</select>
-					<div class="vacio oculto">¡Campo obligatorio!</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-md-6">
-					<label>Comprobante (*)</label>
-					<select name="comprobante" class="form-control select2">
-						<option value="">Select...</option>`;
-						for(var i=0;i<resp4.length;i++){
-							if(resp4[i].ES_VIGENTE==1){
-						listado+=`<option value="${resp4[i].ID_COMPROBANTE}">${resp4[i].TIPO_DOCUMENTO}</option>`;
-							}
-						}
-			listado+=`</select>
-					<div class="vacio oculto">¡Campo obligatorio!</div>
-				</div>
-				<div class="form-group col-md-3">
-					<label>Serie (*)</label>
-					<input name="serie" maxlength="10" autocomplete="off" type="text" class="form-control" placeholder="Ingrese la serie">
-					<div class="vacio oculto">¡Campo obligatorio!</div>
-				</div>
-				<div class="form-group col-md-3">
-					<label>Número (*)</label>
-					<input name="numero" maxlength="10" autocomplete="off" type="text" class="form-control" placeholder="Ingrese el numero">
 					<div class="vacio oculto">¡Campo obligatorio!</div>
 				</div>
 			</div>
@@ -474,9 +443,6 @@ async function procesaFormularioPago(objeto){
 
 		let objeto2={
 			tipoPago:$('#pago select[name=tipoPago]'),
-			comprobante:$('#pago select[name=comprobante]'),
-			serie:$('#pago input[name=serie]'),
-			numero:$('#pago input[name=numero]'),
 			comentario:$('#pago textarea[name=comentario]'),
 			proveedor:$('#pago select[name=proveedor]'),
 			tabla:'pago',
@@ -515,14 +481,6 @@ function eventosPago(objeto){
 	});
 
 	$('#'+objeto.tabla+' div').off( 'keyup');
-    $('#'+objeto.tabla+' div').on( 'keyup','input[type=text]',function(){
-		let name=$(this).attr('name');
-		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
-		if(name=='serie' || name=='numero'){
-			validaVacio(elemento);
-		}
-	});
-
     $('#'+objeto.tabla+' div').on( 'keyup','textarea',function(){
 		let name=$(this).attr('name');
 		let elemento=$("#"+objeto.tabla+" textarea[name="+name+"]");
@@ -540,12 +498,9 @@ function eventosPago(objeto){
 
 function validaFormularioPago(objeto){	
 	validaVacioSelect(objeto.tipoPago);
-	validaVacioSelect(objeto.comprobante);
 	validaVacioSelect(objeto.proveedor);
-	validaVacio(objeto.serie);
-	validaVacio(objeto.numero);
 
-	if(objeto.tipoPago.val()=="" || objeto.comprobante.val()=="" || objeto.serie.val()=="" || objeto.numero.val()=="" || objeto.proveedor.val()==""){
+	if(objeto.tipoPago.val()=="" || objeto.proveedor.val()==""){
 		return false;
 	}else{
 		enviaFormularioPago(objeto);
@@ -572,12 +527,16 @@ function enviaFormularioPago(objeto){
 			desbloquea();
 			$("#general1").modal("hide");
 			resp=edita.data.valor;
-			if(resp.resultado){
-				vistaCompra();
-				//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
+			if(resp.info.EXISTE_SERIE==0){
+				mensajeSistema('¡No se ha registrado el documento (comprobante) para realizar esta transacción!');
 			}else{
-				mensajeSistema(resp.mensaje);
-			}	
+				if(resp.resultado){
+					vistaCompra();
+					//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
+				}else{
+					mensajeSistema(resp.mensaje);
+				}
+			}
 		}catch (err) {
 			desbloquea();
 			message=(err.response)?err.response.data.error:err;

@@ -478,6 +478,15 @@ function descarga(){
     </button>`;
     return boton;
 }
+
+function quitar(){
+    let boton=`
+    <button type='Quitar' name='btnQuitar' class='mr-1 btn btn-danger-gradient btn-md quitar'>
+        <i class='las la-trash'></i>
+        <span class='p-1'>Eliminar</span>
+    </button>`;
+    return boton;
+}
 //ICONOS
 function estado(){
     let boton=`
@@ -545,12 +554,57 @@ function empresa(){
         </a>`;
     return boton;
 }
-function visita(){
-    let boton=`<a type='Visita' class="crud visita cursor btn btn-sm btn-warning-gradient" data-toggle="tooltip" data-placement="top" title="Visita">
-            <i class="las la-glasses"></i>
+
+//========ESTADOS==============
+function recibido(){
+    let boton=`<a type='Recibido' abrev="RECB" verbo="RECIBIR" class="verbo crud recibido cursor btn btn-sm btn-primary-gradient" data-toggle="tooltip" data-placement="top" title="Recibido">
+            <i class="las la-thumbs-up"></i>
         </a>`;
     return boton;
 }
+
+function rechazado(){
+    let boton=`<a type='Rechazado' abrev="RCHA" verbo="RECHAZAR" class="verbo crud rechazado cursor btn btn-sm btn-danger-gradient" data-toggle="tooltip" data-placement="top" title="Rechazado">
+            <i class="las la-thumbs-down"></i>
+        </a>`;
+    return boton;
+}
+
+function atendido(){
+    let boton=`<a type='Atencion' abrev="ENAT" verbo="ATENDER"class="verbo crud atencion cursor btn btn-sm btn-secondary-gradient" data-toggle="tooltip" data-placement="top" title="Atencion">
+            <i class="las la-hard-hat"></i>
+        </a>`;
+    return boton;
+}
+
+function enviado(){
+    let boton=`<a type='Enviado' abrev="EVIA" verbo="ENVIAR" class="verbo crud enviado cursor btn btn-sm btn-info-gradient" data-toggle="tooltip" data-placement="top" title="Enviado">
+            <i class="lab la-telegram"></i>
+        </a>`;
+    return boton;
+}
+
+function entregado(){
+    let boton=`<a type='Entregado' abrev="ENGO" verbo="ENTREGAR" class="verbo crud entregado cursor btn btn-sm btn-success-gradient" data-toggle="tooltip" data-placement="top" title="Entregado">
+            <i class="las la-thumbs-up"></i>
+        </a>`;
+    return boton;
+}
+
+function devuelto(){
+    let boton=`<a type='Devuelto' abrev="DETO" verbo="DEVOLVER" class="verbo crud devuelto cursor btn btn-sm btn-danger-gradient" data-toggle="tooltip" data-placement="top" title="Devuelto">
+            <i class="las la-thumbs-down"></i>
+        </a>`;
+    return boton;
+}
+
+function ingresado(){
+    let boton=`<a type='Ingresado' abrev="IGSD" verbo="INGRESAR" class="verbo crud ingresado cursor btn btn-sm btn-success-gradient" data-toggle="tooltip" data-placement="top" title="Ingresado">
+            <i class="lab la-telegram"></i>
+        </a>`;
+    return boton;
+}
+//========ESTADOS==============
 
 function enviar(){
     let boton=`<a type='Enviar' class="crud enviar cursor btn btn-sm btn-success-gradient" data-bs-toggle="tooltip" data-bs-placement="top" title="Enviar">
@@ -579,12 +633,11 @@ function cambiar(){
     return boton;
 }
 
-function quitar(){
+function historial(){
     let boton=`
-    <button type='Quitar' name='btnQuitar' class='mr-1 btn btn-danger-gradient btn-md quitar'>
-        <i class='las la-trash'></i>
-        <span class='p-1'>Eliminar</span>
-    </button>`;
+    <a type='Historial' class="crud historial cursor btn btn-sm btn-info-gradient" data-toggle="tooltip" data-placement="top" title="Historial">
+        <i class="las la-history"></i>
+    </a>`;
     return boton;
 }
 

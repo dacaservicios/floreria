@@ -158,12 +158,13 @@ const accesoImpresion = async (sesId,body)=>{
         body.sesId,')')
         return*/
         
-    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         body.idSucursal,
         body.impresion, 
-        0,  
+        0,
+        0, 
         'impresora',
         body.sesId
     ]);
