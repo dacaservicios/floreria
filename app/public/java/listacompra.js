@@ -518,7 +518,7 @@ function enviaCompraEstado(objeto){
 					sesId:verSesion()
 				}
 			}
-			let estado = await axios.put("/api/"+objeto.tabla+"/estado2/"+objeto.id,body,{ 
+			const estado = await axios.put("/api/"+objeto.tabla+"/estado2/"+objeto.id,body,{ 
 					headers:{authorization: `Bearer ${verToken()}`} 
 				});
 
@@ -539,6 +539,8 @@ function enviaCompraEstado(objeto){
 					}else{
 						$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
 					}
+					tooltip();
+					$('[data-toggle="tooltip"]').tooltip();
 				}else{
 					mensajeSistema(resp.mensaje);
 				}

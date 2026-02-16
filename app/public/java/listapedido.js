@@ -69,7 +69,7 @@ async function vistaListapedido(){
                                                         <div class="serie cursor"><span class="badge bg-primary">${ resp3[i].SERIE+" - "+resp3[i].NUMERO_DOCUMENTO }</span></div>
                                                     </td>
                                                     <td>
-                                                        <div class="fechaCompra">${ moment(resp3[i].FECHA_PEDIDO).format('DD/MM/YYYY HH:mm:ss') }</div>
+                                                        <div class="fechaPedido">${ moment.parseZone(resp3[i].FECHA_PEDIDO).format('DD/MM/YYYY  HH:mm:ss') }</div>
                                                     </td>
                                                     <td>
                                                         <div class="usuario">${ resp3[i].USUARIO}</div>
@@ -124,7 +124,7 @@ function eventosListaPedido(objeto){
 		objeto.nombre=evento.find("td div.tipoDocumento").text()+": "+evento.find("td div.serie").text();
 		objeto.sesId=verSesion();
 		objeto.comentario='';
-		if(objeto.abrevBoton=='RCHA'){
+		if(objeto.abrevBoton=='RCHA' || objeto.abrevBoton=='DETO'){
 			modalPedidoRechazado(objeto);
 		}else{
 			enviaPedidoEstado(objeto);
@@ -285,6 +285,7 @@ async function pedidoHistorial(objeto){
 }
 
 function modalPedidoRechazado(objeto){
+	let tituloTipo=(objeto.abrevBoton=='RCHA')?'RECHAZADO':'DEVUELTO';
 	let listado=`
 	<form id="${objeto.tabla}Rechazado">
 		<div class="row">
@@ -300,7 +301,7 @@ function modalPedidoRechazado(objeto){
 		</div>
 		<div class="h8 text-center pt-2">(*) Los campos con asteriso son obligatorios.</div>
 	</form>`;
-	mostrar_general1({titulo:'RECHAZADO',nombre:objeto.nombreMsg,msg:listado,ancho:400});
+	mostrar_general1({titulo:tituloTipo,nombre:objeto.nombreMsg,msg:listado,ancho:400});
 
 	eventosPedidoRechazado(objeto);
 }
@@ -340,28 +341,47 @@ function enviaPedidoEstado(objeto){
 		let body=objeto
 
 		try {
-			const estado = await axios.put("/api/"+objeto.tabla+"/estado/"+objeto.id,body,{ 
+			body={
+				id:objeto.id,
+				idDetalle:0,
+				dato1:0,
+				dato2:0,
+				dato3:0,
+				dato4:(objeto.abrevBoton=='RCHA' || objeto.abrevBoton=='DETO')?objeto.comentario.val():'',
+				dato5:objeto.abrevBoton,
+				tabla:objeto.tabla,
+				sesId:verSesion()
+			}
+
+			const estado = await axios.put("/api/"+objeto.tabla+"/estado2/"+objeto.id,body,{ 
 				headers:{authorization: `Bearer ${verToken()}`} 
 			});
 			desbloquea();
 			resp=estado.data.valor;
-			if(resp.resultado){
-				$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estado").html(`<span class="badge bg-${resp.info.COLOR}">${resp.info.DESCRIPCION}</span>`);
-				if(objeto.abrevBoton=='RECB' && verNivel()==14){
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html(atendido());
-				}else if(objeto.abrevBoton=='RCHA' || objeto.abrevBoton=='DETO'){
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .comentario").text(resp.info.COMENTARIO);
-				}else if(objeto.abrevBoton=='ENAT' && verNivel()==14){
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html(enviado());
-				}else if(objeto.abrevBoton=='EVIA' && verNivel()==14){
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
-				}else{
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
-				}
-				//success("Estado","¡Se ha cambiado el estado del registro: "+objeto.nombre+"!");
+			if(resp.info.EXISTE_SERIE==0){
+				mensajeSistema('¡No se ha registrado el documento (comprobante) para realizar esta transacción!');
 			}else{
-				mensajeSistema(resp.mensaje);
+				if(resp.resultado){
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estado").html(`<span class="badge bg-${resp.info.COLOR}">${resp.info.DESCRIPCION}</span>`);
+					if(objeto.abrevBoton=='RECB' && verNivel()==14){
+						$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html(atendido());
+					}else if(objeto.abrevBoton=='RCHA' || objeto.abrevBoton=='DETO'){
+						$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
+						$("#"+objeto.tabla+"Tabla #"+objeto.id+" .comentario").text(resp.info.COMENTARIO);
+					}else if(objeto.abrevBoton=='ENAT' && verNivel()==14){
+						$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html(enviado());
+					}else if(objeto.abrevBoton=='EVIA' && verNivel()==14){
+						$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
+					}else{
+						$("#"+objeto.tabla+"Tabla #"+objeto.id+" .estadosMov").html('');
+					}
+
+					tooltip();
+					$('[data-toggle="tooltip"]').tooltip();
+					//success("Estado","¡Se ha cambiado el estado del registro: "+objeto.nombre+"!");
+				}else{
+					mensajeSistema(resp.mensaje);
+				}
 			}
 		}catch (err) {
 			desbloquea();
