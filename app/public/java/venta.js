@@ -15,7 +15,6 @@ async function vistaVenta(){
 	let idVenta=0;
 	let totalVenta=0;
 	let lista;
-	let resp;
 	const busca =  await axios.get('/api/'+tabla+'/buscar/0/'+verSesion(),{ 
 		headers:{authorization: `Bearer ${verToken()}`} 
 	});
@@ -54,10 +53,10 @@ async function vistaVenta(){
 	} 
 	});
 
-	resp=lista.data.valor.info;
-	resp3=cliente.data.valor.info;
-	resp4=tipoPago.data.valor.info;
-	resp5=comprobante.data.valor.info;
+	let resp=lista.data.valor.info;
+	let resp3=cliente.data.valor.info;
+	let resp4=tipoPago.data.valor.info;
+	let resp5=comprobante.data.valor.info;
 	desbloquea();
 
 	let listado=`
@@ -309,11 +308,10 @@ function eventosVenta(objeto){
 							idProducto: item.ID_PRODUCTO,
 							codigo: item.CODIGO_PRODUCTO,
 							nombre: item.NOMBRE,
-							precioVenta: item.PRECIO_VENTA,
 							cantidad: 1,
 							tabla: objeto.tabla,
-							label: item.NOMBRE+" <br>"+item.STOCK+")",
-							value: item.NOMBRE+" ("+item.STOCK+")",
+							label: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+"<br><strong>Stock: </strong>"+item.STOCK,
+							value: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+"<br><strong>Stock: </strong>"+item.STOCK,
 							sesId: verSesion()
 						}
 					}));

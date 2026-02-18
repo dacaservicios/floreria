@@ -34,9 +34,9 @@ const crearVentaDetalle = async (body)=>{
     [
         0,
         body.idVenta,
-        body.idProductoSucursal,
+        body.idProducto,
         body.cantidad,
-        body.precioVenta,
+        0,
         '',
         'crea',
         body.sesId
@@ -63,7 +63,7 @@ const editarVenta = async (id,body)=>{
         0,
         body.descuento,
         body.comentario,
-        null,
+        moment().format('YYYY-MM-DD HH:mm:ss'),
         'cierre',
         body.sesId
     ]);

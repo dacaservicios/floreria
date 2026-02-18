@@ -58,7 +58,7 @@ async function vistaVenta(){
                                                             <div class="serie"><span class="badge bg-primary">${ resp2[i].SERIE+" - "+resp2[i].NUMERO_DOCUMENTO }</span></div>
                                                         </td>
                                                         <td>
-                                                            <div class="fechaVenta">${ moment(resp2[i].FECHA_VENTA).format('DD/MM/YYYY') }</div>
+                                                            <div class="fechaVenta">${ moment.parseZone(resp2[i].FECHA_VENTA).format('DD/MM/YYYY  HH:mm:ss') }</div>
                                                         </td>
                                                         <td>
                                                             <div class="cliente">${ resp2[i].CLIENTE}</div>
@@ -105,6 +105,7 @@ async function vistaVenta(){
 }
 
 function eventosVenta(objeto){
+	$('#'+objeto.tabla+'Tabla tbody').off( 'click');
 	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.elimina',function(){//elimina
 		let evento=$(this).parents("tr")
     	let id=evento.attr('id');
@@ -113,8 +114,7 @@ function eventosVenta(objeto){
 		ventaEliminaDetalle({id:id,nombre:nombre,tabla:objeto.tabla});
 	});
 
-	$('#'+objeto.tabla+'TablaLista tbody').off( 'click');
-	$('#'+objeto.tabla+'TablaLista tbody').on( 'click','td a.detalle',function(){//detalle
+	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.detalle',function(){//detalle
 		let evento=$(this).parents("tr")
 		let id=evento.attr('id');
 		let nombre=evento.find("td div.tipoDocumento").text()+": "+evento.find("td div.serie").text();
