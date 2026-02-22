@@ -24,6 +24,7 @@ async function vistaMovimiento(){
 			authorization: `Bearer ${verToken()}`
 		} 
 	});
+
 	desbloquea();
 	const resp=lista.data.valor.info;
 	const resp3=movimiento.data.valor.info;
@@ -36,13 +37,12 @@ async function vistaMovimiento(){
 					<form id="${tabla}" class="needs-validation" novalidate>
 						<span class='oculto muestraId'>0</span>
 						<span class='oculto muestraNombre'></span>
-						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-dolly"></i> MOVIMIENTO</div>
+						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-dolly"></i> MOVIMIENTO ALMACEN</div>
 						<div class="row pt-3">
 							<div class="form-group col-md-6">
 								<label>Producto (Stock) (*)</label>
 								<input id="autocompletaProd" name="autocompletaProd" autocomplete="off" maxlength="10" type="tel" class="form-control p-1 muestraMensaje" placeholder="Busque el producto">
 								<input type="hidden" name="producto" id="producto">
-								<input type="hidden" name="idProductoDetalle" id="idProductoDetalle">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
 							<div class="form-group col-md-6">
@@ -50,7 +50,7 @@ async function vistaMovimiento(){
 								<select name="movimiento" class="form-control select2 muestraMensaje">
 									<option value="">Select...</option>`;
 									for(var i=0;i<resp3.length;i++){
-										if(resp3[i].ES_VIGENTE==1){
+										if(resp3[i].ES_VIGENTE==1 && resp3[i].VALOR=='PROD'){
 							listado+=`<option value="${resp3[i].ID_PARAMETRO_DETALLE}">${resp3[i].DESCRIPCIONDETALLE}</option>`;
 										}
 									}
@@ -59,14 +59,21 @@ async function vistaMovimiento(){
 							</div>
 						</div>
 						<div class="row">
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-3">
 								<label>Fecha (*)</label>
 								<input name="fecha" autocomplete="off" maxlength="10" type="fecha" class="form-control datepicker" placeholder="Seleccione la Fecha" value="${moment().format('DD-MM-YYYY')}">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-3">
 								<label>Cantidad (*)</label>
 								<input name="cantidad" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese la cantidad">
+								<div class="vacio oculto">¡Campo obligatorio!</div>
+							</div>
+							<div class="form-group col-md-6">
+								<label>Concepto (*)</label>
+								<select id="concepto" name="concepto" class="form-control select2">
+									<option value=""></option>
+								</select>
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div> 
 						</div>
@@ -102,9 +109,15 @@ async function vistaMovimiento(){
 								}else{
 									mestado='tachado';
 								}
+								if(resp[i].ABREVIATURA=='ENTR'){
+									mov='primary';
+								}else{
+									mov='danger';
+								}
 					listado+=`<tr id="${resp[i].ID_MOVIMIENTO}" >
 									<td>
-										<div class="estadoTachado movimiento muestraMensaje ${mestado}">${ resp[i].TIPO_MOVIMIENTO }</div>
+										<div class="estadoTachado concepto muestraMensaje ${mestado}">${resp[i].CONCEPTO }</div>
+										<div class="movimiento"><span class='estadoTachado ${mestado} badge bg-${mov}'>${resp[i].TIPO_MOVIMIENTO}</span></div>
 									</td>
 									<td>
 										<div class="estadoTachado fecha ${mestado}">${ moment(resp[i].FECHA_CREA).format('DD/MM/YYYY') }</div>
@@ -147,9 +160,9 @@ async function vistaMovimiento(){
 	$('#'+tabla+'Tabla').DataTable(valoresTabla);
 	let objeto={
 		movimiento:$("#"+tabla+" select[name=movimiento]"),
+		concepto:$("#"+tabla+" select[name=concepto]"),
 		autocompletaProd:$("#"+tabla+" input[name=autocompletaProd]"),
 		producto:$("#"+tabla+" input[name=producto]"),
-		idProductoDetalle:$("#"+tabla+" input[name=idProductoDetalle]"),
 		fecha:$("#"+tabla+" input[name=fecha]"),
 		motivo:$("#"+tabla+" textarea[name=motivo]"),
 		cantidad:$("#"+tabla+" input[name=cantidad]"),
@@ -167,8 +180,7 @@ function eventosMovimiento(objeto){
 				dataType: "json",
 				data:{
 					producto:request.term,
-					idProveedor:0,
-					tipo:'autocompletaVenta',
+					tipo:'autocompletaCompra',
 					sesId:verSesion(),
 					token:verToken()
 				},
@@ -176,17 +188,14 @@ function eventosMovimiento(objeto){
 					let datos=data.valor.info;
 					response( $.map( datos, function( item ){
 						return {
-							idProductoDetalle:item.ID_PRODUCTO_SUCURSAL,
-							idProducto:	item.ID_PRODUCTO,
-							codigo:	item.CODIGO_PRODUCTO,
-							nombre:	item.NOMBRE,
-							idLote: item.ID_DETALLE,
-							precioVenta: item.PRECIO_VENTA,
-							precioCompra: item.PRECIO_COMPRA,
-							cantidad:1,
-							tabla:objeto.tabla,
-							label: item.NOMBRE+" ("+item.STOCK+")",
-							value: item.NOMBRE+" ("+item.STOCK+")"
+							idProducto: item.ID_PRODUCTO,
+							codigo: item.CODIGO_PRODUCTO,
+							nombre: item.NOMBRE,
+							cantidad: 1,
+							tabla: objeto.tabla,
+							label: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+"<br><strong>Stock: </strong>"+item.STOCK,
+							value: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+"<br><strong>Stock: </strong>"+item.STOCK,
+							sesId: verSesion()
 						}
 					}));
 				},
@@ -196,10 +205,13 @@ function eventosMovimiento(objeto){
 		select:function(event,ui){
 			objeto.autocompletaProd.val(ui.item.nombre);
 			objeto.producto.val(ui.item.idProducto);
-			objeto.idProductoDetalle.val(ui.item.idProductoDetalle);
 			return false;
-		}	
-	});
+		}
+	}).data("ui-autocomplete")._renderItem = function(ul, item){
+		return $("<li>")
+			.append("<div>" + item.label + "</div>")
+			.appendTo(ul);
+	};
 
 
 	$('#'+objeto.tabla+' div').off( 'keyup');
@@ -234,6 +246,10 @@ function eventosMovimiento(objeto){
 		let name=$(this).attr('name');
 		let elemento=$("#"+objeto.tabla+" select[name="+name+"]");
 		validaVacioSelect(elemento);
+		if(name=='movimiento'){
+			let id_movimiento=$(this).val();
+			buscarConcepto({id_movimiento:id_movimiento, tabla:objeto.tabla,id_concepto:''});
+		}
 	});
 
 	$('#'+objeto.tabla+' div').on( 'change','input[type=fecha]',function(){
@@ -287,6 +303,41 @@ function eventosMovimiento(objeto){
 	});
 }
 
+async function buscarConcepto(objeto){
+	bloquea();
+	try {
+		const lista = await axios.get("/api/parametro/detalle/listar/padre/"+objeto.id_movimiento+"/"+verSesion(),{ 
+		headers:{
+			authorization: `Bearer ${verToken()}`
+		} 
+	});
+
+		desbloquea();
+		const concepto=lista.data.valor.info;
+		$('#'+objeto.tabla+' #concepto').empty().append('<option value=""></option>');
+		$(".select2").select2({
+			placeholder:'Select...',
+			dropdownAutoWidth: true,
+			width: '100%'
+		});
+		for(let a=0;a<concepto.length;a++){
+			if(concepto[a].ES_VIGENTE==1){
+				const select_concepto = new Option(concepto[a].DESCRIPCIONDETALLE, concepto[a].ID_PARAMETRO_DETALLE, false, false);
+				$('#'+objeto.tabla+' #concepto').append(select_concepto);
+			}
+		}
+	
+		$('#'+objeto.tabla+' #concepto').trigger('change');
+		let elemento=$('#'+objeto.tabla+' select[name=concepto]');
+		elemento.val(objeto.id_concepto).trigger('change.select2');
+		validaVacioSelect(elemento);
+	}catch (err) {
+		desbloquea();
+		message=(err.response)?err.response.data.error:err;
+		mensajeError(message);
+	}
+}
+
 async function movimientoEdita(objeto){
 	$("#"+objeto.tabla+" span.muestraId").text(objeto.id);
 	$("#"+objeto.tabla+" span.muestraNombre").text(objeto.nombreEdit);
@@ -301,21 +352,24 @@ async function movimientoEdita(objeto){
 	desbloquea();
 	const resp=busca.data.valor.info;
 	objeto.movimiento.val(resp.ID_TIPO_MOVIMIENTO).trigger('change.select2');
-	objeto.produto.val(resp.ID_PRODUCTO_SUCURSAL);
+	buscarConcepto({id_movimiento:resp.ID_MOVIMIENTO, tabla:objeto.tabla, id_concepto:resp.ID_CONCEPTO});
+	objeto.produto.val(resp.ID_PRODUCTO);
 	objeto.autocompletaProd.val(resp.NOMBRE);
 	objeto.fecha.val(moment(resp.FECHA).format('DD-MM-YYYY'));
 	objeto.motivo.val(resp.MOTIVO);
 	objeto.cantidad.val(resp.CANTIDAD);
 }
 
-function validaFormularioMovimiento(objeto){	
+function validaFormularioMovimiento(objeto){
+	let concepto=$("#"+objeto.tabla+" select[name=concepto]");
 	validaVacioSelect(objeto.movimiento);
+	validaVacioSelect(concepto);
 	validaVacio(objeto.autocompletaProd);
 	validaVacio(objeto.cantidad);
 	validaVacio(objeto.motivo);
 	validaVacio(objeto.fecha);
 
-	if(objeto.movimiento.val()=="" || objeto.autocompletaProd.val()=="" || objeto.cantidad.val()=="" || objeto.motivo.val()=="" || objeto.fecha.val()==""){
+	if(objeto.movimiento.val()=="" || objeto.autocompletaProd.val()=="" || objeto.cantidad.val()=="" || objeto.motivo.val()=="" || objeto.fecha.val()=="" || concepto.val()==""){
 		return false;
 	}else{
 		enviaFormularioMovimiento(objeto);
@@ -351,10 +405,14 @@ function enviaFormularioMovimiento(objeto){
 			}
 			desbloquea();
 			resp=creaEdita.data.valor;
-			console.log(resp)
+
 			if(resp.resultado){
+				let mov=(resp.info.ABREVIATURA=='ENTR')?'primary':'danger';
+
 				if(objeto.id>0){
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .movimiento").text(resp.info.TIPO_MOVIMIENTO);
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .concepto").text(resp.info.CONCEPTO);
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .movimiento").html(`<span class='estadoTachado badge bg-${mov}'>${resp.info.TIPO_MOVIMIENTO}</span>`);
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .concepto").text(resp.info.CONCEPTO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .producto").text(resp.info.PRODUCTO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .cantidad").text(resp.info.CANTIDAD);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .motivo").text(resp.info.MOTIVO);
@@ -365,7 +423,8 @@ function enviaFormularioMovimiento(objeto){
 				}else{
 					let t = $('#'+objeto.tabla+'Tabla').DataTable();
 					let rowNode =t.row.add( [
-						`<div class="estadoTachado movimiento muestraMensaje">${resp.info.TIPO_MOVIMIENTO}</div>`,
+						`<div class="estadoTachado concepto muestraMensaje">${resp.info.CONCEPTO }</div>
+						<div class="movimiento"><span class='estadoTachado badge bg-${mov}'>${resp.info.TIPO_MOVIMIENTO}</span></div>`,
 						`<div class="estadoTachado fecha">${moment(resp.info.FECHA_CREA).format('DD/MM/YYYY')}</div>`,
 						`<div class="estadoTachado producto muestraMensaje">${resp.info.PRODUCTO}</div>`,
 						`<div class="estadoTachado cantidad">${resp.info.CANTIDAD}</div>`,

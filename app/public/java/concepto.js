@@ -42,7 +42,7 @@ async function vistaConcepto(){
 								<select name="tipo" class="form-control select2">
 									<option value="">Select...</option>`;
 									for(var i=0;i<resp2.length;i++){
-										if(resp2[i].ES_VIGENTE==1){
+										if(resp2[i].ES_VIGENTE==1 && resp2[i].VALOR=='CONTA'){
 									listado+=`<option value="${resp2[i].ID_PARAMETRO_DETALLE}">${resp2[i].DESCRIPCIONDETALLE}</option>`;
 										}
 									}

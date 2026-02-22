@@ -380,9 +380,8 @@ async function vistaParametroDetalle(objeto){
 						</div>
 						<div class="row">
 							<div class="form-group col-md-12">
-								<label>Valor (*)</label>
+								<label>Valor</label>
 								<input name="valorDetalle" autocomplete="off" maxlength="500" type="text" class="form-control p-1 muestraMensaje" placeholder="Ingrese el valor">
-								<div class="vacio oculto">¡Campo obligatorio!</div>
 								<div class="formato oculto">¡Formato Incorrecto!</div>
 							</div>
 						</div>
@@ -471,6 +470,7 @@ function eventosParametroDetalle(objeto){
 		}
 	});
 
+	$('#'+objeto.tabla+' div').off( 'click');
 	$('#'+objeto.tabla+' div').on( 'click','button[name=btnGuarda]',function(){//guarda
 		objeto.idDetalle= $("#"+objeto.tabla+" span.muestraId").text()
 		objeto.nombreMsg= $("#"+objeto.tabla+" span.muestraNombre").text()
@@ -538,11 +538,11 @@ async function parametroEditaDetalle(objeto){
 
 }
 
-function validaFormularioParametroDetalle(objeto){	
+function validaFormularioParametroDetalle(objeto){
 	validaVacio(objeto.descripcionDetalle);
 	let vabrev=validaAbreviatura(objeto.abreviaturaDetalle);
 
-	if(objeto.descripcionDetalle.val()=="" || objeto.valorDetalle.val()=="" || vabrev==false){
+	if(objeto.descripcionDetalle.val()==""  || vabrev==false){
 		return false;
 	}else{
 		enviaFormularioParametroDetalle(objeto);

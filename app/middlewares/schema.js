@@ -40,7 +40,7 @@ const schemaParametroDetalle=joi.object({
     id:joi.number().required(),
     descripcionDetalle: joi.string().min(1).max(200).required(),
     abreviaturaDetalle:joi.string().min(4).max(4).required(),
-    valorDetalle: joi.string().min(1).max(500).required(),
+    valorDetalle: joi.string().min(1).max(500).allow(''),
     sesId:joi.number().required()
 });
 
@@ -311,9 +311,9 @@ const schemaIngresosegresos_caja=joi.object({
 const schemaMovimiento=joi.object({
     id:joi.number().allow(''),
     movimiento: joi.number().required(),
+    concepto: joi.number().required(),
     autocompletaProd: joi.string().allow(''),
     producto: joi.number().required(),
-    idProductoDetalle: joi.number().required(),
     fecha: joi.string().min(10).max(10).required(),
     motivo:joi.string().min(1).max(1000).required(),
     cantidad:joi.string().min(1).max(10).required(),
