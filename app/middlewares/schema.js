@@ -285,6 +285,7 @@ const schemaIngresosegresos=joi.object({
     empleado: joi.number().allow(''),
     descripcion:joi.string().min(0).max(1000).allow(''),
     fecha: joi.string().min(10).max(10).required(),
+    hora: joi.string().min(8).max(8).required(),
     monto:joi.string().min(1).max(10).required(),
     sesId:joi.number().required()
 });
@@ -315,6 +316,7 @@ const schemaMovimiento=joi.object({
     autocompletaProd: joi.string().allow(''),
     producto: joi.number().required(),
     fecha: joi.string().min(10).max(10).required(),
+    hora: joi.string().min(8).max(8).required(),
     motivo:joi.string().min(1).max(1000).required(),
     cantidad:joi.string().min(1).max(10).required(),
     sesId:joi.number().required()

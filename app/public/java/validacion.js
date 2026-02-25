@@ -592,7 +592,11 @@ function passRegex(valor){
 }
 
 function fechaRegex(valor){
-	valor.inputmask({regex: "(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-(19|20)[0-9]{2}"});
+	valor.inputmask({regex: "([0][1-9]|[12][0-9]|[3][01])-([0][1-9]|[1][012])-(19|20)[0-9]{2}"});
+}
+
+function horaRegex(valor){
+	valor.inputmask({regex: "([01][0-9]|[2][0-3]):([0-5][0-9]):([0-5][0-9])"});
 }
 
 function fijoRegex(valor){

@@ -256,6 +256,7 @@ async function datosUsuario(){
             mensajeSistema(resp.info.mensaje);
         }
     }catch (err) {
+        console.log(err)
         desbloquea();	
         message=err.response.data.error.message;
         errno=err.response.data.error.errno;
