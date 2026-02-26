@@ -47,7 +47,7 @@ async function vistaVenta(){
 	} 
 	});
 
-	const comprobante =  await axios.get("/api/comprobante/listar/pago/2545/"+verSesion(),{ 
+	const comprobante =  await axios.get("/api/comprobante/listar/pago/0/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 	} 
