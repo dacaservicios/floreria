@@ -18,7 +18,7 @@ async function vistaCliente(){
 			authorization: `Bearer ${verToken()}`
 		} 
 	});
-	const tipoDoc = await axios.get("/api/parametro/detalle/listar/2/"+verSesion(),{ 
+	const tipoDoc = await axios.get("/api/parametro/detalle/listar/0/TIDO/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 
@@ -157,7 +157,7 @@ async function vistaCliente(){
 									<div class="estadoTachado movil ${mestado}">${(resp[i].NRO_CELULAR===null)?'':resp[i].NRO_CELULAR}</div>
 								</td>
 								<td>
-									${visita()+estado()+modifica()+elimina()}
+									${estado()+modifica()+elimina()}
 								</td>
 							</tr>`;
 							}
@@ -385,7 +385,7 @@ function enviaFormularioCliente(objeto){
 						`<div class="estadoTachado documento">${resp.info.NUMERO_DOCUMENTO}</div>`,
 						`<div class="estadoTachado correo">${resp.info.EMAIL}</div>`,
 						`<div class="estadoTachado celular">${resp.info.NRO_CELULAR}</div>`,
-						visita()+estado()+modifica()+elimina()
+						estado()+modifica()+elimina()
 					] ).draw( false ).node();
 					$( rowNode ).attr('id',resp.info.ID_CLIENTE);
 										

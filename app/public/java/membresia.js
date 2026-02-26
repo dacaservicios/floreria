@@ -20,7 +20,7 @@ async function vistaMembresia(){
 	});
 
 
-	const lista2 = await axios.get("/api/parametro/detalle/listar/38/"+verSesion(),{ 
+	const lista2 = await axios.get("/api/parametro/detalle/listar/0/TIMO/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 

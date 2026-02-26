@@ -84,7 +84,7 @@ const atencion=async (req, res)=>{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const tipoPago =  await axios.get(config.URL_SISTEMA+"/api/parametro/detalle/listar/47/"+req.body.sesId,{ 
+        const tipoPago =  await axios.get(config.URL_SISTEMA+"/api/parametro/detalle/listar/0/TIPA/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 		    } 

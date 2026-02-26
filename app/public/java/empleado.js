@@ -18,7 +18,7 @@ async function vistaEmpleado(){
 			authorization: `Bearer ${verToken()}`
 		} 
 	});
-	const tipoDoc = await axios.get("/api/parametro/detalle/listar/2/"+verSesion(),{ 
+	const tipoDoc = await axios.get("/api/parametro/detalle/listar/0/TIDO/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 

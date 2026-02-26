@@ -12,7 +12,7 @@ $(document).ready(function() {
 async function vistaParametro(){
 	bloquea();
 	let tabla="parametro";
-	const lista= await axios.get('/api/'+tabla+'/listar/0/'+verSesion(),{
+	const lista= await axios.get('/api/'+tabla+'/listar/0/0/'+verSesion(),{
 		headers: 
 		{ 
 			authorization: `Bearer ${verToken()}`
@@ -173,7 +173,7 @@ async function parametroEdita(objeto){
 	$("#"+objeto.tabla+" span#botonGuardar").text('Modificar');
 	quitaValidacionTodo(objeto.tabla)
 	bloquea();
-	const busca= await axios.get('/api/'+objeto.tabla+'/buscar/'+objeto.id+'/'+verSesion(),{ 
+	const busca= await axios.get('/api/'+objeto.tabla+'/buscar/'+objeto.id+'/0/'+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		}
@@ -352,7 +352,7 @@ function parametroVisible(objeto){
 //DETALLE DE PARAMETRO
 async function vistaParametroDetalle(objeto){
 	bloquea();
-	const lista= await axios.get('/api/'+objeto.tabla+'/detalle/listar/'+objeto.id+'/'+verSesion(),{
+	const lista= await axios.get('/api/'+objeto.tabla+'/detalle/listar/'+objeto.id+'/0/'+verSesion(),{
 		headers: 
 		{ 
 			authorization: `Bearer ${verToken()}`
@@ -525,7 +525,7 @@ async function parametroEditaDetalle(objeto){
 	quitaValidacion(objeto.descripcionDetalle);
 	quitaValidacion(objeto.valorDetalle);
 	bloquea();
-	const busca= await axios.get('/api/'+objeto.tabla+'/detalle/buscar/'+objeto.idDetalle+'/'+verSesion(),{ 
+	const busca= await axios.get('/api/'+objeto.tabla+'/detalle/buscar/'+objeto.idDetalle+'/0/'+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		}

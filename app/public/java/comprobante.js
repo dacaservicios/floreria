@@ -19,13 +19,13 @@ async function vistaComprobante(){
 		} 
 	});
 
-	const documento =  await axios.get("/api/parametro/detalle/listar/41/"+verSesion(),{ 
+	const documento =  await axios.get("/api/parametro/detalle/listar/0/TICO/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 
 	});
 
-	const tipoventa =  await axios.get("/api/parametro/detalle/listar/61/"+verSesion(),{ 
+	const tipoventa =  await axios.get("/api/parametro/detalle/listar/0/TIVE/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 

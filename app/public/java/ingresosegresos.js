@@ -26,7 +26,7 @@ async function vistaIngresosegresos(){
 		} 
 	});
 
-	const ingresosegresos = await axios.get("/api/parametro/detalle/listar/48/"+verSesion(),{ 
+	const ingresosegresos = await axios.get("/api/parametro/detalle/listar/0/TIMV/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 

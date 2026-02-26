@@ -17,7 +17,7 @@ router.put('/api/parametro/visible/:id', caracter, verificarToken, visible);
 
 router.get('/api/parametro/detalle/listar/:id/:abrev/:sesId', caracter, verificarToken, listarId);
 router.get('/api/parametro/detalle/listar/padre/:id/:abrev/:sesId', caracter, verificarToken, listarIdPadre);
-router.get('/api/parametro/detalle/buscar/:id/:sesId', caracter, verificarToken, buscarId);
+router.get('/api/parametro/detalle/buscar/:id/:abrev/:sesId', caracter, verificarToken, buscarId);
 router.post('/api/parametro/detalle/crear', caracter, validaSchema(schemaParametroDetalle), verificarToken, crearDetalle);
 router.put('/api/parametro/detalle/editar/:id', caracter, validaSchema(schemaParametroDetalle), verificarToken, editarDetalle);
 router.delete('/api/parametro/detalle/eliminar/:id', caracter, verificarToken, eliminarDetalle);

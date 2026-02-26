@@ -19,7 +19,7 @@ async function vistaMovimiento(){
 		} 
 	});
 
-	const movimiento = await axios.get("/api/parametro/detalle/listar/0/TMV/"+verSesion(),{ 
+	const movimiento = await axios.get("/api/parametro/detalle/listar/0/TIMV/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 
@@ -28,7 +28,6 @@ async function vistaMovimiento(){
 	desbloquea();
 	const resp=lista.data.valor.info;
 	const resp3=movimiento.data.valor.info;
-
 	let listado=`
 	<div class="row row-sm mg-t-10">
 		<div class="col-lg-12">

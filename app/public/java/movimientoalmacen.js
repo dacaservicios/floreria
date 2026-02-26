@@ -19,7 +19,7 @@ async function vistaMovimiento(){
 		} 
 	});
 
-	const movimiento = await axios.get("/api/parametro/detalle/listar/0/TMV/"+verSesion(),{ 
+	const movimiento = await axios.get("/api/parametro/detalle/listar/0/TIMV/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 

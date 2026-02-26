@@ -332,7 +332,7 @@ async function procesaFormularioPago(objeto){
 			headers:{authorization: `Bearer ${verToken()}`} 
 		});
 
-		const tipoPago =  await axios.get("/api/parametro/detalle/listar/47/"+verSesion(),{ 
+		const tipoPago =  await axios.get("/api/parametro/detalle/listar/0/TIPA/"+verSesion(),{ 
 			headers:{
 				authorization: `Bearer ${verToken()}`
 		} 

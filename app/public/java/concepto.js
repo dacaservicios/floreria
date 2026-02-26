@@ -19,7 +19,7 @@ async function vistaConcepto(){
 		} 
 	});
 
-	const lista2 = await axios.get("/api/parametro/detalle/listar/48/"+verSesion(),{ 
+	const lista2 = await axios.get("/api/parametro/detalle/listar/0/TIMV/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 
