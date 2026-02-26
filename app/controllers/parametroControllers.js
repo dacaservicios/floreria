@@ -2,8 +2,9 @@ const {crearParametro,crearParametroDetalle,editarParametro,buscarParametro,list
 
 const listar=(req, res)=>{
     const id =  req.params.id;
+    const abrev =  req.params.abrev;
     const sesId=req.params.sesId;
-    listarParametro(id,'parametro',sesId)
+    listarParametro(id,abrev,'parametro',sesId)
     .then(valor => {
         res.json({
             valor : valor
@@ -22,8 +23,9 @@ const listar=(req, res)=>{
 
 const listarId=(req, res)=>{
     const id =  req.params.id;
+    const abrev =  req.params.abrev;
     const sesId=req.params.sesId;
-    listarParametro(id,'parametroDetalle',sesId)
+    listarParametro(id,abrev,'parametroDetalle',sesId)
     .then(valor => {
         res.json({
             valor : valor
@@ -42,8 +44,9 @@ const listarId=(req, res)=>{
 
 const listarIdPadre=(req, res)=>{
     const id =  req.params.id;
+    const abrev =  req.params.abrev;
     const sesId=req.params.sesId;
-    listarParametro(id,'parametroDetallePadre',sesId)
+    listarParametro(id,abrev,'parametroDetallePadre',sesId)
     .then(valor => {
         res.json({
             valor : valor
@@ -62,8 +65,9 @@ const listarIdPadre=(req, res)=>{
 
 const buscar=(req, res)=>{
     const sesId =  req.params.sesId;
+    const abrev =  req.params.abrev;
     const id =  req.params.id;
-    buscarParametro(id,'parametro',sesId)
+    buscarParametro(id,abrev,'parametro',sesId)
     .then(valor => {
         res.json({
             valor : valor
@@ -82,8 +86,9 @@ const buscar=(req, res)=>{
 
 const buscarId=(req, res)=>{
     const sesId =  req.params.sesId;
+    const abrev =  req.params.abrev;
     const id =  req.params.id;
-    buscarParametro(id,'parametroDetalle',sesId)
+    buscarParametro(id,abrev,'parametroDetalle',sesId)
     .then(valor => {
         res.json({
             valor : valor

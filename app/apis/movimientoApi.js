@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const {crear,editar,buscar,listar,estado, eliminar,filtrarInicio,filtrar} = require('../controllers/movimientoControllers');
+const {crear,editar,buscar,listar,listarAlmacen,listarTienda,estado, eliminar,filtrarInicio,filtrar} = require('../controllers/movimientoControllers');
 const {verificarToken} = require('../middlewares/jwt');
 const {schemaMovimiento} = require('../middlewares/schema');
 const {caracter, validaSchema} = require('../middlewares/auth');
 
 
 router.get('/api/movimiento/listar/:id/:sesId', verificarToken, listar);
+router.get('/api/movimiento/listar/almacen/:id/:sesId', verificarToken, listarAlmacen);
+router.get('/api/movimiento/listar/tienda/:id/:sesId', verificarToken, listarTienda);
 router.get('/api/movimiento/buscar/:id/:sesId', verificarToken, buscar);
 router.get('/api/movimiento/filtro/:sesId', caracter, verificarToken, filtrarInicio);
 router.post('/api/movimiento/filtro', caracter, verificarToken, filtrar);

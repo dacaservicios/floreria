@@ -319,6 +319,7 @@ const schemaMovimiento=joi.object({
     hora: joi.string().min(8).max(8).required(),
     motivo:joi.string().min(1).max(1000).required(),
     cantidad:joi.string().min(1).max(10).required(),
+    ubicacion: joi.string().min(4).max(4).required(),
     sesId:joi.number().required()
 });
 

@@ -75,30 +75,12 @@ const editarParametroDetalle = async (body)=>{
     }; 
 }
 
-const editarMiParametroDetalle = async (body)=>{
-    const query = `CALL USP_UPD_INS_PARAMETRO_DETALLE(?, ?, ?, ?, ?, ?)`;
-    const row= await pool.query(query,
-    [
-        body.id,
-        body.descripcionDetalle,
-        body.valorDetalle,
-        body.abreviaturaDetalle,
-        'editaMiParametro',
-        body.sesId
-    ]);
-
-    return { 
-        resultado : true,
-        info : row[0][0],
-        mensaje : '¡Registro editado!'
-    }; 
-}
-
-const buscarParametro = async(id,tabla,sesId)=>{
-    const query = `CALL USP_SEL_VERLISTAID(?, ?, ?)`;
+const buscarParametro = async(id,abrev,tabla,sesId)=>{
+    const query = `CALL USP_SEL_VERLISTAID_PARAMETRO(?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
+        abrev,
         tabla,
         sesId
     ]);
@@ -111,11 +93,12 @@ const buscarParametro = async(id,tabla,sesId)=>{
     
 }
 
-const listarParametro = async (id, tabla,sesId)=>{
-    const query = `CALL USP_SEL_VERLISTA(?, ?, ?)`;
+const listarParametro = async (id,abrev,tabla,sesId)=>{
+    const query = `CALL USP_SEL_VERLISTA_PARAMETRO(?, ?, ?, ?)`;
     const row =  await pool.query(query,
     [
         id,
+        abrev,
         tabla,
         sesId
     ]);
@@ -165,7 +148,6 @@ module.exports = {
     crearParametroDetalle,
     editarParametro,
     editarParametroDetalle,
-    editarMiParametroDetalle,
     buscarParametro,
     listarParametro,
     eliminarParametro,

@@ -2,10 +2,11 @@ const pool = require('../config/connections');
 const moment = require('moment');
 
 const crearMovimiento = async (body)=>{
-    const query = `CALL USP_UPD_INS_MOVIMIENTO(?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_MOVIMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         0,
+        body.ubicacion,
         body.concepto,
         body.producto,
         moment(body.fecha+' '+body.hora,'DD-MM-YYYY HH:mm:ss').utc().format('YYYY-MM-DD HH:mm:ss'),
@@ -24,10 +25,11 @@ const crearMovimiento = async (body)=>{
 
 const editarMovimiento = async (id,body)=>{
 
-    const query = `CALL USP_UPD_INS_MOVIMIENTO(?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_MOVIMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
+        body.ubicacion,
         body.concepto,
         body.producto,
         moment(body.fecha+' '+body.hora,'DD-MM-YYYY HH:mm:ss').utc().format('YYYY-MM-DD HH:mm:ss'),

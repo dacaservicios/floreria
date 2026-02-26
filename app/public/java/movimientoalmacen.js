@@ -12,14 +12,14 @@ $(document).ready(function() {
 async function vistaMovimiento(){
 	bloquea();
 	let tabla="movimiento";
-	const lista= await axios.get('/api/'+tabla+'/listar/0/'+verSesion(),{
+	const lista= await axios.get('/api/'+tabla+'/listar/almacen/0/'+verSesion(),{
 		headers: 
 		{ 
 			authorization: `Bearer ${verToken()}`
 		} 
 	});
 
-	const movimiento = await axios.get("/api/parametro/detalle/listar/48/"+verSesion(),{ 
+	const movimiento = await axios.get("/api/parametro/detalle/listar/0/TMV/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 
@@ -37,15 +37,16 @@ async function vistaMovimiento(){
 					<form id="${tabla}" class="needs-validation" novalidate>
 						<span class='oculto muestraId'>0</span>
 						<span class='oculto muestraNombre'></span>
+						<input type="hidden" name="ubicacion" value="ALMA">
 						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-dolly"></i> MOVIMIENTO ALMACEN</div>
 						<div class="row pt-3">
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-4">
 								<label>Producto (Stock) (*)</label>
 								<input id="autocompletaProd" name="autocompletaProd" autocomplete="off" maxlength="10" type="tel" class="form-control p-1 muestraMensaje" placeholder="Busque el producto">
 								<input type="hidden" name="producto" id="producto">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-4">
 								<label>Movimiento (*)</label>
 								<select name="movimiento" class="form-control select2 muestraMensaje">
 									<option value="">Select...</option>`;
@@ -57,28 +58,28 @@ async function vistaMovimiento(){
 						listado+=`</select>
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="form-group col-md-3">
-								<label>Fecha (*)</label>
-								<input name="fecha" autocomplete="off" maxlength="10" type="fecha" class="form-control datepicker" placeholder="Seleccione la Fecha" value="${moment().format('DD-MM-YYYY')}">
-								<div class="vacio oculto">¡Campo obligatorio!</div>
-							</div>
-							<div class="form-group col-md-2">
-								<label>Hora (*)</label>
-								<input name="hora" autocomplete="off" maxlength="10" type="hora" class="form-control timepicker" placeholder="Seleccione la Hora" value="${moment().format('HH:mm:ss')}">
-								<div class="vacio oculto">¡Campo obligatorio!</div>
-							</div>
-							<div class="form-group col-md-2">
-								<label>Cantidad (*)</label>
-								<input name="cantidad" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese la cantidad">
-								<div class="vacio oculto">¡Campo obligatorio!</div>
-							</div>
-							<div class="form-group col-md-5">
+							<div class="form-group col-md-4">
 								<label>Concepto (*)</label>
 								<select id="concepto" name="concepto" class="form-control select2">
 									<option value=""></option>
 								</select>
+								<div class="vacio oculto">¡Campo obligatorio!</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-4">
+								<label>Fecha (*)</label>
+								<input name="fecha" autocomplete="off" maxlength="10" type="fecha" class="form-control datepicker" placeholder="Seleccione la Fecha" value="${moment().format('DD-MM-YYYY')}">
+								<div class="vacio oculto">¡Campo obligatorio!</div>
+							</div>
+							<div class="form-group col-md-4">
+								<label>Hora (*)</label>
+								<input name="hora" autocomplete="off" maxlength="10" type="hora" class="form-control timepicker" placeholder="Seleccione la Hora" value="${moment().format('HH:mm:ss')}">
+								<div class="vacio oculto">¡Campo obligatorio!</div>
+							</div>
+							<div class="form-group col-md-4">
+								<label>Cantidad (*)</label>
+								<input name="cantidad" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese la cantidad">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div> 
 						</div>
@@ -191,6 +192,7 @@ async function vistaMovimiento(){
 		hora:$("#"+tabla+" input[name=hora]"),
 		motivo:$("#"+tabla+" textarea[name=motivo]"),
 		cantidad:$("#"+tabla+" input[name=cantidad]"),
+		ubicacion:$("#"+tabla+" input[name=ubicacion]"),
 		tabla:tabla,
 	}
 	eventosMovimiento(objeto);
@@ -341,7 +343,7 @@ function eventosMovimiento(objeto){
 async function buscarConcepto(objeto){
 	bloquea();
 	try {
-		const lista = await axios.get("/api/parametro/detalle/listar/padre/"+objeto.id_movimiento+"/"+verSesion(),{ 
+		const lista = await axios.get("/api/parametro/detalle/listar/padre/"+objeto.id_movimiento+"/0/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 

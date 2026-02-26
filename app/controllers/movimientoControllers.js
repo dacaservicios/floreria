@@ -20,6 +20,46 @@ const listar=(req, res)=>{
     }); 
 }
 
+const listarAlmacen=(req, res)=>{
+    const id =  req.params.id;
+    const sesId=req.params.sesId;
+    listarMovimiento(id,'movimientoAlmacen',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const listarTienda=(req, res)=>{
+    const id =  req.params.id;
+    const sesId=req.params.sesId;
+    listarMovimiento(id,'movimientoTienda',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
 const buscar=(req, res)=>{
     const sesId =  req.params.sesId;
     const id =  req.params.id;
@@ -155,6 +195,8 @@ const filtrar=(req, res)=>{
 
 module.exports = {
     listar,
+    listarAlmacen,
+    listarTienda,
     buscar,
     crear,
     editar,

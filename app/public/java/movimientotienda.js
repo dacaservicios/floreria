@@ -12,14 +12,14 @@ $(document).ready(function() {
 async function vistaMovimiento(){
 	bloquea();
 	let tabla="movimiento";
-	const lista= await axios.get('/api/'+tabla+'/listar/0/'+verSesion(),{
+	const lista= await axios.get('/api/'+tabla+'/listar/tienda/0/'+verSesion(),{
 		headers: 
 		{ 
 			authorization: `Bearer ${verToken()}`
 		} 
 	});
 
-	const movimiento = await axios.get("/api/parametro/detalle/listar/48/"+verSesion(),{ 
+	const movimiento = await axios.get("/api/parametro/detalle/listar/0/TMV/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 
@@ -37,6 +37,7 @@ async function vistaMovimiento(){
 					<form id="${tabla}" class="needs-validation" novalidate>
 						<span class='oculto muestraId'>0</span>
 						<span class='oculto muestraNombre'></span>
+						<input type="hidden" name="ubicacion" value="TIEN">
 						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-dolly"></i> MOVIMIENTO TIENDA</div>
 						<div class="row pt-3">
 							<div class="form-group col-md-4">
@@ -73,15 +74,14 @@ async function vistaMovimiento(){
 							</div>
 							<div class="form-group col-md-4">
 								<label>Hora (*)</label>
-								<input name="hora" autocomplete="off" maxlength="8" type="hora" class="form-control timepicker" placeholder="Seleccione la hora" value="${moment().format('HH:mm:ss')}">
+								<input name="hora" autocomplete="off" maxlength="10" type="hora" class="form-control timepicker" placeholder="Seleccione la Hora" value="${moment().format('HH:mm:ss')}">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
 							<div class="form-group col-md-4">
 								<label>Cantidad (*)</label>
 								<input name="cantidad" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese la cantidad">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
-							</div>
-							
+							</div> 
 						</div>
 						<div class="row">
 							<div class="form-group col-md-12">
@@ -127,7 +127,7 @@ async function vistaMovimiento(){
 									</td>
 									<td>
 										<div class="estadoTachado fecha ${mestado}">${ 
-											moment(resp[i].FECHA).utc().local().format('DD/MM/YYYY HH:mm:ss') }</div>
+										moment.utc(resp[i].FECHA).local().format('DD/MM/YYYY HH:mm:ss')}</div>
 									</td>
 									<td>
 										<div class="estadoTachado producto ${mestado}">${ resp[i].PRODUCTO }</div>
@@ -164,27 +164,35 @@ async function vistaMovimiento(){
 	});
 
 	$('.timepicker').timepicker({
+		showSeconds: true,
         showMeridian: false, // Cambia a 'true' para formato AM/PM
         defaultTime: 'current',
-        minuteStep: 5,       // Incrementos de 5 en 5 minutos
+        minuteStep: 1,       // Incrementos de 5 en 5 minutos
+		secondStep: 1,
         showInputs: false,
         explicitMode: true,
 		icons: {
 			up: 'las la-angle-up',   // O 'la la-chevron-up'
 			down: 'las la-angle-down' // O 'la la-chevron-down'
-		}
+		},
+		snapToStep: true
+		//showInputs: true,
+    	//explicitMode: false
     });
+
 
 	$("#"+tabla+" span#botonGuardar").text('Crear');
 	$('#'+tabla+'Tabla').DataTable(valoresTabla);
 	let objeto={
 		movimiento:$("#"+tabla+" select[name=movimiento]"),
+		concepto:$("#"+tabla+" select[name=concepto]"),
 		autocompletaProd:$("#"+tabla+" input[name=autocompletaProd]"),
 		producto:$("#"+tabla+" input[name=producto]"),
-		idProductoDetalle:$("#"+tabla+" input[name=idProductoDetalle]"),
 		fecha:$("#"+tabla+" input[name=fecha]"),
+		hora:$("#"+tabla+" input[name=hora]"),
 		motivo:$("#"+tabla+" textarea[name=motivo]"),
 		cantidad:$("#"+tabla+" input[name=cantidad]"),
+		ubicacion:$("#"+tabla+" input[name=ubicacion]"),
 		tabla:tabla,
 	}
 	eventosMovimiento(objeto);
@@ -273,8 +281,18 @@ function eventosMovimiento(objeto){
 
 	$('#'+objeto.tabla+' div').on( 'change','input[type=fecha]',function(){
 		let name=$(this).attr('name');
-		let elemento=$("#"+objeto.tabla+" select[name="+name+"]");
+		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
 		if(name=='fecha'){
+			fechaRegex(elemento);
+			validaVacio(elemento);
+		}
+	});
+
+	$('#'+objeto.tabla+' div').on( 'change','input[type=hora]',function(){
+		let name=$(this).attr('name');
+		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
+		if(name=='hora'){
+			horaRegex(elemento);
 			validaVacio(elemento);
 		}
 	});
@@ -325,7 +343,7 @@ function eventosMovimiento(objeto){
 async function buscarConcepto(objeto){
 	bloquea();
 	try {
-		const lista = await axios.get("/api/parametro/detalle/listar/padre/"+objeto.id_movimiento+"/"+verSesion(),{ 
+		const lista = await axios.get("/api/parametro/detalle/listar/padre/"+objeto.id_movimiento+"/0/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
 		} 
@@ -374,7 +392,8 @@ async function movimientoEdita(objeto){
 	buscarConcepto({id_movimiento:resp.ID_MOVIMIENTO, tabla:objeto.tabla, id_concepto:resp.ID_CONCEPTO});
 	objeto.produto.val(resp.ID_PRODUCTO);
 	objeto.autocompletaProd.val(resp.NOMBRE);
-	objeto.fecha.val(moment(resp.FECHA).format('DD-MM-YYYY'));
+	objeto.fecha.val(moment.utc(resp.FECHA).local().format('DD-MM-YYYY'));
+	objeto.hora.val(moment.utc(resp.FECHA).local().format('HH:mm:ss'));
 	objeto.motivo.val(resp.MOTIVO);
 	objeto.cantidad.val(resp.CANTIDAD);
 }
@@ -387,8 +406,9 @@ function validaFormularioMovimiento(objeto){
 	validaVacio(objeto.cantidad);
 	validaVacio(objeto.motivo);
 	validaVacio(objeto.fecha);
+	validaVacio(objeto.hora);
 
-	if(objeto.movimiento.val()=="" || objeto.autocompletaProd.val()=="" || objeto.cantidad.val()=="" || objeto.motivo.val()=="" || objeto.fecha.val()=="" || concepto.val()==""){
+	if(objeto.movimiento.val()=="" || objeto.autocompletaProd.val()=="" || objeto.cantidad.val()=="" || objeto.motivo.val()=="" || objeto.fecha.val()=="" || objeto.hora.val()=="" || concepto.val()==""){
 		return false;
 	}else{
 		enviaFormularioMovimiento(objeto);
@@ -426,13 +446,15 @@ function enviaFormularioMovimiento(objeto){
 			resp=creaEdita.data.valor;
 
 			if(resp.resultado){
+				let mov=(resp.info.ABREVIATURA=='ENTR')?'primary':'danger';
+
 				if(objeto.id>0){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .concepto").text(resp.info.CONCEPTO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .movimiento").html(`<span class='estadoTachado badge bg-${mov}'>${resp.info.TIPO_MOVIMIENTO}</span>`);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .producto").text(resp.info.PRODUCTO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .cantidad").text(resp.info.CANTIDAD);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .motivo").text(resp.info.MOTIVO);
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fecha").text(moment(resp.info.FECHA).utc().local().format('DD/MM/YYYY HH:mm:ss'));
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fecha").text(moment.utc(resp.info.FECHA).local().format('DD/MM/YYYY  HH:mm:ss'));
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
 					
 					//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
@@ -441,7 +463,7 @@ function enviaFormularioMovimiento(objeto){
 					let rowNode =t.row.add( [
 						`<div class="estadoTachado concepto muestraMensaje">${resp.info.CONCEPTO }</div>
 						<div class="movimiento"><span class='estadoTachado badge bg-${mov}'>${resp.info.TIPO_MOVIMIENTO}</span></div>`,
-						`<div class="estadoTachado fecha">${moment(resp.info.FECHA).utc().local().format('DD/MM/YYYY HH:mm:ss')}</div>`,
+						`<div class="estadoTachado fecha">${moment.utc(resp.info.FECHA).local().format('DD/MM/YYYY HH:mm:ss')}</div>`,
 						`<div class="estadoTachado producto muestraMensaje">${resp.info.PRODUCTO}</div>`,
 						`<div class="estadoTachado cantidad">${resp.info.CANTIDAD}</div>`,
 						`<div class="estadoTachado motivo">${resp.info.MOTIVO}</div>`
