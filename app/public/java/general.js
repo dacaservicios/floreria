@@ -10,7 +10,8 @@ $(document).ready(function() {
     datosUsuario();
     //popup();
     tooltip();
-        
+    verificaToken();
+    
     $('#salir').off( 'click');
     $('#salir').on( 'click',function () {
         salir();

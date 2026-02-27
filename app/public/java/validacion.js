@@ -2,11 +2,6 @@
 /*INICIA VALIDACIONES*/
 
 
-$(function() {
-	$('[data-toggle="tooltip"]').tooltip();
-	nobackbutton();
-});
-
 function focusInput(){
     $("input.focus").on('click',function(){
         $(this).select();
@@ -54,11 +49,27 @@ async function cerrarSesion() {
         location.reload();  
     }catch (err) {
         desbloquea();	
-        message=err.response.data.error.message;
-        errno=err.response.data.error.errno;
-        mensajeSistema(message);
+       	message=(err.response)?err.response.data.error:err;
+		mensajeError(message);
     }
 }
+
+function verificaToken() {
+	axios.interceptors.response.use(
+	response => response,
+	error => {
+
+		if (error.response && error.response.status === 401) {
+			// Token vencido
+			localStorage.removeItem("token");
+			cerrarSesionToken();
+		}
+
+		return Promise.reject(error);
+	}
+);
+}
+
 // JavaScript Document
 //*****************INICIA VALIDACIONES
 
@@ -84,54 +95,6 @@ function desbloquea(){
 	$.unblockUI();
 }
 
-
-var verificaSesion = async function(tipo, idSubmenu,callback ){
-	let body={
-		idSubmenu:idSubmenu,
-		tipo:tipo,
-		sesId:verSesion()
-	}
-	try {
-        const sesion= await axios.post('/api/acceso/sesion',body,{
-            headers: 
-            { 
-                authorization: `Bearer ${verToken()}`
-            } 
-        });
-
-        let resp=sesion.data.valor;
-		if(resp.resultado===false){
-			if(resp.sesion=='A'){
-				mensajeSistema(resp.mensaje);
-			}else{
-				Swal.fire({
-					title: "Info!",
-					text: resp.mensaje,
-					icon: "info",
-					customClass: {
-						confirmButton: 'btn btn-info'
-					},
-					confirmButtonText: 'OK',
-					buttonsStyling: false,
-					allowOutsideClick: false,
-				}).then(function (result) {
-					if (result.isConfirmed) {
-						cerrarSesionAutomatico();
-					}
-				});
-			}
-		}else{
-			if(resp.resultado){
-            	callback();
-			}else{
-				mensajeSistema(resp.mensaje);
-			}
-		}
-    }catch (err) {
-        mensajeSistema(err.response.data.error.message);
-    }
-}
-
 async function cerrarSesionAutomatico() {
     bloquea();
     let body={
@@ -148,9 +111,8 @@ async function cerrarSesionAutomatico() {
         location.reload();  
     }catch (err) {
         desbloquea();	
-        message=err.response.data.error.message;
-        errno=err.response.data.error.errno;
-        mensajeSistema(message);
+        message=(err.response)?err.response.data.error:err;
+		mensajeError(message);
     }
 }
 
@@ -1032,12 +994,7 @@ async function cerrarSesionToken() {
 
 	}
 	try {
-        const exToken= await axios.put('/api/acceso/terminaToken/'+verSesion(),body,{
-            headers: 
-            { 
-                authorization: 'Bearer '+verToken()
-            } 
-        });
+        const exToken= await axios.put('/api/acceso/terminaToken/'+verSesion(),body);
         let resp=exToken.data.valor;
         desbloquea();
         if(resp.resultado){
@@ -1046,9 +1003,9 @@ async function cerrarSesionToken() {
             mensajeSistema(resp.info.mensaje);
         }
     }catch (err) {
-        desbloquea();	message=err.response.data.error.message;
-		errno=err.response.data.error.errno;
-		mensajeSistema(message);
+        desbloquea();
+		message=(err.response)?err.response.data.error:err;
+		mensajeError(message);
     }
 }
 
