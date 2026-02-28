@@ -12,7 +12,7 @@ $(document).ready(function() {
 async function vistaReporteventa(){
 	bloquea();
 	let tabla="reporteventa";
-	const lista= await axios.get('/api/productosucursal/listar/0/'+verSesion(),{
+	const lista= await axios.get('/api/productotienda/listar/0/'+verSesion(),{
 		headers: 
 		{ 
 			authorization: `Bearer ${verToken()}`
@@ -52,7 +52,7 @@ async function vistaReporteventa(){
 									<option value="">Select...</option>`;
 									for(var i=0;i<resp.length;i++){
 										if(resp[i].ES_VIGENTE==1){
-									listado+=`<option value="${resp[i].ID_PRODUCTO_SUCURSAL}">${resp2[i].CODIGO_PRODUCTO+" - "+resp[i].NOMBRE}</option>`;
+									listado+=`<option value="${resp[i].ID_PRODUCTO}">${resp[i].CODIGO_PRODUCTO+" - "+resp[i].NOMBRE}</option>`;
 										}
 									}
 						listado+=`</select>
