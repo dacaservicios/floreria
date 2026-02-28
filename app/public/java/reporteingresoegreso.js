@@ -75,7 +75,7 @@ async function vistaReporteingresoegreso(){
 											${ resp3[i].CONCEPTO }
 										</td>
 										<td>
-											${ moment(resp3[i].FECHA).format('DD/MM/YYYY') }
+											${ moment.utc(resp3[i].FECHA).local().format('DD/MM/YYYY HH:mm:ss') }
 										</td>
 										<td>
 											${ parseFloat(resp3[i].MONTO).toFixed(2) }
@@ -246,7 +246,7 @@ let msg=`
 							${ resp3[i].CONCEPTO }
 						</td>
 						<td>
-							${ moment(resp3[i].FECHA).format('DD/MM/YYYY') }
+							${ moment.utc(resp3[i].FECHA).local().format('DD/MM/YYYY HH:mm:ss') }
 						</td>
 						<td>
 							${ parseFloat(resp3[i].MONTO).toFixed(2) }

@@ -58,7 +58,7 @@ async function vistaReporteonomastico(){
 									${ resp2[i].CLIENTE }
 								</td>
 								<td>
-									${ moment(resp2[i].FECHA_NACIMIENTO).format('DD/MM') }
+									${ moment.utc(resp2[i].FECHA_NACIMIENTO).local().format('DD/MM') }
 								</td>
 								<td>
 									${(resp2[i].DIAS==0)?'<span class="badge bg-success">Hoy es su cumpleaños</span>':'<span class="badge bg-primary">falta '+resp2[i].DIAS+((resp2[i].DIAS==1)?' día</span>':' días</span>')}

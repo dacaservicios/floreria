@@ -94,7 +94,7 @@ async function vistaUsuario(){
 							</div>
 							<div class="form-group col-md-4">
 								<label>Fecha nacimiento</label>
-								<input name="fechaNacimiento" maxlength="10" autocomplete="off" type="fecha" class="datepicker form-control" placeholder="Ingrese la fecha" value="${(resp.FEC_NACIMIENTO===null)?'':moment(resp.FEC_NACIMIENTO).format('DD-MM-YYYY')}">
+								<input name="fechaNacimiento" maxlength="10" autocomplete="off" type="fecha" class="datepicker form-control" placeholder="Ingrese la fecha" value="${(resp.FEC_NACIMIENTO===null)?'':moment.utc(resp.FEC_NACIMIENTO).local().format('DD-MM-YYYY')}">
 							</div>
 						</div>
 						<div class="row">

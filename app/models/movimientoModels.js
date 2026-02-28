@@ -2,6 +2,7 @@ const pool = require('../config/connections');
 const moment = require('moment');
 
 const crearMovimiento = async (body)=>{
+    console.log(body)
     const query = `CALL USP_UPD_INS_MOVIMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [

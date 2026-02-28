@@ -169,7 +169,7 @@ async function vistaEmpleado(){
 									<div class="estadoTachado tipoEmpleado ${mestado}">${resp[i].TIPO_EMPLEADO }</div>
 								</td>
 								<td>
-									<div class="estadoTachado fechaIngreso ${mestado}">${moment(resp[i].FECHA_INGRESO).format('DD/MM/YYYY')}</div>
+									<div class="estadoTachado fechaIngreso ${mestado}">${moment.utc(resp[i].FECHA_INGRESO).local().format('DD/MM/YYYY')}</div>
 								</td>
 								<td>
 									<div class="estadoTachado movil ${mestado}">${resp[i].NRO_CELULAR }</div>
@@ -327,12 +327,12 @@ async function empleadoEdita(objeto){
 	if(resp.FECHA_NACIMIENTO===null){
 		objeto.fechaNacimiento.val('');
 	}else{
-		objeto.fechaNacimiento.val(moment(resp.FECHA_NACIMIENTO).format('DD-MM-YYYY'));
+		objeto.fechaNacimiento.val(moment.utc(resp.FECHA_NACIMIENTO).local().format('DD-MM-YYYY'));
 	}
 	if(resp.FECHA_INGRESO===null){
 		objeto.fechaIngreso.val('');
 	}else{
-		objeto.fechaIngreso.val(moment(resp.FECHA_INGRESO).format('DD-MM-YYYY'));
+		objeto.fechaIngreso.val(moment.utc(resp.FECHA_INGRESO).local().format('DD-MM-YYYY'));
 	}
 
 }
@@ -391,7 +391,7 @@ function enviaFormularioEmpleado(objeto){
 				let color=getContrastColor(resp.info.COLOR);
 				if(objeto.id>0){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .nombre").html(`<span style="border: 1px #000000 solid;background-color:`+resp.info.COLOR+`; color:`+color+`;" class="badge">${resp.info.NOMBRE}</span>`);
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fechaIngreso").text(moment(resp.info.FECHA_INGRESO).format('DD/MM/YYYY'));
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fechaIngreso").text(moment.utc(resp.info.FECHA_INGRESO).local().format('DD/MM/YYYY'));
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .tipoEmpleado").text(resp.info.TIPO_EMPLEADO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .movil").text(resp.info.NRO_CELULAR);
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
@@ -404,7 +404,7 @@ function enviaFormularioEmpleado(objeto){
 					let rowNode =t.row.add( [
 						`<div class="estadoTachado nombre muestraMensaje"><span style="border: 1px #000000 solid;background-color:${resp.info.COLOR}; color:${color};" class="badge">${resp.info.NOMBRE}</span></div>`,
 						`<div class="estadoTachado tipoEmpleado">${resp.info.TIPO_EMPLEADO}</div>`,
-						`<div class="estadoTachado fechaIngreso">${moment(resp.info.FECHA_INGRESO).format('DD/MM/YYYY')}</div>`,
+						`<div class="estadoTachado fechaIngreso">${moment.utc(resp.info.FECHA_INGRESO).local().format('DD/MM/YYYY')}</div>`,
 						`<div class="estadoTachado movil">${resp.info.NRO_CELULAR}</div>`,
 						estado()+modifica()+elimina()
 					] ).draw( false ).node();

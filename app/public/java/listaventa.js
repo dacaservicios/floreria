@@ -58,7 +58,7 @@ async function vistaVenta(){
                                                             <div class="serie"><span class="badge bg-primary">${ resp2[i].SERIE+" - "+resp2[i].NUMERO_DOCUMENTO }</span></div>
                                                         </td>
                                                         <td>
-                                                            <div class="fechaVenta">${ moment.parseZone(resp2[i].FECHA_VENTA).format('DD/MM/YYYY  HH:mm:ss') }</div>
+                                                            <div class="fechaVenta">${ moment.utc(resp2[i].FECHA_VENTA).local().format('DD/MM/YYYY  HH:mm:ss') }</div>
                                                         </td>
                                                         <td>
                                                             <div class="cliente">${ resp2[i].CLIENTE}</div>

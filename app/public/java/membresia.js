@@ -123,7 +123,7 @@ async function vistaMembresia(){
 									<div class="estadoTachado monto ${mestado}">${parseFloat(membresia[i].MONTO).toFixed(2)}</div>
 								</td>
 								<td>
-									<div class="estadoTachado fecha ${mestado}">${moment(membresia[i].FECHA_INICIO).format('DD/MM/YYYY')}</div>
+									<div class="estadoTachado fecha ${mestado}">${moment.utc(membresia[i].FECHA_INICIO).local().format('DD/MM/YYYY')}</div>
 								</td>
 								<td>
 									${estado()+modifica()+elimina()}
@@ -238,7 +238,7 @@ async function membresiaEdita(objeto){
 	objeto.monto.val(resp.MONTO);
 	objeto.empresa.val(resp.ID_EMPRESA).trigger('change.select2');
 	objeto.tipoMoneda.val(resp.ID_TIPO_MONEDA).trigger('change.select2');
-	objeto.fechaInicio.val(moment(resp.FECHA_INICIO).format('DD-MM-YYYY'));
+	objeto.fechaInicio.val(moment.utc(resp.FECHA_INICIO).local().format('DD-MM-YYYY'));
 }
 
 function validaFormularioMembresia(objeto){	
@@ -288,7 +288,7 @@ function enviaFormularioMembresia(objeto){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .empresa").text(resp.info.RUC+" - "+resp.info.EMPRESA);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .moneda").text(resp.info.TIPO_MONEDA);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .monto").text(parseFloat(resp.info.MONTO).toFixed(2));
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fecha").text(moment(resp.info.FECHA_INICIO).format('DD/MM/YYYY'));
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fecha").text(moment.utc(resp.info.FECHA_INICIO).local().format('DD/MM/YYYY'));
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
 					
 					//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
@@ -298,7 +298,7 @@ function enviaFormularioMembresia(objeto){
 						`<div class="estadoTachado empresa muestraMensaje">${resp.info.RUC+" - "+resp.info.EMPRESA}</div>`,
 						`<div class="estadoTachado moneda">${resp.info.TIPO_MONEDA}</div>`,
 						`<div class="estadoTachado monto">${parseFloat(resp.info.MONTO).toFixed(2)}</div>`,
-						`<div class="estadoTachado fecha">${moment(resp.info.FECHA_INICIO).format('DD/MM/YYYY')}</div>`,
+						`<div class="estadoTachado fecha">${moment.utc(resp.info.FECHA_INICIO).local().format('DD/MM/YYYY')}</div>`,
 						estado()+modifica()+elimina()
 					] ).draw( false ).node();
 					$( rowNode ).attr('id',resp.info.ID_MEMBRESIA);

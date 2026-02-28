@@ -92,7 +92,7 @@ async function vistaAtencion(){
 																	<div class="numero">${resp2[i].NUMERO_DOCUMENTO}</div>
 																</td>
 																<td>
-																	<div class="fechaAtencion">${ moment(resp2[i].FECHA_ATENCION).format('DD/MM/YYYY') }</div>
+																	<div class="fechaAtencion">${ moment.utc(resp2[i].FECHA_ATENCION).local().format('DD/MM/YYYY HH:mm:ss') }</div>
 																</td>
 																<td>
 																	<div class="cliente">${ resp2[i].CLIENTE}</div>

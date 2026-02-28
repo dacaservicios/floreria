@@ -270,7 +270,7 @@ let msg=`
 							${ (i+1) }
 						</td>
 						<td>
-							${ moment(kardex[i].FECHA_CREA).utc().local().format('DD/MM/YYYY HH:mm:ss') }
+							${ moment.utc(kardex[i].FECHA_CREA).local().format('DD/MM/YYYY HH:mm:ss') }
 						</td>
 						<td>
 							${ kardex[i].OPERACION }
