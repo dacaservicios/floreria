@@ -13,8 +13,8 @@ const filtrarReporte = async (body)=>{
         null,
         null, 
         null, 
-        moment(body.fechaInicio,'DD-MM-YYYY HH:mm:ss').utc().format('YYYY-MM-DD HH:mm:ss'),
-        moment(body.fechaFin,'DD-MM-YYYY HH:mm:ss').utc().format('YYYY-MM-DD HH:mm:ss'),
+        moment(body.fechaInicio,'DD-MM-YYYY').startOf('day').utc().format('YYYY-MM-DD HH:mm:ss'),
+        moment(body.fechaFin,'DD-MM-YYYY').endOf('day').utc().format('YYYY-MM-DD HH:mm:ss'),
         body.tipo,
         body.sesId
     ]);
@@ -37,8 +37,8 @@ const filtrarReporteInicio = async (sesId,tipo)=>{
         null,
         null, 
         null, 
-        moment().utc().format('YYYY-MM-DD HH:mm:ss'),
-        moment().utc().format('YYYY-MM-DD HH:mm:ss'),
+        moment().startOf('day').utc().format('YYYY-MM-DD HH:mm:ss'),
+        moment().endOf('day').utc().format('YYYY-MM-DD HH:mm:ss'),
         tipo,
         sesId
     ]);
