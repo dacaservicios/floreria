@@ -3,11 +3,12 @@ const router = express.Router();
 const {isLogin} = require('../middlewares/auth');
 const axios = require('axios');
 const config = require('../config/config');
+const {getUrl} = require('../libs/helpers');//getUrl(req)
 
 router.post('/autocompleta/producto', isLogin  , async(req, res) => {
     const sesId=req.session.passport.user.id;
     try {
-        let autocompleta = await axios.get(config.URL_SISTEMA+"/api/productosucursal/autocompleta/"+req.body.producto+"/"+req.body.tipo+"/"+req.body.sesId,{ 
+        let autocompleta = await axios.get(getUrl(req)+"/api/productosucursal/autocompleta/"+req.body.producto+"/"+req.body.tipo+"/"+req.body.sesId,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
@@ -31,7 +32,7 @@ router.post('/autocompleta/producto', isLogin  , async(req, res) => {
 router.post('/autocompleta/servicio', isLogin  , async(req, res) => {
     const sesId=req.session.passport.user.id;
     try {
-        let autocompleta = await axios.get(config.URL_SISTEMA+"/api/serviciosucursal/autocompleta/"+req.body.servicio+"/"+req.body.tipo+"/"+req.body.sesId,{ 
+        let autocompleta = await axios.get(getUrl(req)+"/api/serviciosucursal/autocompleta/"+req.body.servicio+"/"+req.body.tipo+"/"+req.body.sesId,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 

@@ -1,5 +1,5 @@
 const pool = require('../config/connections');
-const {matchPassword} = require('../libs/helpers');
+const {matchPassword,getUrl} = require('../libs/helpers');
 const config=require('../config/config');
 const path = require('path');
 const fs = require('fs');
@@ -91,7 +91,7 @@ const verificarLogin = async (req, res, next)=>{
     const query = `CALL USP_UPD_INS_REGISTRO(?, ?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
-        0,
+        body.id_empresa,
         body.txtCorreo,
         0,
         0,
@@ -164,7 +164,7 @@ const verificarLogin = async (req, res, next)=>{
                         mensaje : '¡Su sesión esta bloqueada, por superar el número de intentos permitidos (3)!',
                         correo: row2[0][0].EMAIL,
                         tipo:3,
-                        url: config.URL_SISTEMA
+                        url: getUrl(req)
                     }
                 });
             }else{

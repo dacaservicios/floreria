@@ -6,12 +6,12 @@ const axios = require('axios');
 const config = require('../config/config');
 const {isLogin} = require('../middlewares/auth');
 const {pdfTicket} = require('../pdf/ticket');
-
+const {getUrl} = require('../libs/helpers');//getUrl(req)
 
 router.post('/atencion/ticket', isLogin, async (req, res) => {
     try {
         const sesId=req.session.passport.user.id;
-        const lista =  await axios.get(config.URL_SISTEMA+"/api/atencion/buscar/"+req.body.id+"/"+sesId,{ 
+        const lista =  await axios.get(getUrl(req)+"/api/atencion/buscar/"+req.body.id+"/"+sesId,{ 
             headers:{authorization: `Bearer ${req.body.token}`} 
         });
 

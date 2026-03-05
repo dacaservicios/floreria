@@ -13,6 +13,7 @@ const schemaLogin=joi.object({
     txtContrasena: joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!¡#$%&()*+\-\./:;=¿?@\[\]\{\|\}]).{6,16}$/).min(6).max(16).required(),
     idUser:joi.number().allow(''),
     idNivel:joi.number().allow(''),
+    id_empresa:joi.number().allow(''),
 });
 
 const schemaRecupera=joi.object({

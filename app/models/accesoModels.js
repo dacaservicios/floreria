@@ -1,11 +1,11 @@
 const pool = require('../config/connections');
-const {encryptPassword, matchPassword} = require('../libs/helpers');
+const {encryptPassword, matchPassword, getUrl} = require('../libs/helpers');
 //const {enviaEmail} = require('../config/email');
 const {requestEmail} = require('../config/mailjet');
 const {mensajeCambiaPassword} = require('../html/inicioMensaje');
 const config = require('../config/config');
 
-const cambiaPassword = async (id,body)=>{
+const cambiaPassword = async (req,id,body)=>{
     const contrasenaNueva = encryptPassword(body.contrasenaNueva);
     const query = `CALL USP_UPD_INS_REGISTRO(?, ?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
@@ -26,7 +26,7 @@ const cambiaPassword = async (id,body)=>{
     return { 
         resultado : true,
         info : row[0][0],
-        url: config.URL_SISTEMA,
+        url: getUrl(req),
         mensaje : '¡Se cambio la contraseña!'
     };       
 }

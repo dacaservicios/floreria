@@ -22,7 +22,7 @@ const guardar=(req, res)=>{
 
 const password=(req, res)=>{
     const sesId =  req.params.sesId;
-    cambiaPassword(sesId, req.body)
+    cambiaPassword(req, sesId, req.body)
     .then(valor => {
         //req.logOut();
         res.json({

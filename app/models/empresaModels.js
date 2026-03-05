@@ -135,10 +135,30 @@ const estadoCambiaEmpresa = async (body)=>{
     }; 
 }
 
+const buscarSlugEmpresa = async (slug,tabla,sesId)=>{       
+    const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
+    const row= await pool.query(query,
+    [
+        0,
+        0, 
+        slug,
+        0,
+        tabla,
+        sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0][0],
+        mensaje : '¡Registro encontrado!'
+    }; 
+}
+
 module.exports = {
     crearEmpresa,
     editarEmpresa,
     buscarEmpresa,
+    buscarSlugEmpresa,
     listarEmpresa,
     estadoEmpresa,
     estadoCambiaEmpresa,

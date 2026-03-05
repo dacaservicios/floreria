@@ -20,10 +20,13 @@ const randomPassword = (largo)=>{
 }
 
 
- 
+const getUrl = (req) => {
+    return `${req.protocol}://${req.headers.host}`;
+};
 
 module.exports = {
     randomPassword,
+    getUrl,
     encryptPassword,
     matchPassword
 }

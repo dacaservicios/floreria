@@ -1,40 +1,41 @@
 const axios = require('axios');
 const config = require('../config/config');
+const {getUrl} = require('../libs/helpers');//getUrl(req)
 
 const dashboardInicio=async (req, res)=>{
     try{
-        const bloque1 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data1',{
+        const bloque1 = await axios.get(getUrl(req)+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data1',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const bloque2 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data2',{
+        const bloque2 = await axios.get(getUrl(req)+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data2',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const bloque3 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data3',{
+        const bloque3 = await axios.get(getUrl(req)+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data3',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const bloque4 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data4',{
+        const bloque4 = await axios.get(getUrl(req)+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data4',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const bloque5 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data5',{
+        const bloque5 = await axios.get(getUrl(req)+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data5',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const bloque6 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data6',{
+        const bloque6 = await axios.get(getUrl(req)+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data6',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
 
-        const bloque7 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data7',{
+        const bloque7 = await axios.get(getUrl(req)+"/api/inicio/dashboard/"+req.body.sesId+"/"+'data7',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
@@ -62,29 +63,29 @@ const dashboardInicio=async (req, res)=>{
 
 const atencion=async (req, res)=>{
     try{
-        const cliente= await axios.get(config.URL_SISTEMA+"/api/cliente/listar/0/"+req.body.sesId,{
+        const cliente= await axios.get(getUrl(req)+"/api/cliente/listar/0/"+req.body.sesId,{
             headers: 
             { 
                 authorization: `Bearer ${req.body.token}`
             } 
         });
 
-        const servicio = await axios.get(config.URL_SISTEMA+"/api/serviciosucursal/listar/0/"+req.body.sesId,{ 
+        const servicio = await axios.get(getUrl(req)+"/api/serviciosucursal/listar/0/"+req.body.sesId,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const empleado = await axios.get(config.URL_SISTEMA+"/api/empleado/listar/0/"+req.body.sesId,{ 
+        const empleado = await axios.get(getUrl(req)+"/api/empleado/listar/0/"+req.body.sesId,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const venta = await axios.get(config.URL_SISTEMA+"/api/atencion/listar/0/"+req.body.sesId,{ 
+        const venta = await axios.get(getUrl(req)+"/api/atencion/listar/0/"+req.body.sesId,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const tipoPago =  await axios.get(config.URL_SISTEMA+"/api/parametro/detalle/listar/0/TIPA/"+req.body.sesId,{ 
+        const tipoPago =  await axios.get(getUrl(req)+"/api/parametro/detalle/listar/0/TIPA/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 		    } 
@@ -111,27 +112,27 @@ const atencion=async (req, res)=>{
 
 const ventas=async (req, res)=>{
     try{
-        const bloque1 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data1',{
+        const bloque1 = await axios.get(getUrl(req)+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data1',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const bloque2 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data2',{
+        const bloque2 = await axios.get(getUrl(req)+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data2',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const bloque3 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data3',{
+        const bloque3 = await axios.get(getUrl(req)+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data3',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const bloque4 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data4',{
+        const bloque4 = await axios.get(getUrl(req)+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data4',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-        const bloque5 = await axios.get(config.URL_SISTEMA+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data5',{
+        const bloque5 = await axios.get(getUrl(req)+"/api/inicio/dashboardProd/"+req.body.sesId+"/"+'data5',{
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 

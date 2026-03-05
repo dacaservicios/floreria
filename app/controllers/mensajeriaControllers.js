@@ -147,7 +147,7 @@ const estado=(req, res)=>{
 }
 
 const correo=(req, res)=>{
-    enviarCorreo(req.body)
+    enviarCorreo(req, req.body)
     .then(valor => {
         res.json({
             valor : valor
@@ -165,7 +165,7 @@ const correo=(req, res)=>{
 }
 
 const whatsapp=(req, res)=>{
-    enviarWhatsapp(req.body)
+    enviarWhatsapp(req,req.body)
     .then(valor => {
         res.json({
             valor : valor

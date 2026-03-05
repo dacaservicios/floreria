@@ -5,6 +5,8 @@ const moment = require("moment");
 const numeroLetras = require('../middlewares/numeroLetras');
 const fs = require('fs');
 const path = require('path');
+const {getUrl} = require('../libs/helpers');//getUrl(req)
+
 
 const listar=(req, res)=>{
     const id =  req.params.id;
@@ -47,12 +49,12 @@ const buscar=(req, res)=>{
 }
 
 const cierre=async (req, res)=>{
-    const facturacionDetalle =  await axios.get(config.URL_SISTEMA+"/api/facturacion/listar/"+req.body.id+"/"+req.body.sesId,{ 
+    const facturacionDetalle =  await axios.get(getUrl(req)+"/api/facturacion/listar/"+req.body.id+"/"+req.body.sesId,{ 
         headers:{
             authorization: `Bearer ${req.body.token}`
         } 
     });
-    const facturacionCabecera =  await axios.get(config.URL_SISTEMA+"/api/facturacion/buscar/"+req.body.id+"/"+req.body.sesId,{ 
+    const facturacionCabecera =  await axios.get(getUrl(req)+"/api/facturacion/buscar/"+req.body.id+"/"+req.body.sesId,{ 
         headers:{
             authorization: `Bearer ${req.body.token}`
         } 

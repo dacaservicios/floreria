@@ -11,7 +11,7 @@ passport.use('local.login',new LocalStrategy({
     const body =  req.body;
     const ip =  req.ip;  
     const server =  req.hostname;
-    login(ip, server, body)
+    login(req, ip, server, body)
     .then(valor => {
         if(valor.resultado){
             done(null, valor);

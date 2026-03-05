@@ -6,6 +6,7 @@ const {enviaEmail} = require('./email');
 const {mensajeOnosmastico} = require('../html/inicioMensaje');
 const moment = require('moment');
 const { exec } = require('child_process');
+const {getUrl} = require('../libs/helpers');//getUrl(req)
 
 const cronNode = ()=>{
     const cron = require('node-cron');
@@ -13,13 +14,13 @@ const cronNode = ()=>{
     //cron.schedule('*/5 * * * * *', async () => {//cada 5 segundos
     //cron.schedule('30 08,13 * * *', async () => {
     cron.schedule('00 */1 * * *', async () => {//cada hora
-        let resultado=await axios.get(config.URL_SISTEMA+"/api/inicio/dashboard/10/"+'cron');
+        let resultado=await axios.get(getUrl(req)+"/api/inicio/dashboard/10/"+'cron');
         console.log(resultado.data.valor, 'servicio');
         return true;
     });
 
     cron.schedule('15 */1 * * *', async () => {//cada hora y 15 minutos
-        let resultado=await axios.get(config.URL_SISTEMA+"/api/inicio/dashboardProd/10/"+'cron');
+        let resultado=await axios.get(getUrl(req)+"/api/inicio/dashboardProd/10/"+'cron');
         console.log(resultado.data.valor,'producto');
         return true;
     });
@@ -44,7 +45,7 @@ const cronNode = ()=>{
 
     cron.schedule('00 10 * * *', async () => {
         if(config.TELEFONO_SENDER!='0'){
-            const estados= await axios.get(config.URL_SISTEMA+"/api/pagos/verificarWatsapp/0/10");
+            const estados= await axios.get(getUrl(req)+"/api/pagos/verificarWatsapp/0/10");
             let mensaje=estados.data.valida.mensaje;
             let periodo=estados.data.valida.periodo;
             let telefono=config.TELEFONO_WHATSAPP;
@@ -82,7 +83,7 @@ const cronNode = ()=>{
     //envia reporte de flujo de caja por sucursal
     cron.schedule('00 08 * * *', async () => {
         if(config.TELEFONO_SENDER!='0'){
-            const lista= await axios.get(config.URL_SISTEMA+"/api/sucursal/listado/1/10");
+            const lista= await axios.get(getUrl(req)+"/api/sucursal/listado/1/10");
             let sucursales=lista.data.valor.info;
             let fecha=moment().subtract(1, 'days').format('DD-MM-YYYY');
             let fechaPDF=moment().subtract(1, 'days').format('YYYYMMDD');
@@ -98,8 +99,8 @@ const cronNode = ()=>{
                             sesId:10,
                             sucursalId:sucursal.ID_SUCURSAL
                         }
-                        await axios.post(config.URL_SISTEMA+"/api/reporte/flujocajadiario",body);
-                        const url=config.URL_SISTEMA+'/pdf/flujocaja/FC_'+sucursal.ID_SUCURSAL+'_flujocaja.pdf';
+                        await axios.post(getUrl(req)+"/api/reporte/flujocajadiario",body);
+                        const url=getUrl(req)+'/pdf/flujocaja/FC_'+sucursal.ID_SUCURSAL+'_flujocaja.pdf';
 
                         let body2={
                             phone: config.TELEFONO_WHATSAPP,
@@ -126,13 +127,13 @@ const cronNode = ()=>{
     //MENSAJES MASIVOS
     cron.schedule('00 12 * * *', async () => {
         if(config.TELEFONO_SENDER!='0'){
-            const lista= await axios.get(config.URL_SISTEMA+"/api/sucursal/listado/1/10");
+            const lista= await axios.get(getUrl(req)+"/api/sucursal/listado/1/10");
             let sucursales=lista.data.valor.info;
             const resultados = await Promise.allSettled(
                 sucursales.map(async (sucursal) => {
                     try {
                         if(sucursal.NRO_WHATSAPP!==null && sucursal.NRO_WHATSAPP!=''){
-                            const lista2= await axios.get(config.URL_SISTEMA+"/api/mensajeria/buscarSucursal/"+sucursal.ID_SUCURSAL+"/10");
+                            const lista2= await axios.get(getUrl(req)+"/api/mensajeria/buscarSucursal/"+sucursal.ID_SUCURSAL+"/10");
                             let datos=lista2.data.valor.info;
                             if(datos.CUENTA>0){
                                 let body={
@@ -142,7 +143,7 @@ const cronNode = ()=>{
                                     sesId:10
                                 }
 
-                                await axios.post(config.URL_SISTEMA+'/api/mensajeria/whatsapp', body);
+                                await axios.post(getUrl(req)+'/api/mensajeria/whatsapp', body);
                                 console.log('Inicia envio de mensajes');
                             }else{
                                 console.log('No hay registros para enviar');

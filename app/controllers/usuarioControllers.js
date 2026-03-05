@@ -61,7 +61,7 @@ const buscar=(req, res)=>{
 }
 
 const crear=(req, res)=>{
-    crearUsuario(req.body)
+    crearUsuario(req,req.body)
     .then(valor => {
         if(req.archivo!=0){
             uploadedFile = req.files.imagen;

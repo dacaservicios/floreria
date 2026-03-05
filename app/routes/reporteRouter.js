@@ -7,6 +7,7 @@ const config = require('../config/config');
 const moment = require('moment');
 const xl = require('excel4node');
 const {flujocaja} = require('../pdf/flujocaja');
+const {getUrl} = require('../libs/helpers');//getUrl(req)
 
 /*==================VISTAS MOVIMIENTO===================*/
 
@@ -122,7 +123,7 @@ router.post('/reporte/onomastico', isLogin, async (req, res) => {
         .style(styleCabecera);
     }
     
-    const lista2 =  await axios.get(config.URL_SISTEMA+"/api/reporte/filtroInicio/onomastico/"+sesId,{ 
+    const lista2 =  await axios.get(getUrl(req)+"/api/reporte/filtroInicio/onomastico/"+sesId,{ 
 		headers:{
 			authorization: `Bearer ${req.body.token}`
 		} 
@@ -173,7 +174,7 @@ router.post('/reporte/servicio', isLogin, async (req, res) => {
         .style(styleCabecera);
     }
     
-    const lista2 =  await axios.post(config.URL_SISTEMA+"/api/reporte/filtro",req.body,{ 
+    const lista2 =  await axios.post(getUrl(req)+"/api/reporte/filtro",req.body,{ 
 		headers:{
 			authorization: `Bearer ${req.body.token}`
 		} 
@@ -229,7 +230,7 @@ router.post('/reporte/venta', isLogin, async (req, res) => {
         .style(styleCabecera);
     }
     
-    const lista2 =  await axios.post(config.URL_SISTEMA+"/api/reporte/filtro",req.body,{ 
+    const lista2 =  await axios.post(getUrl(req)+"/api/reporte/filtro",req.body,{ 
 		headers:{
 			authorization: `Bearer ${req.body.token}`
 		} 
@@ -285,7 +286,7 @@ router.post('/reporte/ingresoegreso', isLogin, async (req, res) => {
         .style(styleCabecera);
     }
     
-    const lista2 =  await axios.post(config.URL_SISTEMA+"/api/reporte/filtro",req.body,{ 
+    const lista2 =  await axios.post(getUrl(req)+"/api/reporte/filtro",req.body,{ 
 		headers:{
 			authorization: `Bearer ${req.body.token}`
 		} 
@@ -350,13 +351,13 @@ router.post('/reporte/kardex', isLogin, async (req, res) => {
         .style(styleCabecera);
     }
     
-    /*const lista2 =  await axios.post(config.URL_SISTEMA+"/api/reporte/filtro",req.body,{ 
+    /*const lista2 =  await axios.post(getUrl(req)+"/api/reporte/filtro",req.body,{ 
 		headers:{
 			authorization: `Bearer ${req.body.token}`
 		} 
 	});*/
     let body=req.body;
-    let lista2 =  await axios.post(config.URL_SISTEMA+'/api/kardex/filtro',body,{ 
+    let lista2 =  await axios.post(getUrl(req)+'/api/kardex/filtro',body,{ 
         headers:{
             authorization: `Bearer ${req.body.token}`
         } 
@@ -439,37 +440,37 @@ router.post('/reporteflujocaja/flujocaja', isLogin, async (req, res) => {
         const sesId=req.session.passport.user.id;
         const sucursal=req.body.sucursalId;
         req.body.tipo='flujoServicio';
-        const lista1 =  await axios.post(config.URL_SISTEMA+"/api/reporte/filtro",req.body,{ 
+        const lista1 =  await axios.post(getUrl(req)+"/api/reporte/filtro",req.body,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
         req.body.tipo='flujoProducto';
-        const lista2 =  await axios.post(config.URL_SISTEMA+"/api/reporte/filtro",req.body,{ 
+        const lista2 =  await axios.post(getUrl(req)+"/api/reporte/filtro",req.body,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
         req.body.tipo='flujoIngreso';
-        const lista3 =  await axios.post(config.URL_SISTEMA+"/api/reporte/filtro",req.body,{ 
+        const lista3 =  await axios.post(getUrl(req)+"/api/reporte/filtro",req.body,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
         req.body.tipo='flujoCompra';
-        const lista4 =  await axios.post(config.URL_SISTEMA+"/api/reporte/filtro",req.body,{ 
+        const lista4 =  await axios.post(getUrl(req)+"/api/reporte/filtro",req.body,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
         req.body.tipo='flujoEgreso';
-        const lista5 =  await axios.post(config.URL_SISTEMA+"/api/reporte/filtro",req.body,{ 
+        const lista5 =  await axios.post(getUrl(req)+"/api/reporte/filtro",req.body,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
 
-        const lista6 =  await axios.get(config.URL_SISTEMA+"/api/usuario/buscar/"+req.body.sesId+"/"+req.body.sesId,{ 
+        const lista6 =  await axios.get(getUrl(req)+"/api/usuario/buscar/"+req.body.sesId+"/"+req.body.sesId,{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 

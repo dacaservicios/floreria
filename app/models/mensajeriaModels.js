@@ -5,6 +5,7 @@ const path = require('path');
 const {mensajeCorreoMasivo} = require('../html/inicioMensaje');
 const axios = require('axios');
 const config = require('../config/config');
+const {getUrl} = require('../libs/helpers');//getUrl(req)
 
 const crearMensajeria = async (body)=>{
     const query = `CALL USP_UPD_INS_MENSAJERIA(?, ?, ?, ?, ?)`;
@@ -110,7 +111,7 @@ const estadoMensajeria = async(id,tabla)=>{
     
 }
 
-const enviarCorreo = async(body)=>{
+const enviarCorreo = async(req,body)=>{
     const query = `CALL USP_UPD_INS_DETALLE(?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
@@ -137,7 +138,7 @@ const enviarCorreo = async(body)=>{
 }
 
 
-const enviarWhatsapp = async(body)=>{
+const enviarWhatsapp = async(req,body)=>{
     const query2 = `CALL USP_SEL_VERLISTAID(?, ?, ?)`;
     const row2 = await pool.query(query2,
     [
@@ -185,7 +186,7 @@ const enviarWhatsapp = async(body)=>{
                     }
                 try {
                     await axios.post(config.URL_WHATSAPP,body2);
-                    await axios.delete(config.URL_SISTEMA+'/api/cliente/eliminar_wp/'+info[i].ID);
+                    await axios.delete(getUrl(req)+'/api/cliente/eliminar_wp/'+info[i].ID);
                     console.log(`Mensaje enviado a ${info[i].CLIENTE} (${i + 1}/${info.length})`);
                 }catch (error) {
                     console.error(`Error enviando mensaje a ${info[i].CLIENTE}:`, error);

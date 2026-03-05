@@ -2,9 +2,11 @@ $(document).ready(function() {
 	let tabla='login';
 	let correo=$("#"+tabla+" input[name=txtCorreo]");
 	let contrasena=$("#"+tabla+" input[name=txtContrasena]");
+	let id_empresa=$("#"+tabla+" input[name=id_empresa]");
 	let elementos={
 		correo:correo,
-		contrasena:contrasena
+		contrasena:contrasena,
+		id_empresa:id_empresa
 	}
 	
 	$('button.submit').off( 'click');
@@ -84,7 +86,8 @@ async function login(objeto){
 		url: '/inicio/verificaLogin',
 		data:{
 			txtCorreo:objeto.elementos.correo.val(),
-			txtContrasena:objeto.elementos.contrasena.val()
+			txtContrasena:objeto.elementos.contrasena.val(),
+			id_empresa:objeto.elementos.id_empresa.val()
 		},
 		success: function(msg) {
 			resp=msg.valor;
@@ -119,6 +122,7 @@ function loginOk(objeto, idUser, idNivel){
 		data:{
 			txtCorreo:objeto.elementos.correo.val(),
 			txtContrasena:objeto.elementos.contrasena.val(),
+			id_empresa:objeto.elementos.id_empresa.val(),
 			idUser:idUser,
 			idNivel:idNivel
 		},

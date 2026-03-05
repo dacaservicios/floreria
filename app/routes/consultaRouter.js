@@ -6,27 +6,28 @@ const path = require('path');
 const moment = require("moment");
 const fs = require('fs');
 const {isLogin} = require('../middlewares/auth');
+const {getUrl} = require('../libs/helpers');//getUrl(req)
 
 //general.js
 router.post('/consulta/pantallaInicio', isLogin, async(req, res) => {
     const sesId=req.session.passport.user.id;
     try {
-        const ventas =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/ultimasVentas",{ 
+        const ventas =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/ultimasVentas",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             }
         });
     
-        const ventas1 =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/ventaDia",{ 
+        const ventas1 =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/ventaDia",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             }
         });
     
-        const ventas2 =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/ventaMes",{ 
+        const ventas2 =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/ventaMes",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             }
         });
     
-        const productos =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/productoVendido",{ 
+        const productos =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/productoVendido",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             }
         });
@@ -36,43 +37,43 @@ router.post('/consulta/pantallaInicio', isLogin, async(req, res) => {
             total=total+productos.data.valor.info[i];
         }
     
-        const ingreso1 =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/ingresoDia",{ 
+        const ingreso1 =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/ingresoDia",{ 
             headers:{
                 authorization: `Bearer ${req.body.token}`
             } 
         });
     
-        const ingreso2 =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/ingresoMes",{ 
+        const ingreso2 =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/ingresoMes",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             } 
         });
     
-        const egreso1 =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/egresoDia",{ 
+        const egreso1 =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/egresoDia",{ 
             headers:{authorization: `Bearer ${req.body.token}` 
             }
         });
     
-        const egreso2 =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/egresoMes",{ 
+        const egreso2 =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/egresoMes",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             }
         });
     
-        const descuento1 =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/descuentoDia",{ 
+        const descuento1 =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/descuentoDia",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             } 
         });
     
-        const descuento2 =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/descuentoMes",{ 
+        const descuento2 =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/descuentoMes",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             }
         });
 
-        const graficaDia =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/graficaVentaDia",{ 
+        const graficaDia =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/graficaVentaDia",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             }
         });
 
-        const graficaMes =  await axios.get(config.URL_SISTEMA+"/api/venta/filtro/"+req.body.sesId+"/graficaVentaMes",{ 
+        const graficaMes =  await axios.get(getUrl(req)+"/api/venta/filtro/"+req.body.sesId+"/graficaVentaMes",{ 
             headers:{authorization: `Bearer ${req.body.token}`
             } 
         });
@@ -108,14 +109,14 @@ router.post('/consulta/atencion', isLogin, async(req, res) => {
 
     try {
         let idVenta=0;
-        /*const boton= await axios.get(config.URL_SISTEMA+"/api/acceso/privilegio/75/"+req.body.sesId,{
+        /*const boton= await axios.get(getUrl(req)+"/api/acceso/privilegio/75/"+req.body.sesId,{
 			headers: 
 			{ 
 				authorization: `Bearer ${req.body.token}`
 			} 
 		});*/
 
-		const busca =  await axios.get(config.URL_SISTEMA+"/api/pedido/atencion/0/"+req.body.sesId,{ 
+		const busca =  await axios.get(getUrl(req)+"/api/pedido/atencion/0/"+req.body.sesId,{ 
 			headers:{authorization: `Bearer ${req.body.token}`} 
 		});
 
@@ -123,31 +124,31 @@ router.post('/consulta/atencion', isLogin, async(req, res) => {
 			idVenta=busca.data.valor.info.ID_VENTA;
 		}
 
-		const lista1 =  await axios.get(config.URL_SISTEMA+"/api/pedidodetalle/listar/"+idVenta+"/"+req.body.sesId,{ 
+		const lista1 =  await axios.get(getUrl(req)+"/api/pedidodetalle/listar/"+idVenta+"/"+req.body.sesId,{ 
 			headers:{ 
 				authorization: `Bearer ${req.body.token}`
 			}  
 		});
 
-		const lista2 =  await axios.get(config.URL_SISTEMA+"/api/pedido/buscar/"+idVenta+"/"+req.body.sesId,{ 
+		const lista2 =  await axios.get(getUrl(req)+"/api/pedido/buscar/"+idVenta+"/"+req.body.sesId,{ 
 			headers:{ 
 				authorization: `Bearer ${req.body.token}`
 			}  
 		});
 
-		const lista3 =  await axios.get(config.URL_SISTEMA+"/api/categoria/listar/0/"+req.body.sesId,{ 
+		const lista3 =  await axios.get(getUrl(req)+"/api/categoria/listar/0/"+req.body.sesId,{ 
 			headers:{ 
 				authorization: `Bearer ${req.body.token}`
 			}  
 		});
 
-		const lista4 =  await axios.get(config.URL_SISTEMA+"/api/producto/detalle/listar/0/"+req.body.sesId,{ 
+		const lista4 =  await axios.get(getUrl(req)+"/api/producto/detalle/listar/0/"+req.body.sesId,{ 
 			headers: { 
 				authorization: `Bearer ${req.body.token}`
 			}  
 		});
         
-		const usuario = await axios.get(config.URL_SISTEMA+"/api/usuario/buscar/"+req.body.sesId+"/"+req.body.sesId,{ 
+		const usuario = await axios.get(getUrl(req)+"/api/usuario/buscar/"+req.body.sesId+"/"+req.body.sesId,{ 
 			headers: { 
 				authorization: `Bearer ${req.body.token}`
 			}  
@@ -177,16 +178,16 @@ router.post('/consulta/mostrarPedidoDetallePago', isLogin, async(req, res) => {
     const sesId=req.session.passport.user.id;
 
     try {
-        const lista =  await axios.get(config.URL_SISTEMA+"/api/pedidodetalle/listar/"+req.body.id+"/"+req.body.sesId,{ 
+        const lista =  await axios.get(getUrl(req)+"/api/pedidodetalle/listar/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{authorization: `Bearer ${req.body.token}`} 
 		});
-		const lista3 =  await axios.get(config.URL_SISTEMA+"/api/cliente/listar/0/"+req.body.sesId,{ 
+		const lista3 =  await axios.get(getUrl(req)+"/api/cliente/listar/0/"+req.body.sesId,{ 
 			headers:{authorization: `Bearer ${req.body.token}`} 
 		});
-		const lista5 =  await axios.get(config.URL_SISTEMA+"/api/pedidodetalle/listar/pago/"+req.body.id+"/"+req.body.sesId,{ 
+		const lista5 =  await axios.get(getUrl(req)+"/api/pedidodetalle/listar/pago/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{authorization: `Bearer ${req.body.token}`} 
 		});
-		const lista6 =  await axios.get(config.URL_SISTEMA+"/api/pedidodetalle/buscar/pago/"+req.body.id+"/"+req.body.sesId,{ 
+		const lista6 =  await axios.get(getUrl(req)+"/api/pedidodetalle/buscar/pago/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{authorization: `Bearer ${req.body.token}`} 
 		});
 		
@@ -213,22 +214,22 @@ router.post('/consulta/modalLinkPedidoDetallePago', isLogin, async(req, res) => 
     const sesId=req.session.passport.user.id;
 
     try {
-        const lista =  await axios.get(config.URL_SISTEMA+"/api/pedidodetalle/listar/"+req.body.id+"/"+req.body.sesId,{ 
+        const lista =  await axios.get(getUrl(req)+"/api/pedidodetalle/listar/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 		} 
 		});
-		const lista3 =  await axios.get(config.URL_SISTEMA+"/api/cliente/listar/0/"+req.body.sesId,{ 
+		const lista3 =  await axios.get(getUrl(req)+"/api/cliente/listar/0/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 		} 
 		});
-		const lista5 =  await axios.get(config.URL_SISTEMA+"/api/pedidodetalle/listar/pago/"+req.body.id+"/"+req.body.sesId,{ 
+		const lista5 =  await axios.get(getUrl(req)+"/api/pedidodetalle/listar/pago/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 		} 
 		});
-		const lista6 =  await axios.get(config.URL_SISTEMA+"/api/pedidodetalle/buscar/pago/"+req.body.id+"/"+req.body.sesId,{ 
+		const lista6 =  await axios.get(getUrl(req)+"/api/pedidodetalle/buscar/pago/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 		} 
@@ -256,23 +257,23 @@ router.post('/consulta/modalLinkAbastecerDetallePago', isLogin, async(req, res) 
     const sesId=req.session.passport.user.id;
 
     try {
-        const lista =  await axios.get(config.URL_SISTEMA+"/api/abastecer/listar/"+req.body.id+"/"+req.body.sesId,{ 
+        const lista =  await axios.get(getUrl(req)+"/api/abastecer/listar/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 		} 
 		});
-		const lista2= await axios.get(config.URL_SISTEMA+"/api/proveedor/listar/0/"+req.body.sesId,{
+		const lista2= await axios.get(getUrl(req)+"/api/proveedor/listar/0/"+req.body.sesId,{
             headers: 
             { 
                 authorization: `Bearer ${req.body.token}`
             } 
         });
-		const lista5 =  await axios.get(config.URL_SISTEMA+"/api/abastecer/detalle/listar/pago/"+req.body.id+"/"+req.body.sesId,{ 
+		const lista5 =  await axios.get(getUrl(req)+"/api/abastecer/detalle/listar/pago/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 		} 
 		});
-		const lista6 =  await axios.get(config.URL_SISTEMA+"/api/abastecer/detalle/buscar/pago/"+req.body.id+"/"+req.body.sesId,{ 
+		const lista6 =  await axios.get(getUrl(req)+"/api/abastecer/detalle/buscar/pago/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 		} 
@@ -301,19 +302,19 @@ router.post('/consulta/modalLinkCorrigeDocumento', isLogin, async(req, res) => {
     const sesId=req.session.passport.user.id;
 
     try {
-        const lista2 =  await axios.get(config.URL_SISTEMA+"/api/serie/listar/0/"+req.body.sesId,{ 
+        const lista2 =  await axios.get(getUrl(req)+"/api/serie/listar/0/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 			} 
 		});
 	
-		const buscar= await axios.get(config.URL_SISTEMA+"/api/pedido/buscar/"+req.body.id+"/"+req.body.sesId,{ 
+		const buscar= await axios.get(getUrl(req)+"/api/pedido/buscar/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 			} 
 		});
 	
-		const lista= await axios.get(config.URL_SISTEMA+"/api/cliente/listar/0/"+req.body.sesId,{ 
+		const lista= await axios.get(getUrl(req)+"/api/cliente/listar/0/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 			} 
@@ -340,18 +341,18 @@ router.post('/consulta/modalLinkVentaDetalle', isLogin, async(req, res) => {
     const sesId=req.session.passport.user.id;
 
     try {
-        const lista =  await axios.get(config.URL_SISTEMA+"/api/venta/detalle/listar/"+req.body.id+"/"+req.body.sesId,{ 
+        const lista =  await axios.get(getUrl(req)+"/api/venta/detalle/listar/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 			} 
 		});
 	
-		const lista5 =  await axios.get(config.URL_SISTEMA+"/api/pedidodetalle/listar/pago/"+req.body.id+"/"+req.body.sesId,{ 
+		const lista5 =  await axios.get(getUrl(req)+"/api/pedidodetalle/listar/pago/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 			} 
 		});
-		const lista6 =  await axios.get(config.URL_SISTEMA+"/api/pedidodetalle/buscar/pago/"+req.body.id+"/"+req.body.sesId,{ 
+		const lista6 =  await axios.get(getUrl(req)+"/api/pedidodetalle/buscar/pago/"+req.body.id+"/"+req.body.sesId,{ 
 			headers:{
 				authorization: `Bearer ${req.body.token}`
 			} 

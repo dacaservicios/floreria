@@ -2,6 +2,7 @@ const {flujocaja} = require('../pdf/flujocaja');
 const config = require('../config/config');
 const axios = require('axios');
 const {filtrarReporte,filtrarReporteInicio} = require('../models/reporteModels');
+const {getUrl} = require('../libs/helpers');//getUrl(req)
 
 const filtrar=(req, res)=>{
     filtrarReporte(req.body)
@@ -24,16 +25,16 @@ const filtrar=(req, res)=>{
 const flujoCajaDiario= async (req, res)=>{
     try {
         req.body.tipo='flujoServicio';
-        const lista1 =  await axios.post(config.URL_SISTEMA+"/api/reporte/flujocaja",req.body);
+        const lista1 =  await axios.post(getUrl(req)+"/api/reporte/flujocaja",req.body);
         req.body.tipo='flujoProducto';
-        const lista2 =  await axios.post(config.URL_SISTEMA+"/api/reporte/flujocaja",req.body);
+        const lista2 =  await axios.post(getUrl(req)+"/api/reporte/flujocaja",req.body);
         req.body.tipo='flujoIngreso';
-        const lista3 =  await axios.post(config.URL_SISTEMA+"/api/reporte/flujocaja",req.body);
+        const lista3 =  await axios.post(getUrl(req)+"/api/reporte/flujocaja",req.body);
         req.body.tipo='flujoCompra';
-        const lista4 =  await axios.post(config.URL_SISTEMA+"/api/reporte/flujocaja",req.body);
+        const lista4 =  await axios.post(getUrl(req)+"/api/reporte/flujocaja",req.body);
         req.body.tipo='flujoEgreso';
-        const lista5 =  await axios.post(config.URL_SISTEMA+"/api/reporte/flujocaja",req.body);
-        const lista6 =  await axios.get(config.URL_SISTEMA+"/api/sucursal/buscarflujocaja/"+req.body.sucursalId+"/0");
+        const lista5 =  await axios.post(getUrl(req)+"/api/reporte/flujocaja",req.body);
+        const lista6 =  await axios.get(getUrl(req)+"/api/sucursal/buscarflujocaja/"+req.body.sucursalId+"/0");
 
         servicio=lista1.data.valor.info;
         producto=lista2.data.valor.info;

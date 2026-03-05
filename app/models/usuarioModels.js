@@ -1,5 +1,5 @@
 const pool = require('../config/connections');
-const {encryptPassword, randomPassword} = require('../libs/helpers');
+const {encryptPassword, getUrl} = require('../libs/helpers');
 const moment = require('moment');
 const path = require('path');
 const config = require('../config/config');
@@ -8,7 +8,7 @@ const {enviaEmail} = require('../config/email');
 const {mensajeCreaUsuario,mensajeReseteaPassword,mensajeReseteaClave} = require('../html/inicioMensaje');
 const { passwordAleatorio,claveAleatorio } = require('../middlewares/auth');
 
-const crearUsuario = async (body)=>{
+const crearUsuario = async (req,body)=>{
     const nuevaPass=await passwordAleatorio();
     const nuevaClave=await claveAleatorio();
     //const nuevaPass = randomPassword(10);
@@ -65,7 +65,7 @@ const crearUsuario = async (body)=>{
 
     return { 
         resultado : true,
-        url: config.URL_SISTEMA,
+        url: getUrl(req),
         info : row[0][0],
         mensaje : '¡Registro creado!'
     };  

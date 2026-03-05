@@ -1,4 +1,4 @@
-const {crearEmpresa,editarEmpresa,buscarEmpresa,listarEmpresa,estadoEmpresa,eliminarEmpresa,estadoCambiaEmpresa} = require('../models/empresaModels');
+const {crearEmpresa,editarEmpresa,buscarEmpresa,buscarSlugEmpresa,listarEmpresa,estadoEmpresa,eliminarEmpresa,estadoCambiaEmpresa} = require('../models/empresaModels');
 const path = require('path');
 
 const listar=(req, res)=>{
@@ -45,6 +45,26 @@ const buscar=(req, res)=>{
     const sesId =  req.params.sesId;
     const id =  req.params.id;
     buscarEmpresa(id,'empresa',sesId)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
+const buscarSlug=(req, res)=>{
+    const sesId =  req.params.sesId;
+    const slug =  req.params.slug;
+    buscarSlugEmpresa(slug,'slug',sesId)
     .then(valor => {
         res.json({
             valor : valor
@@ -171,6 +191,7 @@ module.exports = {
     listar,
     listarMiempresa,
     buscar,
+    buscarSlug,
     cambiaEmpresa,
     crear,
     editar,

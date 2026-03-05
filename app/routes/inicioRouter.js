@@ -2,16 +2,36 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const passport = require('passport');
-const {isLogin, notLogin, verificarLogin, verificarCorreo, caracter,sesion,validaSchema, privilegios2} = require('../middlewares/auth');
+const {isLogin, notLogin, verificarLogin, verificarCorreo, caracter,validaSchema} = require('../middlewares/auth');
 const {schemaLogin, schemaRegister, schemaRecupera, schemaOlvidaPassword} = require('../middlewares/schema');
 const axios = require('axios');
 const config = require('../config/config');
-
+const pool = require('../config/connections');
+const {getUrl} = require('../libs/helpers');//getUrl(req)
 
 /*=================VISTAS INICIO===================*/
 
-router.get('/', notLogin, (req, res) => {
-    res.render('index');
+router.get('/', notLogin, async(req, res) => {
+    const host = req.headers.host; // Ejemplo: "rosas.app.aynisystem.com"
+    const partes = host.split('.');
+    // Si el host es "rosas.app.aynisystem.com", partes[0] es "rosas"
+    const subdominio = partes[0];
+    try {
+        // Buscamos la florería en tu tabla de MySQL
+        const empresa = await pool.query('SELECT * FROM MAE_EMPRESA WHERE SLUG = ?', [subdominio]);
+
+        if (empresa.length > 0) {
+            // Si existe la florería, pasamos sus datos a la vista
+            res.render('index', { floreria: empresa[0] });
+        } else {
+            // Si el subdominio no existe en tu BD, podrías mandarlo a tu web de ventas
+            res.redirect('https://aynisystem.com');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error al cargar el sistema");
+    }
+
 });
 
 router.post('/vista/inicio/login', notLogin, (req, res) => {
@@ -40,7 +60,7 @@ router.post('/inicio/verificaLoginOk', notLogin, caracter, validaSchema(schemaLo
         res.json({
             valor : {
                 user: req.user,
-                url: config.URL_SISTEMA
+                url: getUrl(req)
             }
 
         });
@@ -50,7 +70,7 @@ router.post('/inicio/verificaLoginOk', notLogin, caracter, validaSchema(schemaLo
 router.post('/inicio/menuNivel', isLogin, async (req, res)=>{
     const sesId=req.session.passport.user.id
     try {
-        const menuNivel= await axios.get(config.URL_SISTEMA+"/api/inicio/menu/"+sesId+"/"+req.body.tabla+"/"+req.body.tabla2,{ 
+        const menuNivel= await axios.get(getUrl(req)+"/api/inicio/menu/"+sesId+"/"+req.body.tabla+"/"+req.body.tabla2,{ 
         headers: 
         { 
             authorization: `Bearer ${req.body.token}`
@@ -73,7 +93,7 @@ router.post('/inicio/menuNivel', isLogin, async (req, res)=>{
 
 router.post('/inicio/register', notLogin, validaSchema(schemaRegister), async(req, res) => {
     try {
-        const register = await axios.post(config.URL_SISTEMA+"/api/inicio/register",req.body);
+        const register = await axios.post(getUrl(req)+"/api/inicio/register",req.body);
         res.json({
             valor : register.data.valor
         });
@@ -91,7 +111,7 @@ router.post('/inicio/register', notLogin, validaSchema(schemaRegister), async(re
 
 router.post('/inicio/password', notLogin, validaSchema(schemaOlvidaPassword), async (req, res) => {
     try {
-        const password = await axios.post(config.URL_SISTEMA+"/api/inicio/password",req.body);
+        const password = await axios.post(getUrl(req)+"/api/inicio/password",req.body);
         res.json({
             valor : password.data.valor
         });
@@ -109,7 +129,7 @@ router.post('/inicio/password', notLogin, validaSchema(schemaOlvidaPassword), as
 
 router.post('/inicio/recupera', notLogin, validaSchema(schemaRecupera), verificarCorreo, async(req, res) => {
     try {
-        const recupera = await axios.put(config.URL_SISTEMA+"/api/inicio/recupera/10",req.body);
+        const recupera = await axios.put(getUrl(req)+"/api/inicio/recupera/10",req.body);
         res.json({
             valor : recupera.data.valor
         });
@@ -130,7 +150,7 @@ router.post('/vista/inicio/submenu', isLogin,  async (req, res) => {
     const idSubMenu=req.body.idSubMenu;
     const tabla=req.body.tabla;
     
-    const lista = await axios.get(config.URL_SISTEMA+"/api/"+tabla+"/listar/0/"+sesId,{ 
+    const lista = await axios.get(getUrl(req)+"/api/"+tabla+"/listar/0/"+sesId,{ 
         headers:{authorization: `Bearer ${req.body.token}`} 
     });
     

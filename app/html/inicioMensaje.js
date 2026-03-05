@@ -70,14 +70,6 @@ const mensajeOlvidaPassword = (objeto)=>{//ok
                     Te recordamos que si tienes alguna duda háganosla saber, ya que estamos a su disposición.
                 </div>
 
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    Puedes iniciar sesión desde aquí.
-                </div>
-
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    <h2><a style='color:white;' href="`+config.URL_SISTEMA+`">Iniciar sesión</a></h2>
-                </div>
-
                 <div style='text-align:left;padding-top:10px;font-weight:700;text-align: center;color:white'>
                     <h4 style='margin:0;'>Saludos.</h4>
                 </div>
@@ -113,14 +105,6 @@ const mensajeCambiaPassword = (objeto)=>{//ok
 
                 <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
                     Te recordamos que si tienes alguna duda háganosla saber, ya que estamos a su disposición.
-                </div>
-
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    Puedes iniciar sesión desde aquí.
-                </div>
-
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    <h2><a style='color:white;' href="`+config.URL_SISTEMA+`">Iniciar sesión</a></h2>
                 </div>
 
                 <div style='text-align:left;padding-top:10px;font-weight:700;text-align: center;color:white'>
@@ -173,14 +157,6 @@ return `
 
                 <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
                     Nuevamante te damos la bienvenida y te recordamos que si tienes alguna duda háganosla saber, ya que estamos a tu disposición.
-                </div>
-
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    Puedes iniciar sesión desde aquí.
-                </div>
-
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    <h2><a style='color:white;' href="`+config.URL_SISTEMA+`">Iniciar sesión</a></h2>
                 </div>
 
                 <div style='text-align:left;padding-top:10px;font-weight:700;text-align: center;color:white'>
@@ -319,14 +295,6 @@ const mensajeReseteaPassword = (objeto)=>{//ok
                     Te recordamos que si tienes alguna duda háganosla saber, ya que estamos a su disposición.
                 </div>
 
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    Puedes iniciar sesión desde aquí.
-                </div>
-
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    <h2><a style='color:white;' href="`+config.URL_SISTEMA+`">Iniciar sesión</a></h2>
-                </div>
-
                 <div style='text-align:left;padding-top:10px;font-weight:700;text-align: center;color:white'>
                     <h4 style='margin:0;'>Saludos.</h4>
                 </div>
@@ -367,14 +335,6 @@ const mensajeReseteaClave = (objeto)=>{//ok
 
                 <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
                     Te recordamos que si tienes alguna duda háganosla saber, ya que estamos a su disposición.
-                </div>
-
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    Puedes iniciar sesión desde aquí.
-                </div>
-
-                <div style='text-align:left;padding-top:20px;text-align: center;color:white'>
-                    <h2><a style='color:white;' href="`+config.URL_SISTEMA+`">Iniciar sesión</a></h2>
                 </div>
 
                 <div style='text-align:left;padding-top:10px;font-weight:700;text-align: center;color:white'>

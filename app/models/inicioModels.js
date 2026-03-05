@@ -1,13 +1,13 @@
 const pool = require('../config/connections');
 const config = require('../config/config');
 const jwt = require('jsonwebtoken');
-const {encryptPassword,randomPassword} = require('../libs/helpers');
+const {encryptPassword,getUrl} = require('../libs/helpers');
 const moment = require('moment');
 const {enviaEmail} = require('../config/email');
 const {mensajeOlvidaPassword} = require('../html/inicioMensaje');
 const { passwordAleatorio } = require('../middlewares/auth');
  
-const login = async (ip,server,body)=>{  
+const login = async (req, ip,server,body)=>{  
     const query = `CALL USP_UPD_INS_REGISTRO(?, ?, ?, ?, ?, ?, ?)`;
     
     const row1 = await pool.query(query,
@@ -61,7 +61,7 @@ const login = async (ip,server,body)=>{
         return { 
             resultado : false,
             mensaje : row1[0][0].MENSAJE,
-            url: config.URL_SISTEMA,
+            url: getUrl(req),
         }; 
     }           
 }
@@ -275,7 +275,7 @@ const recuperaPassword = async (id,body,ip,server)=>{
     return { 
         resultado : true,
         info : row[0][0],
-        url: config.URL_SISTEMA,
+        url: getUrl(req),
         mensaje : '¡Se recuperó la contraseña!'
     };       
 }
