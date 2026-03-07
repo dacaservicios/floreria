@@ -156,7 +156,6 @@ const schemaEmpresa=joi.object({
     celular: joi.string().min(0).max(9).allow(''),
     ruc: joi.string().min(1).max(11).required(),
     imagen: joi.string().min(0).max(100).allow(''),
-    documentos:joi.number().allow(''),
     sesId:joi.number().required()
 });
 

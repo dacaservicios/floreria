@@ -51,27 +51,21 @@ async function vistaEmpresa(){
 							</div> 
 						</div>
 						<div class="row">
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-4">
 								<label>Fijo</label>
 								<input name="fijo" autocomplete="off" maxlength="7" type="tel" class="form-control p-1" placeholder="Ingrese el fijo">
 							</div> 
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-4">
 								<label>Celular (*)</label>
 								<input name="celular" autocomplete="off" maxlength="9" type="tel" class="form-control p-1" placeholder="Ingrese el celular">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 								<div class="formato oculto">¡Formato Incorrecto!</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-4">
 								<label>Ruc (*)</label>
 								<input name="ruc" autocomplete="off" maxlength="11" type="tel" class="form-control p-1" placeholder="Ingrese el ruc">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 								<div class="formato oculto">¡Formato Incorrecto!</div>
-							</div> 
-							<div class="form-group col-md-6">
-								<label>Nro. Documentos</label>
-								<input name="documentos" autocomplete="off" maxlength="5" type="tel" class="form-control p-1" placeholder="Ingrese el nro de documentos">
 							</div>
 						</div>
 						<div class="pt-3 col-md-12 pl-0 pr-0 text-center">
@@ -85,11 +79,9 @@ async function vistaEmpresa(){
 							<thead>
 								<tr>
 									<th style="width: 40%;">Razón social</th>
-									<th style="width: 32%;">Nombre</th>
-									<th style="width: 5%;">Ruc</th>
+									<th style="width: 35%;">Nombre</th>
+									<th style="width: 10%;">Ruc</th>
 									<th style="width: 5%;">Celular</th>
-									<th style="width: 5%;">Nro. Doc.</th>
-									<th style="width: 3%;">Doc. Emit.</th>
 									<th style="width: 10%;" class="nosort nosearch">Acciones</th>
 								</tr>
 							</thead>
@@ -122,12 +114,6 @@ async function vistaEmpresa(){
 										<div class="estadoTachado celular ${mestado}">${resp[i].NRO_CELULAR}</div>
 									</td>
 									<td>
-										<div class="estadoTachado documentos ${mestado}">${(resp[i].DOCUMENTOS===null)?'Ilimitado':resp[i].DOCUMENTOS }</div>
-									</td>
-									<td>
-										<div class="estadoTachado documentos_emitidos ${mestado}">${resp[i].DOCUMENTOS_GENERADOS}</div>
-									</td>
-									<td>
 										${empresa()+sucursal()+estado()+modifica()+elimina()}
 									</td>
 								</tr>`;
@@ -155,7 +141,6 @@ async function vistaEmpresa(){
 		fijo:$('#'+tabla+' input[name=fijo]'),
 		celular:$('#'+tabla+' input[name=celular]'),
 		ruc:$('#'+tabla+' input[name=ruc]'),
-		documentos:$('#'+tabla+' input[name=documentos]'),
 		tabla:tabla,
 	}
 	eventosEmpresa(objeto);
@@ -184,8 +169,6 @@ function eventosEmpresa(objeto){
 		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
 		if(name=='ruc'){
 			validaRuc(elemento);
-		}else if(name=='documentos'){
-			numeroRegex(elemento);
 		}else if(name=='celular'){
 			validaCelular(elemento);
 		}else if(name=='fijo'){
@@ -264,7 +247,6 @@ async function empresaEdita(objeto){
 	objeto.fijo.val(resp.NRO_FIJO);
 	objeto.celular.val(resp.NRO_CELULAR);
 	objeto.ruc.val(resp.RUC);
-	objeto.documentos.val(resp.DOCUMENTOS);
 }
 
 function validaFormularioEmpresa(objeto){	
@@ -317,7 +299,6 @@ function enviaFormularioEmpresa(objeto){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .nombre").text(resp.info.NOMB_EMPRESA);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .ruc").text(resp.info.RUC);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .celular").text(resp.info.NRO_CELULAR);
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .documentos").text((resp.info.DOCUMENTOS===null)?'Ilimitado':resp.info.DOCUMENTOS);
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
 
 					//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
@@ -337,8 +318,6 @@ function enviaFormularioEmpresa(objeto){
 						`<div class="estadoTachado nombre muestraMensaje">${resp.info.NOMB_EMPRESA}</div>`,
 						`<div class="estadoTachado ruc">${resp.info.RUC}</div>`,
 						`<div class="estadoTachado celular">${resp.info.NRO_CELULAR}</div>`,
-						`<div class="estadoTachado documentos">${(resp.info.DOCUMENTOS===null)?'Ilimitado':resp.info.DOCUMENTOS}</div>`,
-						`<div class="estadoTachado documentos_emitidos">0</div>`,
 						empresa()+sucursal()+estado()+modifica()+elimina()
 					] ).draw( false ).node();
 					$( rowNode ).attr('id',resp.info.ID_EMPRESA);

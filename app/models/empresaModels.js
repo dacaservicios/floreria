@@ -1,7 +1,7 @@
 const pool = require('../config/connections');
 
 const crearEmpresa = async (body)=>{
-    const query = `CALL USP_UPD_INS_EMPRESA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_EMPRESA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         0,
@@ -12,7 +12,6 @@ const crearEmpresa = async (body)=>{
         (body.celular=='')?null:body.celular,
         body.ruc,
         (body.imagen=='')?null:body.imagen,
-        (body.documentos=='')?null:body.documentos, 
         'crea',
         body.sesId
     ]);
@@ -26,7 +25,7 @@ const crearEmpresa = async (body)=>{
 
 const editarEmpresa = async (id,body)=>{
 
-    const query = `CALL USP_UPD_INS_EMPRESA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_EMPRESA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
@@ -37,7 +36,6 @@ const editarEmpresa = async (id,body)=>{
         (body.celular=='')?null:body.celular,
         body.ruc,
         (body.imagen=='')?null:body.imagen,
-        (body.documentos=='')?null:body.documentos,
         'edita',
         body.sesId
     ]);

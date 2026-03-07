@@ -19,11 +19,7 @@ async function vistaUsuario(){
 		}
 	});
 
-	const nivel = await axios.get("/api/nivel/listar/0/"+verSesion(),{ 
-		headers:{
-			authorization: `Bearer ${verToken()}`
-		} 
-	});
+
 	const tipoDoc = await axios.get("/api/parametro/detalle/listar/0/TIDO/"+verSesion(),{ 
 		headers:{
 			authorization: `Bearer ${verToken()}`
@@ -33,8 +29,7 @@ async function vistaUsuario(){
 	desbloquea();
 	const resp=busca.data.valor.info;
 	const resp2=tipoDoc.data.valor.info;
-	const resp3=nivel.data.valor.info;
-	console.log(resp)
+	
 	let listado=`
 	<div class="row row-sm mg-t-10">
 		<div class="col-lg-12">
