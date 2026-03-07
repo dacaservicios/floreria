@@ -78,7 +78,7 @@ async function vistaEmpresa(){
 							</div>
 						</div>
 						<div class="pt-3 col-md-12 pl-0 pr-0 text-center">
-							${limpia()+guarda()}
+							${limpia()+((verNivel()==1)?guarda():'')}
 						</div>
 						<div class="h8 text-center pt-2">(*) Los campos con asteriso son obligatorios.</div>
 					</form>
@@ -96,6 +96,7 @@ async function vistaEmpresa(){
 							</thead>
 							<tbody>`;
 							var mestado;
+							var opciones;
 							for(let i=0;i<resp.length;i++){
 								if(resp[i].ES_VIGENTE==1){
 									mestado='';
@@ -107,6 +108,12 @@ async function vistaEmpresa(){
 									mactual="<span class='badge bg-primary'>Actual</span>";
 								}else{
 									mactual='';
+								}
+
+								if(verNivel()==1){
+									opciones=empresa()+sucursal()+estado()+modifica()+elimina();
+								}else{
+									opciones=sucursal()+modifica();
 								}
 					listado+=`<tr id="${resp[i].ID_EMPRESA}">
 									<td>
@@ -123,7 +130,7 @@ async function vistaEmpresa(){
 										<div class="estadoTachado celular ${mestado}">${resp[i].NRO_CELULAR}</div>
 									</td>
 									<td>
-										${empresa()+sucursal()+estado()+modifica()+elimina()}
+										${opciones}
 									</td>
 								</tr>`;
 							}

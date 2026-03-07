@@ -76,7 +76,7 @@ async function vistaSucursal(objetoEmpresa){
 							</div>
 						</div>
 						<div class="pt-3 col-md-12 pl-0 pr-0 text-center">
-							${regresa()+limpia()+guarda()}
+							${regresa()+limpia()+((verNivel()==1)?guarda():'')}
 						</div>
 						<div class="h8 text-center pt-2">(*) Los campos con asteriso son obligatorios.</div>
 					</form>
@@ -110,6 +110,12 @@ async function vistaSucursal(objetoEmpresa){
 								}else{
 									mactual='';
 								}
+
+								if(verNivel()==1){
+									opciones=estado()+((resp[i].ES_PRINCIPAL==1)?'':modifica()+elimina());
+								}else{
+									opciones=estado()+((resp[i].ES_PRINCIPAL==1)?'':modifica());
+								}
 					listado+=`<tr id="${resp[i].ID_SUCURSAL}">
 									<td>
 										<div class="estadoTachado nombre muestraMensaje ${mestado}">${resp[i].NOMB_SUCURSAL }</div>
@@ -122,7 +128,7 @@ async function vistaSucursal(objetoEmpresa){
 										<div class="estadoTachado celular ${mestado}">${resp[i].NRO_CELULAR}</div>
 									</td>
 									<td>
-										${estado()+((resp[i].ES_PRINCIPAL==1)?'':modifica()+elimina())}
+										${opciones}
 									</td>
 								</tr>`;
 							}
