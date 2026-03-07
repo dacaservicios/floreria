@@ -228,10 +228,13 @@ async function datosUsuario(){
             }else{ 
                 menu();
                 actualizaDashboard();
-                if(resp.info.IMAGEN_EMPRESA=='' || resp.info.IMAGEN_EMPRESA===null){
-                    $("img.imagenSucursalInicio").attr('src','/imagenes/vacio.jpg');
+
+                if(resp.info.IMAGEN_SUCURSAL!='' && resp.info.IMAGEN_SUCURSAL!==null){
+                    $("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/SUC_'+resp.info.ID_SUCURSAL+'_'+resp.info.IMAGEN_SUCURSAL);
+                }else if(resp.info.IMAGEN_EMPRESA!='' && resp.info.IMAGEN_EMPRESA!==null){
+                    $("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/EMP_'+resp.info.ID_EMPRESA+'_'+resp.info.IMAGEN_EMPRESA);
                 }else{
-                    $("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/LOGO_'+resp.info.ID_EMPRESA+'_'+resp.info.IMAGEN_EMPRESA);
+                    $("img.imagenSucursalInicio").attr('src','/imagenes/vacio.jpg');
                 }
                 if(resp.info.IMAGEN=='' || resp.info.IMAGEN===null){
                     $("img.imagenUsuarioInicio").attr('src','/imagenes/vacio.jpg');

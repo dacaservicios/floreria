@@ -1,7 +1,7 @@
 const pool = require('../config/connections');
 
 const crearSucursal = async (body)=>{
-    const query = `CALL USP_UPD_INS_SUCURSAL(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_SUCURSAL(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         0,
@@ -12,7 +12,6 @@ const crearSucursal = async (body)=>{
         (body.celular=='')?null:body.celular,
         body.ruc,
         (body.imagen=='')?null:body.imagen,
-        (body.documentos=='')?null:body.documentos,
         'crea',
         body.sesId
     ]);
@@ -25,7 +24,7 @@ const crearSucursal = async (body)=>{
 }
 
 const editarSucursal = async (id,body)=>{
-    const query = `CALL USP_UPD_INS_SUCURSAL(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_SUCURSAL(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
@@ -36,7 +35,6 @@ const editarSucursal = async (id,body)=>{
         (body.celular=='')?null:body.celular,
         body.ruc,
         (body.imagen=='')?null:body.imagen,
-        (body.documentos=='')?null:body.documentos,
         'edita',
         body.sesId
     ]);

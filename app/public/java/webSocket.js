@@ -41,6 +41,14 @@ socket.on('actualizaFechaServicio',function (data){
 socket.on('actualizaNombreSucursal',function (data){
     $("#sucursalVentas").text(data.sucursal);
     $("#userSucursal").val(data.id_sucursal);
+
+    if(data.imagen_sucursal!='' && data.imagen_sucursal!==null){
+        $("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/SUC_'+data.id_sucursal+'_'+data.imagen_sucursal);
+    }else if(data.imagen_empresa!='' && data.imagen_empresa!==null){
+        $("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/EMP_'+data.id_empresa+'_'+data.imagen_empresa);
+    }else{
+        $("img.imagenSucursalInicio").attr('src','/imagenes/vacio.jpg');
+    }
 });
 
 socket.on('actualizaLogoSucursal',function (data){

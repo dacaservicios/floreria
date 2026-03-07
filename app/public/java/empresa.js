@@ -68,6 +68,15 @@ async function vistaEmpresa(){
 								<div class="formato oculto">¡Formato Incorrecto!</div>
 							</div>
 						</div>
+						<div class="row"> 
+							<div class="form-group col-md-12">
+								<label>Imagen (*)  (Solo se permite formatos: JPG, JPEG o PNG no mayor a 1Mb)</label>
+								<input type="file" class="form-control p-1" name="imagen" id="imagen">
+								<span id="imagenEmpresa" class="cursor">
+									<span class="badge bg-primary"></span>
+								</span>
+							</div>
+						</div>
 						<div class="pt-3 col-md-12 pl-0 pr-0 text-center">
 							${limpia()+guarda()}
 						</div>
@@ -141,6 +150,7 @@ async function vistaEmpresa(){
 		fijo:$('#'+tabla+' input[name=fijo]'),
 		celular:$('#'+tabla+' input[name=celular]'),
 		ruc:$('#'+tabla+' input[name=ruc]'),
+		imagen:$('#'+tabla+' input[name=imagen]'),
 		tabla:tabla,
 	}
 	eventosEmpresa(objeto);
@@ -247,6 +257,16 @@ async function empresaEdita(objeto){
 	objeto.fijo.val(resp.NRO_FIJO);
 	objeto.celular.val(resp.NRO_CELULAR);
 	objeto.ruc.val(resp.RUC);
+
+	if(resp.IMAGEN!==null){
+		$('span#imagenEmpresa').html('<span class="badge bg-primary">'+resp.IMAGEN+'</span>');
+		$('span#imagenEmpresa').off( 'click');
+		$('span#imagenEmpresa').on( 'click',function(){
+			let imagen=`<img src="../imagenes/empresa/EMP_`+objeto.id+`_`+resp.IMAGEN+`">`;
+			mostrar_general1({titulo:'IMAGEN',nombre:objeto.nombreEdit,msg:imagen,ancho:300});
+			$('#contenidoGeneral1').addClass('text-center');
+		});
+	}
 }
 
 function validaFormularioEmpresa(objeto){	
@@ -265,11 +285,11 @@ function validaFormularioEmpresa(objeto){
 function enviaFormularioEmpresa(objeto){
 	let dato=(objeto.id==0)?muestraMensaje({tabla:objeto.tabla}):objeto.nombreMsg;
 	let verbo=(objeto.id==0)?'Creará':'Modificará';
-
+	let imagen=(objeto.imagen.val()=='')?'':objeto.imagen.val().substring(12).trim();
 	var fd = new FormData(document.getElementById(objeto.tabla));
 	fd.append("id", objeto.id);
 	fd.append("sesId", verSesion());
-	fd.append("imagen",null);
+	fd.append("imagen", imagen);
 	
 	confirm("¡"+verbo+" el registro: "+dato+"!",function(){
 		return false;
@@ -300,7 +320,9 @@ function enviaFormularioEmpresa(objeto){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .ruc").text(resp.info.RUC);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .celular").text(resp.info.NRO_CELULAR);
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
-
+					if(resp.info.IMAGEN!==null){
+						$("img.imagenSucursalInicio").attr('src','/imagenes/empresa/EMP_'+resp.info.ID_EMPRESA+'_'+resp.info.IMAGEN);
+					}
 					//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
 
 					if(resp.info.ID_EMPRESA==resp.info.EMPRESA_ACTUAL){
@@ -322,6 +344,9 @@ function enviaFormularioEmpresa(objeto){
 					] ).draw( false ).node();
 					$( rowNode ).attr('id',resp.info.ID_EMPRESA);
 					
+					if(resp.info.IMAGEN!==null){
+						$("img.imagenSucursalInicio").attr('src','/imagenes/empresa/EMP_'+resp.info.ID_EMPRESA+'_'+resp.info.IMAGEN);
+					}
 					//success("Creado","¡Se ha creado el registro: "+dato+"!");
 				}
 				limpiaTodo(objeto.tabla);

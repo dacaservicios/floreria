@@ -61,15 +61,18 @@ async function vistaSucursal(objetoEmpresa){
 							</div>
 						</div>
 						<div class="row">
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-4">
 								<label>Ruc (*)</label>
 								<input readonly name="ruc" autocomplete="off" maxlength="11" type="tel" class="form-control p-1" placeholder="Ingrese el ruc" value='${objetoEmpresa.ruc}'>
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 								<div class="formato oculto">¡Formato Incorrecto!</div>
 							</div> 
-							<div class="form-group col-md-6">
-								<label>Nro. Documentos</label>
-								<input name="documentos" autocomplete="off" maxlength="5" type="tel" class="form-control p-1" placeholder="Ingrese el nro de documentos">
+							<div class="form-group col-md-8">
+								<label>Imagen (*)  (Solo se permite formatos: JPG, JPEG o PNG no mayor a 1Mb)</label>
+								<input type="file" class="form-control p-1" name="imagen" id="imagen">
+								<span id="imagenSucursal" class="cursor">
+									<span class="badge bg-primary"></span>
+								</span>
 							</div>
 						</div>
 						<div class="pt-3 col-md-12 pl-0 pr-0 text-center">
@@ -83,10 +86,8 @@ async function vistaSucursal(objetoEmpresa){
 							<thead>
 								<tr>
 									<th style="width: 50%;">Nombre</th>
-									<th style="width: 10%;">Ruc</th>
-									<th style="width: 10%;">Celular</th>
-									<th style="width: 10%;">Nro. Doc.</th>
-									<th style="width: 10%;">Doc. Emit.</th>
+									<th style="width: 20%;">Ruc</th>
+									<th style="width: 20%;">Celular</th>
 									<th style="width: 10%;" class="nosort nosearch">Acciones</th>
 								</tr>
 							</thead>
@@ -121,12 +122,6 @@ async function vistaSucursal(objetoEmpresa){
 										<div class="estadoTachado celular ${mestado}">${resp[i].NRO_CELULAR}</div>
 									</td>
 									<td>
-										<div class="estadoTachado documentos ${mestado}">${(resp[i].DOCUMENTOS===null)?'Ilimitado':resp[i].DOCUMENTOS }</div>
-									</td>
-									<td>
-										<div class="estadoTachado documentos_emitidos ${mestado}">${resp[i].DOCUMENTOS_GENERADOS}</div>
-									</td>
-									<td>
 										${estado()+((resp[i].ES_PRINCIPAL==1)?'':modifica()+elimina())}
 									</td>
 								</tr>`;
@@ -147,7 +142,7 @@ async function vistaSucursal(objetoEmpresa){
 		fijo:$('#'+tabla+' input[name=fijo]'),
 		celular:$('#'+tabla+' input[name=celular]'),
 		ruc:$('#'+tabla+' input[name=ruc]'),
-		documentos:$('#'+tabla+' input[name=documentos]'),
+		imagen:$('#'+tabla+' input[name=imagen]'),
 		idPadre:objetoEmpresa.id,
 		tabla:tabla,
 	}
@@ -179,8 +174,6 @@ function eventosSucursal(objeto){
 		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
 		if(name=='ruc'){
 			validaRuc(elemento);
-		}else if(name=='documentos'){
-			numeroRegex(elemento);
 		}else if(name=='celular'){
 			validaCelular(elemento);
 		}else if(name=='fijo'){
@@ -249,7 +242,15 @@ async function sucursalEdita(objeto){
 	objeto.fijo.val(resp.NRO_FIJO);
 	objeto.celular.val(resp.NRO_CELULAR);
 	objeto.ruc.val(resp.RUC);
-	objeto.documentos.val(resp.DOCUMENTOS);
+	if(resp.IMAGEN!==null){
+		$('span#imagenSucursal').html('<span class="badge bg-primary">'+resp.IMAGEN+'</span>');
+		$('span#imagenSucursal').off( 'click');
+		$('span#imagenSucursal').on( 'click',function(){
+			let imagen=`<img src="../imagenes/sucursal/SUC_`+objeto.id+`_`+resp.IMAGEN+`">`;
+			mostrar_general1({titulo:'IMAGEN',nombre:objeto.nombreEdit,msg:imagen,ancho:300});
+			$('#contenidoGeneral1').addClass('text-center');
+		});
+	}
 }
 
 function validaFormularioSucursal(objeto){	
@@ -267,12 +268,12 @@ function validaFormularioSucursal(objeto){
 function enviaFormularioSucursal(objeto){
 	let dato=(objeto.id==0)?muestraMensaje({tabla:objeto.tabla}):objeto.nombreMsg;
 	let verbo=(objeto.id==0)?'Creará':'Modificará';
-
+	let imagen=(objeto.imagen.val()=='')?'':objeto.imagen.val().substring(12).trim();
 	var fd = new FormData(document.getElementById(objeto.tabla));
 	fd.append("idEmpresa", objeto.idPadre);
 	fd.append("id", objeto.id);
 	fd.append("sesId", verSesion());
-	fd.append("imagen", null);
+	fd.append("imagen", imagen);
 	
 	confirm("¡"+verbo+" el registro: "+dato+"!",function(){
 		return false;
@@ -303,7 +304,10 @@ function enviaFormularioSucursal(objeto){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .celular").text(resp.info.NRO_CELULAR);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .documentos").text((resp.info.DOCUMENTOS===null)?'Ilimitado':resp.info.DOCUMENTOS);
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
-					
+					if(resp.info.IMAGEN!==null){
+						$("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/SUC_'+resp.info.ID_SUCURSAL+'_'+resp.info.IMAGEN);
+					}
+
 					if(resp.info.ID_SUCURSAL==resp.info.SUCURSAL_ACTUAL){
 						socket.emit('actualizaNombreSucursal',{
 							id_sucursal:resp.info.ID_SUCURSAL,
@@ -325,7 +329,10 @@ function enviaFormularioSucursal(objeto){
 						estado()+modifica()+elimina()
 					] ).draw( false ).node();
 					$( rowNode ).attr('id',resp.info.ID_SUCURSAL);
-										
+
+					if(resp.info.IMAGEN!==null){
+						$("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/SUC_'+resp.info.ID_SUCURSAL+'_'+resp.info.IMAGEN);
+					}
 					//success("Creado","¡Se ha creado el registro: "+dato+"!");
 				}
 				limpiaTodo(objeto.tabla);
@@ -425,7 +432,10 @@ function usuarioEstadoSucursal(objeto){
 				socket.emit('actualizaNombreSucursal',{
 					id_sucursal:objeto.idDetalle,
 					sucursal: resp.info.SUCURSAL,
+					imagen_sucursal: resp.info.IMAGEN_SUCURSAL,
+					id_empresa:objeto.ID_EMPRESA,
 					empresa: resp.info.EMPRESA,
+					imagen_empresa: resp.info.IMAGEN_EMPRESA,
 					usuario: "U"+verSesion()
 				});
 
