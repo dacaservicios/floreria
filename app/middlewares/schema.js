@@ -97,7 +97,6 @@ const schemaUsuario=joi.object({
 const schemaCategoria=joi.object({
     id:joi.number().allow(''),
     nombre: joi.string().min(1).max(210).required(),
-    tipo: joi.string().min(1).max(1).required(),
     color: joi.string().min(1).max(10).required(),
     descripcion: joi.string().min(0).max(250).allow(''),
     sesId:joi.number().required()

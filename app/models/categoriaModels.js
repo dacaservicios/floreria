@@ -1,12 +1,11 @@
 const pool = require('../config/connections');
 
 const crearCategoria = async (body)=>{
-    const query = `CALL USP_UPD_INS_CATEGORIA(?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_CATEGORIA(?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         0,
         body.nombre,
-        body.tipo,
         body.color,
         (body.descripcion=='')?null:body.descripcion,  
         'crea',
@@ -21,12 +20,11 @@ const crearCategoria = async (body)=>{
 }
 
 const editarCategoria = async (id,body)=>{
-    const query = `CALL USP_UPD_INS_CATEGORIA(?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_CATEGORIA(?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
         body.nombre,
-        body.tipo,
         body.color,
         (body.descripcion=='')?null:body.descripcion, 
         'edita',

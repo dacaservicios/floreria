@@ -30,21 +30,12 @@ async function vistaCategoria(){
 						<span class='oculto muestraId'>0</span>
 						<span class='oculto muestraNombre'></span>
 						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient"><i class="las la-shopping-basket"></i> CATEGORIA</div>
-						<div class="row pt-3">
-							<div class="form-group col-md-9">
+						<div class="row">
+							<div class="form-group col-md-12">
 								<label>Nombre (*)</label>
 								<input name="nombre" autocomplete="off" maxlength="210" type="text" class="form-control p-1 muestraMensaje" placeholder="Ingrese el nombre">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 								<div class="formato oculto">¡Formato Incorrecto!</div>
-							</div>
-							<div class="form-group col-md-3">
-								<label>Tipo (*)</label>
-								<select name="tipo" class="form-control select2">
-									<option value="">Select...</option>
-									<option value="P">Producto</option>
-									<option value="S">Servicio</option>
-								</select>
-								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
 						</div>
 						<div class="row">
@@ -68,8 +59,7 @@ async function vistaCategoria(){
 							<thead>
 								<tr>
 									<th style="width: 40%;">Nombre</th>
-									<th style="width: 30%;">Tipo</th>
-									<th style="width: 20%;">Descripción</th>
+									<th style="width: 50%;">Descripción</th>
 									<th style="width: 10%;" class="nosort nosearch">Acciones</th>
 								</tr>
 							</thead>
@@ -87,9 +77,6 @@ async function vistaCategoria(){
 										<div class="estadoTachado nombre muestraMensaje ${mestado}">
 											<span style="border: 1px #000000 solid;background-color:${resp[i].COLOR}; color:${color};" class="badge">${resp[i].NOMBRE}</span>
 										</div>
-									</td>
-									<td>
-										<div class="estadoTachado tipo ${mestado}">${(resp[i].TIPO=='P')?'Producto':'Servicio'}</div>
 									</td>
 									<td>
 										<div class="estadoTachado descripcion ${mestado}">${(resp[i].DESCRIPCION===null)?'':resp[i].DESCRIPCION}</div>
@@ -118,7 +105,6 @@ async function vistaCategoria(){
 	$('#'+tabla+'Tabla').DataTable(valoresTabla);
 	let objeto={
 		nombre:$('#'+tabla+' input[name=nombre]'),
-		tipo:$('#'+tabla+' select[name=tipo]'),
 		color:$('#'+tabla+' input[name=color]'),
 		descripcion:$('#'+tabla+' input[name=descripcion]'),
 		tabla:tabla
@@ -137,13 +123,6 @@ function eventosCategoria(objeto){
 			validaVacio(elemento);
 			comentarioRegex(elemento);
 		}
-	});
-
-	$('#'+objeto.tabla+' div').off( 'change');
-    $('#'+objeto.tabla+' div').on( 'change','select',function(){
-		let name=$(this).attr('name');
-		let elemento=$("#"+objeto.tabla+" select[name="+name+"]");
-		validaVacioSelect(elemento);
 	});
 
 	$('#'+objeto.tabla+' div').off( 'click');
@@ -197,17 +176,15 @@ async function categoriaEdita(objeto){
 	desbloquea();
 	const resp=busca.data.valor.info;
 	objeto.nombre.val(resp.NOMBRE);
-	objeto.tipo.val(resp.TIPO).trigger('change.select2');
 	objeto.color.val(resp.COLOR);
 	objeto.descripcion.val(resp.DESCRIPCION);
 }
 
 function validaFormularioCategoria(objeto){	
 	validaVacio(objeto.nombre);
-	validaVacioSelect(objeto.tipo);
 	validaVacio(objeto.color);
 
-	if(objeto.nombre.val()=="" || objeto.tipo.val()=="" || objeto.color.val()==""){
+	if(objeto.nombre.val()=="" || objeto.color.val()==""){
 		return false;
 	}else{
 		enviaFormularioCategoria(objeto);
@@ -248,7 +225,6 @@ function enviaFormularioCategoria(objeto){
 				let color=getContrastColor(resp.info.COLOR);
 				if(objeto.id>0){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .nombre").html(`<span style="border: 1px #000000 solid;background-color:`+resp.info.COLOR+`; color:`+color+`;" class="badge">${resp.info.NOMBRE}</span>`);
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .tipo").text((resp.info.TIPO=='P')?'Producto':'Servicio');
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .descripcion").text((resp.info.DESCRIPCION===null)?'':resp.info.DESCRIPCION);
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
 					
@@ -257,7 +233,6 @@ function enviaFormularioCategoria(objeto){
 					let t = $('#'+objeto.tabla+'Tabla').DataTable();
 					let rowNode =t.row.add( [
 						`<div class="estadoTachado nombre muestraMensaje"><span style="border: 1px #000000 solid;background-color:${resp.info.COLOR}; color:${color};" class="badge">${resp.info.NOMBRE}</span></div>`,
-						`<div class="estadoTachado tipo">${(resp.info.TIPO=='P')?'Producto':'Servicio'}</div>`,
 						`<div class="estadoTachado descripcion">${(resp.info.DESCRIPCION===null)?'':resp.info.DESCRIPCION}</div>`,
 						estado()+modifica()+elimina()
 					] ).draw( false ).node();
