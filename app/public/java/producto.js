@@ -49,7 +49,7 @@ async function vistaProducto(){
 								<select name="categoria" class="form-control select2">
 									<option value="">Select...</option>`;
 									for(var i=0;i<resp2.length;i++){
-										if(resp2[i].ES_VIGENTE==1 && resp2[i].TIPO=='P'){
+										if(resp2[i].ES_VIGENTE==1){
 									listado+=`<option value="${resp2[i].ID_CATEGORIA}">${resp2[i].NOMBRE}</option>`;
 										}
 									}
