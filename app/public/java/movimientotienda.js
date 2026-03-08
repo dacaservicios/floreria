@@ -206,7 +206,7 @@ function eventosMovimiento(objeto){
 				dataType: "json",
 				data:{
 					producto:request.term,
-					tipo:'autocompletaVenta',
+					tipo:'autocompletamovimiento',
 					sesId:verSesion(),
 					token:verToken()
 				},
