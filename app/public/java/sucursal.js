@@ -75,7 +75,7 @@ async function vistaSucursal(objetoEmpresa){
 								</span>
 							</div>
 						</div>
-						<div class="pt-3 col-md-12 pl-0 pr-0 text-center">
+						<div class="pt-3 col-md-12 pl-0 pr-0 text-center" id="botonSucursal">
 							${regresa()+limpia()+((verNivel()==1)?guarda():'')}
 						</div>
 						<div class="h8 text-center pt-2">(*) Los campos con asteriso son obligatorios.</div>
@@ -233,6 +233,7 @@ function eventosSucursal(objeto){
 async function sucursalEdita(objeto){
 	$("#"+objeto.tabla+" span.muestraId").text(objeto.id);
 	$("#"+objeto.tabla+" span.muestraNombre").text(objeto.nombreEdit);
+	$("#"+objeto.tabla+" #botonSucursal").html(regresa()+limpia()+guarda())
 	$("#"+objeto.tabla+" span#botonGuardar").text('Modificar');
 	quitaValidacionTodo(objeto.tabla)
 	bloquea();
@@ -342,6 +343,9 @@ function enviaFormularioSucursal(objeto){
 					//success("Creado","¡Se ha creado el registro: "+dato+"!");
 				}
 				limpiaTodo(objeto.tabla);
+				if(verNivel()>1){
+					$("#"+objeto.tabla+" #botonSucursal").html(regresa()+limpia());
+				}
 			}else{
 				mensajeSistema(resp.mensaje);
 			}	
