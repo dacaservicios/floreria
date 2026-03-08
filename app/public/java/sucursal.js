@@ -319,7 +319,10 @@ function enviaFormularioSucursal(objeto){
 						socket.emit('actualizaNombreSucursal',{
 							id_sucursal:resp.info.ID_SUCURSAL,
 							sucursal: resp.info.NOMB_SUCURSAL,
+							imagen_sucursal: resp.info.IMAGEN,
 							empresa: '',
+							imagen_empresa: '',
+							empresa:'',
 							usuario: "U"+verSesion()
 						});
 					}

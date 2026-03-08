@@ -335,9 +335,12 @@ function enviaFormularioEmpresa(objeto){
 
 					if(resp.info.ID_EMPRESA==resp.info.EMPRESA_ACTUAL){
 						socket.emit('actualizaNombreSucursal',{
-							id_sucursal:resp.info.ID_SUCURSAL,
-							sucursal: resp.info.NOMBRE_SUCURSAL,
+							id_sucursal:'',
+							imagen_sucursal: '',
+							sucursal: '',
+							id_empresa: resp.info.ID_EMPRESA,
 							empresa: resp.info.NOMBRE_SUCURSAL,
+							imagen_empresa: resp.info.IMAGEN,
 							usuario: "U"+verSesion()
 						});
 					}
