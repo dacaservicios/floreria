@@ -227,7 +227,7 @@ async function datosUsuario(){
                 vistaMenuSubMenu({ruta:'venta',idSubMenu:64});
             }else{ 
                 menu();
-                actualizaDashboard();
+                actualizaDashboardProd();
 
                 if(resp.info.IMAGEN_SUCURSAL!='' && resp.info.IMAGEN_SUCURSAL!==null){
                     $("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/SUC_'+resp.info.ID_SUCURSAL+'_'+resp.info.IMAGEN_SUCURSAL);
