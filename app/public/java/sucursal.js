@@ -311,9 +311,9 @@ function enviaFormularioSucursal(objeto){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .celular").text(resp.info.NRO_CELULAR);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .documentos").text((resp.info.DOCUMENTOS===null)?'Ilimitado':resp.info.DOCUMENTOS);
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
-					if(resp.info.IMAGEN!==null){
+					/*if(resp.info.IMAGEN!==null){
 						$("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/SUC_'+resp.info.ID_SUCURSAL+'_'+resp.info.IMAGEN);
-					}
+					}*/
 
 					if(resp.info.ID_SUCURSAL==resp.info.SUCURSAL_ACTUAL){
 						socket.emit('actualizaNombreSucursal',{
@@ -443,6 +443,7 @@ function usuarioEstadoSucursal(objeto){
 				$("#"+objeto.tabla+"Tabla #"+objeto.idDetalle+" span.actual").html("<span class='badge bg-success'>Actual</span>");
 
 				socket.emit('actualizaNombreSucursal',{
+					id_sucursal_actual:verSucursal(),
 					id_sucursal:objeto.idDetalle,
 					sucursal: resp.info.SUCURSAL,
 					imagen_sucursal: resp.info.IMAGEN_SUCURSAL,

@@ -178,10 +178,11 @@ async function vistaCliente(){
 		language: 'es',
 		changeMonth: true,
 		changeYear: true,
-		todayHighlight: true
-	}).on('changeDate', function(e){
-		$(this).datepicker('hide');
+		todayHighlight: true,
+		endDate: new Date(),
+		autoclose: true
 	});
+	
 	$("#"+tabla+" span#botonGuardar").text('Crear');
 	$('#'+tabla+'Tabla').DataTable(valoresTabla);
 	let objeto={
@@ -229,16 +230,15 @@ function eventosCliente(objeto){
 			fijoRegex(elemento);
 		}else if(name=='celular'){
 			validaCelular(elemento);
-		}else if(name=='documento'){
-			validaDocumento(elemento);
 		}
 	});
 
-	$('#'+objeto.tabla+' div').off( 'change');
-    $('#'+objeto.tabla+' div').on( 'change','select',function(){
+	$('#'+objeto.tabla).off( 'change','select');
+    $('#'+objeto.tabla).on( 'change','select',function(){
 		let name=$(this).attr('name');
 		let elemento=$("#"+objeto.tabla+" select[name="+name+"]");
 		validaVacioSelect(elemento);
+		verificaTipoDocumento({id_documento:$(this).val(), tabla:objeto.tabla});
 	});
 
 	$('#'+objeto.tabla+' div').on( 'click','button[name=btnGuarda]',function(){//guarda

@@ -403,6 +403,27 @@ function validaDocumento(documento){
 		}
 	}
 }
+
+function verificaTipoDocumento(objeto){
+	let documento=$("#"+objeto.tabla+" input[name=documento]");
+	documento.inputmask('remove');
+    documento.val('');
+	if(objeto.id_documento==35){ //DNI - DNIDD
+		dniRegex(documento);
+		return true;
+	}else if(objeto.id_documento==2516){//ruc - RUUC
+		rucRegex(documento);
+		return true;
+	}else if(objeto.id_documento==2490 || objeto.id_documento==2492){//EXTRANJERIA Y PTP - CAEX Y PETE
+		cePtpRegex(documento);
+		return true;
+	}else if(objeto.id_documento==2491){//OTRO - OTDO
+		otrosRegex(documento);
+		return true;
+	}else{
+
+	}
+}
 //***********TERMINA VALIDACIONES
 
 
@@ -550,96 +571,109 @@ function passRegex(valor){
 	valor.inputmask( {
 		regex: "[A-Za-z0-9!¡#$%&()*+\\-./:;=¿?@[]{|}]{6,16}",showMaskOnFocus : false, showMaskOnHover : false
 	});
-
 }
 
 function fechaRegex(valor){
-	valor.inputmask({regex: "([0][1-9]|[12][0-9]|[3][01])-([0][1-9]|[1][012])-(19|20)[0-9]{2}"});
+	valor.inputmask({regex: "([0][1-9]|[12][0-9]|[3][01])-([0][1-9]|[1][012])-(19|20)[0-9]{2}", placeholder: ""});
 }
 
 function horaRegex(valor){
-	valor.inputmask({regex: "([01][0-9]|[2][0-3]):([0-5][0-9]):([0-5][0-9])"});
+	valor.inputmask({regex: "([01][0-9]|[2][0-3]):([0-5][0-9]):([0-5][0-9])", placeholder: ""});
 }
 
 function fijoRegex(valor){
-	valor.inputmask({regex: "[0-9]{6,8}"});
+	valor.inputmask({regex: "[0-9]{6,8}", placeholder: ""});
 }
 
 function movilRegex(valor){
-	valor.inputmask({regex: "9[0-9]{8}"});
+	valor.inputmask({regex: "9[0-9]{8}", placeholder: ""});
 }
 
 function serieRegex(valor){
-	valor.inputmask({regex: "[A-Za-z]{0,3}[-]{0,1}[0-9]{1,4}"});
+	valor.inputmask({regex: "[A-Za-z]{0,3}[-]{0,1}[0-9]{1,4}", placeholder: ""});
 }
 
 function telefonoRegex(valor){
-	valor.inputmask({regex: "[0-9#+\\-]{6,15}"});
+	valor.inputmask({regex: "[0-9#+\\-]{6,15}", placeholder: ""});
 }
 
 function ordenaRegex(valor){
-	valor.inputmask({regex: "[0-9]{1,2}[.]{1}[0-9]{0,2}"});
+	valor.inputmask({regex: "[0-9]{1,2}[.]{1}[0-9]{0,2}", placeholder: ""});
 }
 
 function rucRegex(valor){
-	valor.inputmask({regex: "[1-9]{1}[0-9]{10}"});
+	valor.inputmask({regex: "(10|15|17|20)[0-9]{9}", placeholder: ""});
+}
+
+function cePtpRegex(valor){
+	valor.inputmask({regex: "[a-zA-Z0-9]{9}", placeholder: ""});
+}
+
+function dniRegex(valor){
+	valor.inputmask({regex: "[0-9]{8}", placeholder: ""});
+}
+
+function otrosRegex(valor){
+	valor.inputmask({regex: "[a-zA-Z0-9]{5,15}", placeholder: ""});
 }
 
 function documentoRegex(valor){
-	valor.inputmask({regex: "[0-9]{8,20}"});
+	valor.inputmask({regex: "[0-9]{8,20}", placeholder: ""});
 }
 
 function textoRegex(valor){
-	valor.inputmask({regex: "[A-Za-záéíóúÁÉÍÓÚñÑ ]{1,}"});
+	valor.inputmask({regex: "[A-Za-záéíóúÁÉÍÓÚñÑ ]{1,}", placeholder: ""});
 }
 
 function abreviaturaRegex(valor){
-	valor.inputmask({regex: "[A-Z]{4}"});
+	valor.inputmask({regex: "[A-Z]{4}", placeholder: ""});
 }
 
 function textoNumeroRegex(valor){
-	valor.inputmask({regex: "[A-Za-z0-9áéíóúÁÉÍÓÚñÑ ]{1,}"});
+	valor.inputmask({regex: "[A-Za-z0-9áéíóúÁÉÍÓÚñÑ ]{1,}", placeholder: ""});
 }
 
 function textoNumeroEspecialRegex(valor){
-	valor.inputmask({regex: "[A-Za-z0-9áéíóúÁÉÍÓÚñÑ/ ]{1,}"});
+	valor.inputmask({regex: "[A-Za-z0-9áéíóúÁÉÍÓÚñÑ/ ]{1,}", placeholder: ""});
 }
 
 function numeroRegex(valor){
-	valor.inputmask({regex: "[0-9]{1,}"});
+	valor.inputmask({regex: "[0-9]{1,}", placeholder: ""});
 }
 
 function numeroRegexSinCero(valor){
-	valor.inputmask({regex: "[1-9]{1,2}"});
+	valor.inputmask({regex: "[1-9]{1,2}", placeholder: ""});
 }
 
 function numberRegex(valor){
-	valor.inputmask({regex: "[0-9]{1,3}"});
+	valor.inputmask({regex: "[0-9]{1,3}", placeholder: ""});
 }
 
 function comentarioRegex(valor){
-	valor.inputmask({regex: "[0-9A-Za-z,áéíóúÁÉÍÓÚñÑº?¿!¡_\\-.#:/()&\\n ]{1,}"});
+	valor.inputmask({regex: "[0-9A-Za-z,áéíóúÁÉÍÓÚñÑº?¿!¡_\\-.#:/()&\\n ]{1,}", placeholder: ""});
 }
 
 function expedienteRegex(valor){
-	valor.inputmask({regex: "[A-Za-z0-9/\\-]{1,20}"});
+	valor.inputmask({regex: "[A-Za-z0-9/\\-]{1,20}", placeholder: ""});
 }
 
 function userRegex(valor){
-	valor.inputmask({regex: "[A-Za-z0-9]{1,}"});	
+	valor.inputmask({regex: "[A-Za-z0-9]{1,}", placeholder: ""});	
 }
 
 function passRegex(valor){
-	valor.inputmask({regex: "[A-Za-z0-9!¡#$%&()*+\\-./:;<=>¿?@[]{|}]{6,16}"});	
+	valor.inputmask({regex: "[A-Za-z0-9!¡#$%&()*+\\-./:;<=>¿?@[]{|}]{6,16}", placeholder: ""});	
 }
 
 function notaDebitoRegex(valor){
-	valor.inputmask({regex: "[0-9/]{1,}"});
+	valor.inputmask({regex: "[0-9/]{1,}", placeholder: ""});
 }
 
 function decimalRegex(valor){
-	valor.inputmask({regex: "[0-9]{0,5}[.]{0,1}[0-9]{0,2}"});
+	valor.inputmask({regex: "[0-9]{0,5}[.]{0,1}[0-9]{0,2}", placeholder: ""});
 }
+
+//======================================================================================
 
 function quitaCaracter(valor,cadena){
 	let nuevoValor=valor.replace(new RegExp(cadena,"g") ," ");
@@ -701,18 +735,33 @@ function formatoTelefono(fijo){
 	return formato.test(fijo);
 }
 
-function formatoRuc(ruc){
-	let formato=/^[0-9]{11}$/
-	return formato.test(ruc);
-}
-
 function formatoOperacion(operacion){
 	let formato=/^[0-9]{11}$/
 	return formato.test(operacion);
 }
 
-function formatoDni(fijo){
+function formatoDni(dni){
 	let formato=/^[0-9]{8}$/
+	return formato.test(dni);
+}
+
+function formatoRuc(ruc){
+	let formato=/^[0-9]{11}$/
+	return formato.test(ruc);
+}
+
+function formatoCePtp(ce){
+	let formato=/^[a-zA-Z0-9]{9}$/
+	return formato.test(ce);
+}
+
+function formatoOtros(otro){
+	let formato=/^[a-zA-Z0-9]{5,15}$/
+	return formato.test(otro);
+}
+
+function formatoDocumento(fijo){
+	let formato=/^[0-9]{8,20}$/
 	return formato.test(fijo);
 }
 
@@ -729,11 +778,6 @@ function formatoCuenta(cuenta){
 function formatoTarjeta(tarjeta){
 	let formato=/^[0-9]{15,16}$/
 	return formato.test(tarjeta);
-}
-
-function formatoDocumento(fijo){
-	let formato=/^[0-9]{8,20}$/
-	return formato.test(fijo);
 }
 
 function formatoNumero(numero){

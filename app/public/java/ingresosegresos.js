@@ -178,6 +178,7 @@ async function vistaIngresosegresos(){
 		changeMonth: true,
 		changeYear: true,
 		todayHighlight: true,
+		endDate: new Date(),
 		autoclose: true
 	});
 

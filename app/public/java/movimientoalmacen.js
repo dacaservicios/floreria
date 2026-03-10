@@ -160,6 +160,7 @@ async function vistaMovimiento(){
 		changeMonth: true,
 		changeYear: true,
 		todayHighlight: true,
+		endDate: new Date(),
 		autoclose: true
 	});
 
@@ -473,6 +474,7 @@ function enviaFormularioMovimiento(objeto){
 					//success("Creado","¡Se ha creado el registro: "+dato+"!");
 				}
 				limpiaTodo(objeto.tabla);
+				$("#"+objeto.tabla+" input[name=ubicacion]").val("TIEN");
 			}else{
 				mensajeSistema(resp.mensaje);
 			}	

@@ -262,9 +262,9 @@ async function vistaVenta(){
 		language: 'es',
 		changeMonth: true,
 		changeYear: true,
-		todayHighlight: true
-	}).on('changeDate', function(e){
-		$(this).datepicker('hide');
+		todayHighlight: true,
+		endDate: new Date(),
+		autoclose: true
 	});
 
 	let objeto={
