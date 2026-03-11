@@ -327,7 +327,6 @@ function validaAbreviatura(abreviatura){
 }
 
 function validaRuc(ruc){
-	rucRegex(ruc);
 	if(formatoRuc(ruc.val())){
 		formato(ruc);
 		return true;
@@ -343,7 +342,7 @@ function validaRuc(ruc){
 }
 
 function validaCelular(celular){
-	movilRegex(celular);
+	//movilRegex(celular);
 	if(formatoCelular(celular.val())){
 		formato(celular);
 		return true;
@@ -602,7 +601,7 @@ function ordenaRegex(valor){
 }
 
 function rucRegex(valor){
-	valor.inputmask({regex: "(10|15|17|20)[0-9]{9}", placeholder: ""});
+	valor.inputmask({regex: "1[057][0-9]{9}|20[0-9]{9}", placeholder: ""});
 }
 
 function cePtpRegex(valor){
@@ -746,7 +745,7 @@ function formatoDni(dni){
 }
 
 function formatoRuc(ruc){
-	let formato=/^[0-9]{11}$/
+	let formato=/^(1[057][0-9]{9}|20[0-9]{9})$/
 	return formato.test(ruc);
 }
 

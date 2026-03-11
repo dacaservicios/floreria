@@ -168,6 +168,8 @@ async function vistaEmpresa(){
 }
 
 function eventosEmpresa(objeto){
+	rucRegex(objeto.ruc);
+
 	$('#'+objeto.tabla+' div').off( 'keyup');
     $('#'+objeto.tabla+' div').on( 'keyup','input[type=text]',function(){
 		let name=$(this).attr('name');
