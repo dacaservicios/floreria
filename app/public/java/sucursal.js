@@ -438,7 +438,6 @@ function usuarioEstadoSucursal(objeto){
 			});
 			desbloquea();
 			const resp=estado.data.valor;
-			console.log(resp.info)
 			if(resp.resultado){
 				$("#"+objeto.tabla+"Tabla tr td span.actual").html('');
 				$("#"+objeto.tabla+"Tabla #"+objeto.idDetalle+" span.actual").html("<span class='badge bg-success'>Actual</span>");
