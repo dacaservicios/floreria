@@ -111,7 +111,7 @@ const editar=(req, res)=>{
     .then(valor => {
         if(req.archivo!=0){
             uploadedFile = req.files.imagen;
-            ruta='../public/imagenes/empresa/emp_'+valor.info.ID_EMPRESA+'_'+uploadedFile.name;
+            ruta='../public/imagenes/empresa/EMP_'+valor.info.ID_EMPRESA+'_'+uploadedFile.name;
             uploadedFile.mv(path.join(__dirname,ruta));
         }
 
