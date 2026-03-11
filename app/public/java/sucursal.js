@@ -320,9 +320,9 @@ function enviaFormularioSucursal(objeto){
 							id_sucursal:resp.info.ID_SUCURSAL,
 							sucursal: resp.info.NOMB_SUCURSAL,
 							imagen_sucursal: resp.info.IMAGEN,
+							id_empresa: '',
 							empresa: '',
 							imagen_empresa: '',
-							empresa:'',
 							usuario: "U"+verSesion()
 						});
 					}
@@ -444,9 +444,9 @@ function usuarioEstadoSucursal(objeto){
 
 				socket.emit('actualizaNombreSucursal',{
 					id_sucursal_actual:verSucursal(),
-					id_sucursal:objeto.idDetalle,
-					sucursal: resp.info.SUCURSAL,
-					imagen_sucursal: resp.info.IMAGEN_SUCURSAL,
+					id_sucursal:(resp.info.ES_PRINCIPAL==1)?'':resp.info.ID_SUCURSAL,
+					sucursal: (resp.info.ES_PRINCIPAL==1)?'':resp.info.SUCURSAL,
+					imagen_sucursal: (resp.info.ES_PRINCIPAL==1)?'':resp.info.IMAGEN_SUCURSAL,
 					id_empresa:objeto.ID_EMPRESA,
 					empresa: resp.info.EMPRESA,
 					imagen_empresa: resp.info.IMAGEN_EMPRESA,
