@@ -438,6 +438,7 @@ function usuarioEstadoSucursal(objeto){
 			});
 			desbloquea();
 			const resp=estado.data.valor;
+			console.log(resp.info)
 			if(resp.resultado){
 				$("#"+objeto.tabla+"Tabla tr td span.actual").html('');
 				$("#"+objeto.tabla+"Tabla #"+objeto.idDetalle+" span.actual").html("<span class='badge bg-success'>Actual</span>");
@@ -447,7 +448,7 @@ function usuarioEstadoSucursal(objeto){
 					id_sucursal:(resp.info.ES_PRINCIPAL==1)?'':resp.info.ID_SUCURSAL,
 					sucursal: (resp.info.ES_PRINCIPAL==1)?'':resp.info.SUCURSAL,
 					imagen_sucursal: (resp.info.ES_PRINCIPAL==1)?'':resp.info.IMAGEN_SUCURSAL,
-					id_empresa:objeto.ID_EMPRESA,
+					id_empresa:resp.info.ID_EMPRESA,
 					empresa: resp.info.EMPRESA,
 					imagen_empresa: resp.info.IMAGEN_EMPRESA,
 					usuario: "U"+verSesion()
