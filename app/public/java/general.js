@@ -232,7 +232,7 @@ async function datosUsuario(){
                 if(resp.info.IMAGEN_SUCURSAL!='' && resp.info.IMAGEN_SUCURSAL!==null){
                     $("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/SUC_'+resp.info.ID_SUCURSAL+'_'+resp.info.IMAGEN_SUCURSAL);
                 }else if(resp.info.IMAGEN_EMPRESA!='' && resp.info.IMAGEN_EMPRESA!==null){
-                    $("img.imagenSucursalInicio").attr('src','/imagenes/sucursal/EMP_'+resp.info.ID_EMPRESA+'_'+resp.info.IMAGEN_EMPRESA);
+                    $("img.imagenSucursalInicio").attr('src','/imagenes/empresa/EMP_'+resp.info.ID_EMPRESA+'_'+resp.info.IMAGEN_EMPRESA);
                 }else{
                     $("img.imagenSucursalInicio").attr('src','/imagenes/vacio.jpg');
                 }
