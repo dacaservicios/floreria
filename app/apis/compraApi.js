@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const {buscar,listar,listarDetalle,listarHistorial,listarInicio, crear, editar, estado,estado2, buscarDetalle, crearDetalle,editarDetalle, eliminarDetalle, listarPago, pagar, buscarPago,eliminarPago, eliminar, documento,buscarTotales} = require('../controllers/compraControllers');
+const {buscar,listar,listarDetalle,listarHistorial,listarInicio, crear, editar,editar2, estado,estado2, buscarDetalle, crearDetalle,editarDetalle, eliminarDetalle, listarPago, pagar, buscarPago,eliminarPago, eliminar, documento,buscarTotales} = require('../controllers/compraControllers');
 const {verificarToken} = require('../middlewares/jwt');
-const {schemaCompra,schemaCompraDetalle/*, schemaCompraPagar*/} = require('../middlewares/schema');
+const {schemaCompra,schemaCompra2,schemaCompraDetalle/*, schemaCompraPagar*/} = require('../middlewares/schema');
 const {caracter, validaSchema} = require('../middlewares/auth');
 
 
@@ -12,6 +12,7 @@ router.get('/api/compra/listar/:id/:sesId', verificarToken, listar);
 router.get('/api/compra/inicio/listar/:sesId/:tipo', verificarToken, listarInicio);
 router.post('/api/compra/crear', caracter, verificarToken, crear);
 router.put('/api/compra/editar/:id', caracter, validaSchema(schemaCompra), verificarToken, editar);
+router.put('/api/compra/editar2/:id', caracter, validaSchema(schemaCompra2), verificarToken, editar2);
 router.put('/api/compra/estado/:id', verificarToken, estado);
 router.put('/api/compra/estado2/:id', verificarToken, estado2);
 router.delete('/api/compra/eliminar/:id', verificarToken, eliminar);

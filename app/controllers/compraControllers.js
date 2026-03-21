@@ -1,4 +1,4 @@
-const {buscarCompra,listarCompra,crearCompra,editarCompra, estadoCompra, estadoCompra2,crearCompraDetalle, editarCompraDetalle,crearCompraDetallePago, editarPedidoCompra, eliminarCompra, listarCompraInicio} = require('../models/compraModels');
+const {buscarCompra,listarCompra,crearCompra,editarCompra,editarCompra2, estadoCompra, estadoCompra2,crearCompraDetalle, editarCompraDetalle,crearCompraDetallePago, editarPedidoCompra, eliminarCompra, listarCompraInicio} = require('../models/compraModels');
 
 const buscar=(req, res)=>{
     const sesId =  req.params.sesId;
@@ -181,6 +181,25 @@ const crear=(req, res)=>{
 const editar=(req, res)=>{
     const id=req.params.id;
     editarCompra(id,req.body)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    });
+}
+
+const editar2=(req, res)=>{
+    const id=req.params.id;
+    editarCompra2(id,req.body)
     .then(valor => {
         res.json({
             valor : valor
@@ -419,6 +438,7 @@ module.exports = {
     crear,
     crearDetalle,
     editar,
+    editar2,
     estado,
     estado2,
     eliminar,

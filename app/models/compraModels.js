@@ -74,6 +74,31 @@ const editarCompra = async (id,body)=>{
     
 }
 
+const editarCompra2 = async (id,body)=>{
+    const query = `CALL USP_UPD_TRS_COMPRA2(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const row = await pool.query(query,
+    [
+        id,
+        body.tipoPago,
+        body.comentario,
+        moment().utc().format('YYYY-MM-DD HH:mm:ss'),
+        1,
+        body.comprobante,
+        body.serie,
+        body.numero,
+        body.proveedor,
+        'cierre',
+        body.sesId
+    ]);
+
+    return { 
+        resultado : true,
+        info : row[0][0],
+        mensaje : '¡Registro editado!'
+    }; 
+    
+}
+
 const editarCompraDetalle = async (id,body)=>{
     query = `CALL USP_UPD_TRS_COMPRA_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     
@@ -356,6 +381,7 @@ module.exports = {
     crearCompra,
     crearCompraDetalle,
     editarCompra,
+    editarCompra2,
     editarCompraDetalle,
     corrigeCompra,
     filtrarCompra,

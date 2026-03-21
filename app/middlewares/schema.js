@@ -410,6 +410,17 @@ const schemaCompra=joi.object({
     sesId:joi.number().required()
 });
 
+const schemaCompra2=joi.object({
+    id:joi.number().allow(''),
+    tipoPago:joi.number().required(),
+    proveedor:joi.number().required(),
+    comprobante:joi.number().required(),
+    serie:joi.string().min(1).max(10).required(),
+    numero:joi.string().min(1).max(10).required(),
+    comentario: joi.string().min(0).max(255).allow(''),
+    sesId:joi.number().required()
+});
+
 
 const schemaCompraDetalle=joi.object({
     id:joi.number().allow(''),
@@ -495,6 +506,7 @@ module.exports = {
     schemaVenta,
     schemaVentaDetalle,
     schemaCompra,
+    schemaCompra2,
     schemaCompraDetalle,
     schemaVentaPagar,
     schemaReserva,
