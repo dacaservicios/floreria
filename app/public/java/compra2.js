@@ -236,7 +236,7 @@ function eventosCompra(objeto){
 		if(pcompra){
 			mensajeSistema('¡Hay productos con precio de compra en CERO.!');
 		}else if(objeto.total>0){
-			procesaFormularioPago2(objeto);
+			procesaFormularioPago(objeto);
 		}else{
 			mensajeSistema('¡No hay productos para cerrar la compra!')
 		}
