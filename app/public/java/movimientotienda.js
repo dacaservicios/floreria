@@ -469,10 +469,11 @@ function enviaFormularioMovimiento(objeto){
 						`<div class="estadoTachado motivo">${resp.info.MOTIVO}</div>`
 					] ).draw( false ).node();
 					$( rowNode ).attr('id',resp.info.ID_MOVIMIENTO);
-					
+                    limpiaTodo(objeto.tabla);
+					objeto.fecha.val(moment().format('DD-MM-YYYY'));
+                    objeto.hora.val(moment().format('HH:mm:ss'));
 					//success("Creado","¡Se ha creado el registro: "+dato+"!");
 				}
-				limpiaTodo(objeto.tabla);
 				$("#"+objeto.tabla+" input[name=ubicacion]").val("TIEN");
 			}else{
 				mensajeSistema(resp.mensaje);
