@@ -426,6 +426,25 @@ const estado2=(req, res)=>{
     }); 
 }
 
+const precio=(req, res)=>{
+    const id =  req.params.id;
+    estadoCompra(id,req.body)
+    .then(valor => {
+        res.json({
+            valor : valor
+        });
+    })
+    .catch(error => {
+        res.status(400).json({
+            error : {
+                message:error.message,
+                errno: error.errno,
+                code : error.code
+            }
+        });
+    }); 
+}
+
 module.exports = {
     cierre,
     buscar,
@@ -441,6 +460,7 @@ module.exports = {
     editar2,
     estado,
     estado2,
+    precio,
     eliminar,
     crearDetalle,
     editarDetalle,

@@ -48,7 +48,7 @@ async function vistaCompra(){
 					<div id="${tabla}" class="needs-validation" novalidate>
 						<span class='oculto muestraId'>${ idCompra}</span>
 						<span class='oculto muestraNombre'></span>
-						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient py-1"><i class="las la-coins"></i> COMPRA</div>
+						<div class="card-header tx-medium bd-0 tx-white bg-primary-gradient py-1"><i class="las la-coins"></i> COMPRA DIRECTA</div>
 							<div class="row">
 								<div class="col-12">
 									<div  id="${tabla}Info" class="pb-0 pt-2 pr-3 pl-3">
@@ -90,9 +90,11 @@ async function vistaCompra(){
 															</td>
 															<td>
 																<div class="precioCompra">${ parseFloat(resp[i].PRECIO_COMPRA).toFixed(4) }</div>
+                                                                <div><span class="precioCompra2 badge bg-primary">${ (resp[i].PRECIO_COMPRA==resp[i].PRECIO_COMPRA2)?'':parseFloat(resp[i].PRECIO_COMPRA2).toFixed(4) }</span></div>
 															</td>
 															<td>
 																<div class="precioVenta">${ parseFloat(resp[i].PRECIO_VENTA).toFixed(2) }</div>
+                                                                <div><span class="precioVenta2 badge bg-primary">${ (resp[i].PRECIO_VENTA==resp[i].PRECIO_VENTA2)?'':parseFloat(resp[i].PRECIO_VENTA2).toFixed(2) }</span></div>
 															</td>
 															<td>
 																<div class="cantidad">${ resp[i].CANTIDAD }</div>
@@ -101,7 +103,7 @@ async function vistaCompra(){
 																<div class="total">${ parseFloat(resp[i].MONTO_TOTAL).toFixed(2) }</div>
 															</td>
 															<td>
-																${modifica()+elimina()}
+																${decide()+modifica()+elimina()}
 															</td>
 														</tr>`;
 														}
@@ -190,43 +192,6 @@ function eventosCompra(objeto){
 			.append("<div>" + item.label + "</div>")
 			.appendTo(ul);
 	};
-	
-	$('#'+objeto.tabla+' div').off( 'keyup');
-    $('#'+objeto.tabla+' div').on( 'keyup','input[type=text]',function(){
-		let name=$(this).attr('name');
-		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
-		if(name=='comentario'){
-			comentarioRegex(elemento);
-		}
-	});
-
-	$('#'+objeto.tabla+' div').on( 'keyup','input[type=tel]',function(){
-		let name=$(this).attr('name');
-		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
-		if(name=='cantidad'){
-			numeroRegexSinCero(elemento);
-			validaVacio(elemento);
-		}
-	});
-
-	$('#'+objeto.tabla+' div').off( 'change');
-	$('#'+objeto.tabla+' div').on( 'change','input[type=fecha]',function(){
-		let name=$(this).attr('name');
-		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
-		if(name=='fechaCompra'){
-			validaVacio(elemento);
-		}
-	});
-
-    $('#'+objeto.tabla+' div').on( 'change','select',function(){
-		let name=$(this).attr('name');
-		let elemento=$("#"+objeto.tabla+" select[name="+name+"]");
-		validaVacioSelect(elemento);
-		if(name=='proveedor'){
-			$('#autocompletaProd').val('').attr('disabled',false);
-			$('#idProductoSucursal').val('');
-		}
-	});
 
 	$('#'+objeto.tabla+'Info').off( 'click');
 	$('#'+objeto.tabla+'Info').on( 'click','button[name=btnCompra]',function(){//compra
@@ -260,6 +225,15 @@ function eventosCompra(objeto){
 		objeto.id=id;
 		objeto.nombreEdit=nombre;
 		compraEdita(objeto);
+	});
+
+	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.decide',function(){//decidir
+		let evento=$(this).parents("tr")
+    	let id=evento.attr('id');
+		let nombre=evento.find("td div.nombre").text();
+		objeto.id=id;
+		objeto.nombreEdit=nombre;
+		compraDecide(objeto);
 	});
 
 	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.elimina',function(){//elimina
@@ -649,11 +623,11 @@ async function agregaCompra(objeto){
 		let rowNode =t.row.add( [
 			`<div class="estadoTachado codigo">${resp.info.CODIGO}</div>`,
 			`<div class="estadoTachado nombre muestraMensaje">${resp.info.PRODUCTO}</div>`,
-			`<div class="estadoTachado precioCompra">${parseFloat(resp.info.PRECIO_COMPRA).toFixed(4)}</div>`,
-			`<div class="estadoTachado precioVenta">${parseFloat(resp.info.PRECIO_VENTA).toFixed(2)}</div>`,
+			`<div class="estadoTachado precioCompra">${parseFloat(resp.info.PRECIO_COMPRA).toFixed(4)}</div><div><span class="precioCompra2 badge bg-primary"></span></div>`,
+			`<div class="estadoTachado precioVenta">${parseFloat(resp.info.PRECIO_VENTA).toFixed(2)}</div><div><span class="precioVenta2 badge bg-primary"></span></div>`,
 			`<div class="estadoTachado cantidad">${resp.info.CANTIDAD}</div>`,
 			`<div class="estadoTachado total">${parseFloat(resp.info.MONTO_TOTAL).toFixed(2)}</div>`,
-			modifica()+elimina()
+			decide()+modifica()+elimina()
 		] ).draw( false ).node();
 		$( rowNode ).attr('id',resp.info.ID_DETALLE);
 		$("#"+objeto.tabla+"Info .totalCompra").text(parseFloat(resp.info.TOTAL).toFixed(2));
@@ -713,6 +687,161 @@ async function compraEdita(objeto){
 		message=(err.response)?err.response.data.error:err;
 		mensajeError(message);
 	}
+}
+
+async function compraDecide(objeto){
+	bloquea();
+	try {
+		const producto= await axios.get("/api/compra/detalle/buscar/"+objeto.id+"/"+verSesion(),{ 
+			headers:{
+				authorization: `Bearer ${verToken()}`
+			} 
+		});
+		desbloquea();
+		const resp=producto.data.valor.info;
+        let compraAnt = parseFloat(resp.PRECIO_COMPRA2); // 4 decimales desde la DB
+        let ventaAnt = parseFloat(resp.PRECIO_VENTA2); // 2 decimales desde la DB
+
+        let compraNueva = parseFloat(resp.PRECIO_COMPRA);
+        let ventaNueva = parseFloat(resp.PRECIO_VENTA);
+
+        let margenActual= ((ventaAnt - compraAnt) / ventaAnt) * 100; //lo que se gana actualmente
+        let nuevoMargen= ((ventaAnt - compraNueva) / ventaAnt) * 100; //lo que se ganaria 
+        let margenProyectado=((ventaNueva - compraNueva) / ventaNueva) * 100; //lo que se proyecta
+
+        let factorMargenOriginal = (ventaAnt - compraAnt) / ventaAnt;
+        let nuevoPrecioSugerido = compraNueva / (1 - factorMargenOriginal);
+        let precioFinalParaCliente = Math.ceil(nuevoPrecioSugerido * 100) / 100;
+
+
+        let diff = (nuevoMargen - margenActual).toFixed(2);
+        let simbolo = diff > 0 ? "+" : ""; // Ponemos el + si es positivo
+        let color = diff > 0 ? "text-success" : "text-danger"; // Verde si ganas, rojo si pierdes
+
+        objeto.compraNueva=compraNueva
+
+		let listado=`
+		<form id="${objeto.tabla}Decide">
+            <div class="alert alert-primary">
+                <strong>Margen Actual:</strong> ${margenActual.toFixed(2)}% | 
+                <strong>Nuevo Margen:</strong> ${nuevoMargen.toFixed(2)}% | 
+                <strong>Variación:</strong> <span class="${color}">${simbolo}${diff}%</span>
+            </div>
+            
+            <div class="row text-center mt-3 g-3"> <div class="col-md-6">
+                    <button type="button" id="btnMantenerVenta" class="btn btn-outline-secondary w-100 py-2" data-precio="${parseFloat(resp.PRECIO_VENTA2).toFixed(2)}">
+                        Mantener Venta Anterior<br>
+                        <strong>S/ ${parseFloat(resp.PRECIO_VENTA2).toFixed(2)}</strong><br>
+                        <small>(Ganarás ${nuevoMargen.toFixed(2)}%)</small>
+                    </button>
+                </div>
+
+                <div class="col-md-6">
+                    <button type="button" id="btnPrecioCompra" class="btn btn-info w-100 py-2 text-white" data-precio="${ventaNueva.toFixed(2)}">
+                        Precio Sugerido en Compra<br>
+                        <strong>S/ ${ventaNueva.toFixed(2)}</strong><br>
+                        <small>(Ganarás ${margenProyectado.toFixed(2)}%)</small>
+                    </button>
+                </div>
+
+                <div class="col-md-6">
+                    <button type="button" id="btnMantenerMargen" class="btn btn-primary w-100 py-2" data-precio="${parseFloat(precioFinalParaCliente).toFixed(2)}">
+                        Ajustar para mantener Margen<br>
+                        <strong>S/ ${parseFloat(precioFinalParaCliente).toFixed(2)}</strong><br>
+                        <small>(Seguirás ganando ${margenActual.toFixed(2)}%)</small>
+                    </button>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="input-group" style="height: 80%;">
+                        <input type="tel" id="precioManual" autocomplete="off" class="form-control" placeholder="Precio Manual">
+                        <button style="height: 80%; type="button" id="btnAplicarManual" class="btn btn-success">Aplicar</button>
+                    </div>
+                    <div id="feedbackManual" class="fw-bold mt-1" style="font-size: 0.85rem;"></div>
+                </div>
+
+            </div>
+        </form>`;
+		mostrar_general1({titulo:'DECIDIR PRECIOS DE VENTA',nombre:objeto.nombreEdit,msg:listado,ancho:600});
+		focusInput();
+
+        procesaDecideCompra(objeto);
+	}catch (err) {
+		desbloquea();
+		message=(err.response)?err.response.data.error:err;
+		mensajeError(message);
+	}
+}
+
+function procesaDecideCompra(objeto){
+    $('#'+objeto.tabla+'Decide').off( 'click');
+	$('#'+objeto.tabla+'Decide').on( 'click','button',function(){
+        let precioSeleccionado;
+        if($(this).attr('id') == 'btnAplicarManual'){
+            precioSeleccionado = $('#precioManual').val();
+        } else {
+            // Si es cualquiera de los otros 3 botones
+            precioSeleccionado = $(this).data('precio');
+        }
+
+        if(precioSeleccionado > 0){
+            objeto.precio=precioSeleccionado;
+            enviaNuevoPrecioVenta(objeto);
+        }
+	});
+
+    $('#'+objeto.tabla+'Decide').off( 'keyup');
+    $('#'+objeto.tabla+'Decide').on( 'keyup','#precioManual',function(){
+        decimalRegex($(this));
+        let precioM = parseFloat($(this).val());
+        let costoN = parseFloat(objeto.compraNueva); // El costo de la compra actual
+
+        if (precioM > 0 && precioM > costoN) {
+            let margenM = ((precioM - costoN) / precioM) * 100;
+            $('#feedbackManual').html(`Margen: <span class="text-success">${margenM.toFixed(2)}%</span>`);
+        } else if (precioM <= costoN) {
+            $('#feedbackManual').html(`<span class="text-danger">¡Precio menor o igual al costo!</span>`);
+        } else {
+            $('#feedbackManual').empty();
+        }
+    });
+}
+
+function enviaNuevoPrecioVenta(objeto){
+    confirm("¡Esta seguro de modificar el precio de venta para: "+objeto.nombreEdit+"!",function(){
+		return false;
+	},async function(){
+		bloquea();
+		let body={
+            id:objeto.id,
+            comentario:objeto.precio, //se envia el precio
+            tabla:'nuevoPrecio',
+            abrevBoton:'',
+            sesId:verSesion()
+        };
+		try {
+			let edita = await axios.put("/api/"+objeto.tabla+"/detalle/precio/"+objeto.id,body,{ 
+				headers:{
+					authorization: `Bearer ${verToken()}`
+				} 
+			});
+
+			desbloquea();
+			$("#general1").modal("hide");
+			$("#contenidoGeneral1").html('');
+			$("#subtituloGeneral1").html('');
+			resp=edita.data.valor;
+			if(resp.resultado){
+				//$("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioVenta").text(parseFloat(resp.info.PRECIO_VENTA_FINAL).toFixed(2));
+			}else{
+				mensajeSistema(resp.mensaje);
+			}	
+		}catch (err) {
+			desbloquea();
+			message=(err.response)?err.response.data.error:err;
+			mensajeError(message);
+		}
+    });
 }
 
 function procesaDetalleCompra(objeto){
@@ -801,7 +930,17 @@ function enviaFormularioDetalleCompra(objeto){
 				$("#"+objeto.tabla+"Tabla #"+objeto.id+" .cantidad").text(resp.info.CANTIDAD);
 				$("#"+objeto.tabla+"Tabla #"+objeto.id+" .total").text(parseFloat(resp.info.MONTO_TOTAL).toFixed(2));
 				$("#"+objeto.tabla+"Info .totalCompra").text(parseFloat(resp.info.TOTAL).toFixed(2));
-					
+
+                if(resp.info.PRECIO_COMPRA2===null){
+                    $("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioCompra2").text('');
+                }else{
+                    $("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioCompra2").text(parseFloat(resp.info.PRECIO_COMPRA2).toFixed(4));
+                }
+				if(resp.info.PRECIO_VENTA2===null){
+                    $("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioVenta2").text('');
+                }else{
+                    $("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioVenta2").text(parseFloat(resp.info.PRECIO_VENTA2).toFixed(2));
+                }
 					//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
 			}else{
 				mensajeSistema(resp.mensaje);

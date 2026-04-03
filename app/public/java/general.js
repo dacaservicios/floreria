@@ -514,6 +514,13 @@ function modifica(){
     </a>`;
     return boton;
 }
+function decide(){
+    let boton=`
+    <a type='Decide' class="crud decide cursor btn btn-sm btn-primary-gradient" data-bs-toggle="tooltip" data-bs-placement="top" title="Decidir">
+        <i class="las la-search-dollar"></i>
+    </a>`;
+    return boton;
+}
 function elimina(){
     let boton=`
     <a type='Elimina' class="crud elimina cursor btn btn-sm btn-danger-gradient" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
