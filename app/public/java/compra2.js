@@ -699,25 +699,37 @@ async function compraDecide(objeto){
 		});
 		desbloquea();
 		const resp=producto.data.valor.info;
-        let compraAnt = parseFloat(resp.PRECIO_COMPRA2); // 4 decimales desde la DB
-        let ventaAnt = parseFloat(resp.PRECIO_VENTA2); // 2 decimales desde la DB
+        let compraAnt = parseFloat(resp.PRECIO_COMPRA2) || 0; // 4 decimales desde la DB
+        let ventaAnt = parseFloat(resp.PRECIO_VENTA2) || 0; // 2 decimales desde la DB
 
-        let compraNueva = parseFloat(resp.PRECIO_COMPRA);
-        let ventaNueva = parseFloat(resp.PRECIO_VENTA);
+        let compraNueva = parseFloat(resp.PRECIO_COMPRA) || 0;
+        let ventaNueva = parseFloat(resp.PRECIO_VENTA) || 0;
 
-        let margenActual= ((ventaAnt - compraAnt) / ventaAnt) * 100; //lo que se gana actualmente
-        let nuevoMargen= ((ventaAnt - compraNueva) / ventaAnt) * 100; //lo que se ganaria 
-        let margenProyectado=((ventaNueva - compraNueva) / ventaNueva) * 100; //lo que se proyecta
+        let margenActual, nuevoMargen, diff, simbolo, color, precioFinalParaCliente;
 
-        let factorMargenOriginal = (ventaAnt - compraAnt) / ventaAnt;
-        let nuevoPrecioSugerido = compraNueva / (1 - factorMargenOriginal);
-        let precioFinalParaCliente = Math.ceil(nuevoPrecioSugerido * 100) / 100;
+        if (ventaAnt > 0) {
+            margenActual= ((ventaAnt - compraAnt) / ventaAnt) * 100; //lo que se gana actualmente
+            nuevoMargen= ((ventaAnt - compraNueva) / ventaAnt) * 100; //lo que se ganaria 
+           
+            let factorMargenOriginal = (ventaAnt - compraAnt) / ventaAnt;
+            let nuevoPrecioSugerido = compraNueva / (1 - factorMargenOriginal);
+            precioFinalParaCliente = Math.ceil(nuevoPrecioSugerido * 100) / 100;
 
+            diff = (nuevoMargen - margenActual).toFixed(2);
+            simbolo = diff > 0 ? "+" : ""; // Ponemos el + si es positivo
+            color = diff > 0 ? "text-success" : "text-danger"; // Verde si ganas, rojo si pierdes
+        }else{
+            margenActual = 0;
+            nuevoMargen = 0;
+            diff = "0.00";
+            simbolo = "";
+            color = "text-muted";
+            let margenBaseNuevo = 0.30; 
+            let sugeridoInicial = compraNueva / (1 - margenBaseNuevo);
+            precioFinalParaCliente = Math.ceil(sugeridoInicial * 100) / 100;
+        }
 
-        let diff = (nuevoMargen - margenActual).toFixed(2);
-        let simbolo = diff > 0 ? "+" : ""; // Ponemos el + si es positivo
-        let color = diff > 0 ? "text-success" : "text-danger"; // Verde si ganas, rojo si pierdes
-
+        let margenProyectado = ventaNueva > 0 ? ((ventaNueva - compraNueva) / ventaNueva) * 100 : 0; //lo que se proyecta
         objeto.compraNueva=compraNueva
 
 		let listado=`
@@ -729,37 +741,35 @@ async function compraDecide(objeto){
             </div>
             
             <div class="row text-center mt-3 g-3"> <div class="col-md-6">
-                    <button type="button" id="btnMantenerVenta" class="btn btn-outline-secondary w-100 py-2" data-precio="${parseFloat(resp.PRECIO_VENTA2).toFixed(2)}">
-                        Mantener Venta Anterior<br>
-                        <strong>S/ ${parseFloat(resp.PRECIO_VENTA2).toFixed(2)}</strong><br>
-                        <small>(Ganarás ${nuevoMargen.toFixed(2)}%)</small>
-                    </button>
-                </div>
+                <button type="button" id="btnMantenerVenta" class="btn btn-outline-secondary w-100 py-2" data-precio="${ventaAnt.toFixed(2)}">
+                    Mantener Venta Anterior<br>
+                    <strong>S/ ${ventaAnt.toFixed(2)}</strong><br>
+                    <small>(Ganarás ${nuevoMargen.toFixed(2)}%)</small>
+                </button>
+            </div>
 
-                <div class="col-md-6">
-                    <button type="button" id="btnPrecioCompra" class="btn btn-info w-100 py-2 text-white" data-precio="${ventaNueva.toFixed(2)}">
-                        Precio Sugerido en Compra<br>
-                        <strong>S/ ${ventaNueva.toFixed(2)}</strong><br>
-                        <small>(Ganarás ${margenProyectado.toFixed(2)}%)</small>
-                    </button>
-                </div>
+            <div class="col-md-6">
+                <button type="button" id="btnPrecioCompra" class="btn btn-info w-100 py-2 text-white" data-precio="${ventaNueva.toFixed(2)}">
+                    Precio Sugerido en Compra<br>
+                    <strong>S/ ${ventaNueva.toFixed(2)}</strong><br>
+                    <small>(Ganarás ${margenProyectado.toFixed(2)}%)</small>
+                </button>
+            </div>
 
-                <div class="col-md-6">
-                    <button type="button" id="btnMantenerMargen" class="btn btn-primary w-100 py-2" data-precio="${parseFloat(precioFinalParaCliente).toFixed(2)}">
-                        Ajustar para mantener Margen<br>
-                        <strong>S/ ${parseFloat(precioFinalParaCliente).toFixed(2)}</strong><br>
-                        <small>(Seguirás ganando ${margenActual.toFixed(2)}%)</small>
-                    </button>
-                </div>
+            <div class="col-md-6">
+                <button type="button" id="btnMantenerMargen" class="btn btn-primary w-100 py-2" data-precio="${parseFloat(precioFinalParaCliente).toFixed(2)}">
+                    Ajustar para mantener Margen<br>
+                    <strong>S/ ${parseFloat(precioFinalParaCliente).toFixed(2)}</strong><br>
+                    <small>(Seguirás ganando ${margenActual.toFixed(2)}%)</small>
+                </button>
+            </div>
 
-                <div class="col-md-6">
-                    <div class="input-group" style="height: 80%;">
-                        <input type="tel" id="precioManual" autocomplete="off" class="form-control" placeholder="Precio Manual">
-                        <button style="height: 80%; type="button" id="btnAplicarManual" class="btn btn-success">Aplicar</button>
-                    </div>
-                    <div id="feedbackManual" class="fw-bold mt-1" style="font-size: 0.85rem;"></div>
+            <div class="col-md-6">
+                <div class="input-group" style="height: 80%;">
+                    <input type="tel" id="precioManual" autocomplete="off" class="form-control" placeholder="Precio Manual">
+                    <button style="height: 80%; type="button" id="btnAplicarManual" class="btn btn-success">Aplicar</button>
                 </div>
-
+                <div id="feedbackManual" class="fw-bold mt-1" style="font-size: 0.85rem;"></div>
             </div>
         </form>`;
 		mostrar_general1({titulo:'DECIDIR PRECIOS DE VENTA',nombre:objeto.nombreEdit,msg:listado,ancho:600});
