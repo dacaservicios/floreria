@@ -734,6 +734,7 @@ async function compraDecide(objeto){
         objeto.compraNueva=compraNueva
 
         let tituloBotonAzul = (ventaAnt > 0) ? "Mantener Margen Actual" : "Sugerir Margen Base";
+        let tituloBotonAzul2 = (ventaAnt > 0) ? "Seguirás ganando" : "Ganancia estimada";
 		let listado=`
 		<form id="${objeto.tabla}Decide">
             <div class="alert alert-primary">
@@ -762,7 +763,7 @@ async function compraDecide(objeto){
                 <button type="button" id="btnMantenerMargen" class="btn btn-primary w-100 py-2" data-precio="${parseFloat(precioFinalParaCliente).toFixed(2)}">
                     ${tituloBotonAzul}<br>
                     <strong>S/ ${parseFloat(precioFinalParaCliente).toFixed(2)}</strong><br>
-                    <small>(Seguirás ganando ${margenParaBotonAzul.toFixed(2)}%)</small>
+                    <small>(${tituloBotonAzul2+" "+margenParaBotonAzul.toFixed(2)}%)</small>
                 </button>
             </div>
 
