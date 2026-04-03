@@ -722,11 +722,11 @@ async function compraDecide(objeto){
         }else{
             margenActual = 0;
             nuevoMargen = 0;
-            margenParaBotonAzul="0.30";
+            margenParaBotonAzul=30;
             diff = "0.00";
             simbolo = "";
             color = "text-muted";
-            let sugeridoInicial = compraNueva / (1 - margenParaBotonAzul);
+            let sugeridoInicial = compraNueva / (1 - (margenParaBotonAzul / 100));
             precioFinalParaCliente = Math.ceil(sugeridoInicial * 100) / 100;
         }
 
