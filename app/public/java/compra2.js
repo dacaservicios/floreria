@@ -705,12 +705,13 @@ async function compraDecide(objeto){
         let compraNueva = parseFloat(resp.PRECIO_COMPRA) || 0;
         let ventaNueva = parseFloat(resp.PRECIO_VENTA) || 0;
 
-        let margenActual, nuevoMargen, diff, simbolo, color, precioFinalParaCliente;
+        let margenActual, nuevoMargen, diff, simbolo, color, precioFinalParaCliente,margenParaBotonAzul;
 
         if (ventaAnt > 0) {
             margenActual= ((ventaAnt - compraAnt) / ventaAnt) * 100; //lo que se gana actualmente
             nuevoMargen= ((ventaAnt - compraNueva) / ventaAnt) * 100; //lo que se ganaria 
-           
+            margenParaBotonAzul = margenActual;
+
             let factorMargenOriginal = (ventaAnt - compraAnt) / ventaAnt;
             let nuevoPrecioSugerido = compraNueva / (1 - factorMargenOriginal);
             precioFinalParaCliente = Math.ceil(nuevoPrecioSugerido * 100) / 100;
@@ -721,17 +722,18 @@ async function compraDecide(objeto){
         }else{
             margenActual = 0;
             nuevoMargen = 0;
+            margenParaBotonAzul="0.30";
             diff = "0.00";
             simbolo = "";
             color = "text-muted";
-            let margenBaseNuevo = 0.30; 
-            let sugeridoInicial = compraNueva / (1 - margenBaseNuevo);
+            let sugeridoInicial = compraNueva / (1 - margenParaBotonAzul);
             precioFinalParaCliente = Math.ceil(sugeridoInicial * 100) / 100;
         }
 
         let margenProyectado = ventaNueva > 0 ? ((ventaNueva - compraNueva) / ventaNueva) * 100 : 0; //lo que se proyecta
         objeto.compraNueva=compraNueva
 
+        let tituloBotonAzul = (ventaAnt > 0) ? "Mantener Margen Actual" : "Sugerir Margen Base";
 		let listado=`
 		<form id="${objeto.tabla}Decide">
             <div class="alert alert-primary">
@@ -758,9 +760,9 @@ async function compraDecide(objeto){
 
             <div class="col-md-6">
                 <button type="button" id="btnMantenerMargen" class="btn btn-primary w-100 py-2" data-precio="${parseFloat(precioFinalParaCliente).toFixed(2)}">
-                    Ajustar para mantener Margen<br>
+                    ${tituloBotonAzul}<br>
                     <strong>S/ ${parseFloat(precioFinalParaCliente).toFixed(2)}</strong><br>
-                    <small>(Seguirás ganando ${margenActual.toFixed(2)}%)</small>
+                    <small>(Seguirás ganando ${margenParaBotonAzul.toFixed(2)}%)</small>
                 </button>
             </div>
 
