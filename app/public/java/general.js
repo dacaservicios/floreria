@@ -521,6 +521,13 @@ function decide(){
     </a>`;
     return boton;
 }
+function compuesto(){
+    let boton=`
+    <a type='Compuesto' class="crud compuesto cursor btn btn-sm btn-primary-gradient" data-bs-toggle="tooltip" data-bs-placement="top" title="Compuesto">
+        <i class="las la-box"></i>
+    </a>`;
+    return boton;
+}
 function elimina(){
     let boton=`
     <a type='Elimina' class="crud elimina cursor btn btn-sm btn-danger-gradient" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
@@ -681,9 +688,6 @@ async function consultarReniecSunat(objeto) {
     desbloquea();
     let resp=consulta.data.valor;
     return resp;
-
-
 }
-
 
 

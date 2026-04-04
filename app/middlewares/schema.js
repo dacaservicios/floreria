@@ -107,6 +107,7 @@ const schemaProducto=joi.object({
     nombre:joi.string().min(1).max(100).required(),
     descripcion: joi.string().min(0).max(200).allow(''),
     categoria: joi.number().required(),
+    compuesto: joi.number().required(),
     sesId:joi.number().required()
 });
 
@@ -255,9 +256,16 @@ const schemaProductosucursal=joi.object({
     id:joi.number().allow(''),
     producto: joi.number().required(),
     stockMin: joi.number().required(),
-    stockMax: joi.number().required(),
     precioVenta:joi.string().min(1).max(10).required(),
     descuento:joi.string().min(0).max(10).allow(''),
+    sesId:joi.number().required()
+});
+
+const schemaProductocompuesto=joi.object({
+    id:joi.number().allow(''),
+    idPadre:joi.number().allow(''),
+    producto: joi.number().required(),
+    cantidad: joi.number().required(),
     sesId:joi.number().required()
 });
 
@@ -491,6 +499,7 @@ module.exports = {
     schemaPedidoPagar,
     schemaPedidoDetalle,
     schemaProductosucursal,
+    schemaProductocompuesto,
     schemaServiciosucursal,
     schemaComprobante,
     schemaIngresosegresos,

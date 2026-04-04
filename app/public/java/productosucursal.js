@@ -43,12 +43,13 @@ async function vistaProductoSucursal(){
 							<div class="row pt-3">
 								<div class="form-group col-md-12">
 									<label>Producto (*)</label>
-									<span id="idProductoEditar" class="oculto"></span>
-									<select name="producto" class="form-control select2 muestraMensaje" id="productoSeleccionado">
+									<span id="idElementoEditar" class="oculto"></span>
+									<select name="producto" class="form-control select2 muestraMensaje" id="elementoSeleccionado">
 										<option value="">Select...</option>`;
 										for(var i=0;i<resp2.length;i++){
 											if(resp2[i].ES_VIGENTE==1 && !setIdsExcluidos.has(resp2[i].ID_PRODUCTO)){
-										listado+=`<option value="${resp2[i].ID_PRODUCTO}">${resp2[i].CODIGO_PRODUCTO+" - "+resp2[i].NOMBRE}</option>`;
+                                                let compuesto = (resp2[i].ES_COMPUESTO==1) ? '(Compuesto)' : '';
+										listado+=`<option value="${resp2[i].ID_PRODUCTO}">${resp2[i].CODIGO_PRODUCTO+" - "+resp2[i].NOMBRE+" "+compuesto}</option>`;
 											}
 										}
 							listado+=`</select>
@@ -56,22 +57,17 @@ async function vistaProductoSucursal(){
 								</div>
 							</div>
 							<div class="row">
-								<div class="form-group col-md-3">
+								<div class="form-group col-md-4">
 									<label>Stock mínimo (*)</label>
 									<input name="stockMin" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese el stock">
 									<div class="vacio oculto">¡Campo obligatorio!</div>
 								</div>
-								<div class="form-group col-md-3">
-									<label>Stock máximo (*)</label>
-									<input name="stockMax" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese el stock">
-									<div class="vacio oculto">¡Campo obligatorio!</div>
-								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group col-md-4">
 									<label>P. Venta (*)</label>
 									<input name="precioVenta" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese el p. venta">
 									<div class="vacio oculto">¡Campo obligatorio!</div>
 								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group col-md-4">
 									<label>Descuento</label>
 									<input name="descuento" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese el dscuento">
 								</div>
@@ -87,9 +83,8 @@ async function vistaProductoSucursal(){
 								<thead>
 									<tr>
 										<th style="width: 10%;">Código</th>
-										<th style="width: 35%;">Nombre</th>
+										<th style="width: 45%;">Nombre</th>
 										<th style="width: 10%;">Stock min.</th>
-										<th style="width: 10%;">Stock max.</th>
 										<th style="width: 10%;">Stock actual</th>
 										<th style="width: 15%;">P. Venta</th>
 										<th style="width: 15%;">Descuento</th>
@@ -113,9 +108,6 @@ async function vistaProductoSucursal(){
 										</td>
 										<td>
 											<div class="estadoTachado stockMin ${mestado}">${ resp[i].STOCK_MINIMO }</div>
-										</td>
-										<td>
-											<div class="estadoTachado stockMax ${mestado}">${ resp[i].STOCK_MAXIMO }</div>
 										</td>
 										<td>
 											<div class="estadoTachado stock ${mestado}">${ resp[i].STOCK_ACTUAL }</div>
@@ -151,7 +143,6 @@ async function vistaProductoSucursal(){
 	let objeto={
 		producto:$('#'+tabla+' select[name=producto]'),
 		stockMin:$('#'+tabla+' input[name=stockMin]'),
-		stockMax:$('#'+tabla+' input[name=stockMax]'),
 		precioVenta:$('#'+tabla+' input[name=precioVenta]'),
 		descuento:$('#'+tabla+' input[name=descuento]'),
 		tabla:tabla,
@@ -167,7 +158,7 @@ function eventosProductoSucursal(objeto){
 		if(name=='precioVenta'){
 			validaVacio(elemento);
 			decimalRegex(elemento);
-		}else if(name=='stockMin' || name=='stockMax'){
+		}else if(name=='stockMin'){
 			numeroRegex(elemento);
 			validaVacio(elemento);
 		}else if(name=='descuento'){
@@ -179,7 +170,17 @@ function eventosProductoSucursal(objeto){
     $('#'+objeto.tabla+' div').on( 'change','select',function(){
 		let name=$(this).attr('name');
 		let elemento=$("#"+objeto.tabla+" select[name="+name+"]");
+        quitaValidacion(objeto.stockMin);
 		validaVacioSelect(elemento);
+        if(name=='producto'){
+            let texto = elemento.find("option:selected").text();
+            if (texto.includes("Compuesto")) {
+                objeto.stockMin.val(0).prop("readonly", true);
+                validaVacio(objeto.stockMin);
+            }else{
+                objeto.stockMin.val('').prop("readonly", false);
+            }
+        }
 	});
 
 	$('#'+objeto.tabla+' div').on( 'click','button[name=btnGuarda]',function(){//guarda
@@ -189,8 +190,8 @@ function eventosProductoSucursal(objeto){
 	});
 
 	$('#'+objeto.tabla+' div').on( 'click','button[name=btnLimpia]',function(){//limpia
-		let idProducto=$('#idProductoEditar').text();
-		quitaProducto({idProducto:idProducto, tabla:objeto.tabla});
+		let idProducto=$('#idElementoEditar').text();
+		quitaElemento({id:idProducto, tabla:objeto.tabla});
 		quitaValidacionTodo(objeto.tabla);
 		limpiaTodo(objeto.tabla);
 	});
@@ -220,18 +221,9 @@ function eventosProductoSucursal(objeto){
 	});
 }
 
-function quitaProducto(objeto){
-	$('#productoSeleccionado').val(null).trigger('change');
-	$(`#productoSeleccionado option[value="${objeto.idProducto}"]`).remove();
-	$('#productoSeleccionado').trigger('change.select2');
-	$('#productoSeleccionado').off('select2:opening');
-	$('#idProductoEditar').text('');
-	quitaValidacionTodo(objeto.tabla);
-}
-
 async function productoSucursalEdita(objeto){
-	let idProducto=$('#idProductoEditar').text();
-	quitaProducto({idProducto:idProducto, tabla:objeto.tabla});
+	let idProducto=$('#idElementoEditar').text();
+	quitaElemento({id:idProducto, tabla:objeto.tabla});
 
 	$("#"+objeto.tabla+" span.muestraId").text(objeto.id);
 	$("#"+objeto.tabla+" span.muestraNombre").text(objeto.nombreEdit);
@@ -246,16 +238,15 @@ async function productoSucursalEdita(objeto){
 	desbloquea();
 	const resp=busca.data.valor.info;
 	objeto.stockMin.val(resp.STOCK_MINIMO);
-	objeto.stockMax.val(resp.STOCK_MAXIMO);
 	objeto.precioVenta.val(parseFloat(resp.PRECIO_VENTA).toFixed(2));
 	objeto.descuento.val(parseFloat(resp.DESCUENTO).toFixed(2));
 
-	if ($('#productoSeleccionado').find('option[value="' + resp.ID_PRODUCTO + '"]').length === 0) {
-		$('#idProductoEditar').text(resp.ID_PRODUCTO);
+	if ($('#elementoSeleccionado').find('option[value="' + resp.ID_PRODUCTO + '"]').length === 0) {
+		$('#idElementoEditar').text(resp.ID_PRODUCTO);
         let nuevaOpcion = new Option(resp.CODIGO_PRODUCTO+" - "+resp.NOMBRE, resp.ID_PRODUCTO, false, false);
-        $('#productoSeleccionado').append(nuevaOpcion).trigger('change');
-		$('#productoSeleccionado').val(resp.ID_PRODUCTO).trigger('change.select2');
-		$('#productoSeleccionado').on('select2:opening', function(e) {
+        $('#elementoSeleccionado').append(nuevaOpcion).trigger('change');
+		$('#elementoSeleccionado').val(resp.ID_PRODUCTO).trigger('change.select2');
+		$('#elementoSeleccionado').on('select2:opening', function(e) {
 			e.preventDefault();
 		});
     }
@@ -266,10 +257,9 @@ async function productoSucursalEdita(objeto){
 function validaFormularioProductoSucursal(objeto){	
 	validaVacio(objeto.precioVenta);
 	validaVacio(objeto.stockMin);
-	validaVacio(objeto.stockMax);
 	validaVacioSelect(objeto.producto);
 
-	if(objeto.precioVenta.val()=="" || objeto.stockMax.val()=="" ||  objeto.stockMin.val()=="" || objeto.producto.val()==""){
+	if(objeto.precioVenta.val()=="" ||  objeto.stockMin.val()=="" || objeto.producto.val()==""){
 		return false;
 	}else{
 		enviaFormularioProductoSucursal(objeto);
@@ -310,7 +300,6 @@ function enviaFormularioProductoSucursal(objeto){
 				if(objeto.id>0){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .producto").text(resp.info.NOMBRE_PRODUCTO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .stockMin").text(resp.info.STOCK_MINIMO);
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .stockMax").text(resp.info.STOCK_MAXIMO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioVenta").text(parseFloat(resp.info.PRECIO_VENTA).toFixed(2));
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .descuento").text(parseFloat(resp.info.DESCUENTO).toFixed(2));
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
@@ -322,7 +311,6 @@ function enviaFormularioProductoSucursal(objeto){
 						`<div class="estadoTachado codigo">${resp.info.CODIGO_PRODUCTO}</div>`,
 						`<div class="estadoTachado producto muestraMensaje">${resp.info.NOMBRE_PRODUCTO}</div>`,
 						`<div class="estadoTachado stockMin">${resp.info.STOCK_MINIMO}</div>`,
-						`<div class="estadoTachado stockMax">${resp.info.STOCK_MAXIMO}</div>`,
 						`<div class="estadoTachado stock">0</div>`,
 						`<div class="estadoTachado precioVenta">${parseFloat(resp.info.PRECIO_VENTA).toFixed(2)}</div>`,
 						`<div class="estadoTachado descuento">${parseFloat(resp.info.DESCUENTO).toFixed(2)}</div>`,
@@ -333,7 +321,7 @@ function enviaFormularioProductoSucursal(objeto){
 					//success("Creado","¡Se ha creado el registro: "+dato+"!");
 				}
 				
-				quitaProducto({idProducto:resp.info.ID_PRODUCTO, tabla:objeto.tabla})
+				quitaElemento({id:resp.info.ID_PRODUCTO, tabla:objeto.tabla})
 				quitaValidacionTodo(objeto.tabla);
 				limpiaTodo(objeto.tabla);
 			}else{

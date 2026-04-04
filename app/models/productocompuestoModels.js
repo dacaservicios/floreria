@@ -1,14 +1,13 @@
 const pool = require('../config/connections');
 
-const crearProducto = async (body)=>{
-    const query = `CALL USP_UPD_INS_PRODUCTO(?, ?, ?, ?, ?, ?, ?)`;
+const crearProductoCompuesto = async (body)=>{
+    const query = `CALL USP_UPD_INS_PRODUCTO_COMPUESTO(?, ?, ?, ?, ?, ?)`;
     const row= await pool.query(query,
     [
         0,
-        body.nombre,
-        (body.descripcion=='')?null:body.descripcion,
-        body.categoria,
-        body.compuesto,
+        body.idPadre,
+        body.producto,
+        body.cantidad,
         'crea',
         body.sesId
     ]);
@@ -20,16 +19,15 @@ const crearProducto = async (body)=>{
     }; 
 }
 
-const editarProducto = async (id,body)=>{
+const editarProductoCompuesto = async (id,body)=>{
 
-    const query = `CALL USP_UPD_INS_PRODUCTO(?, ?, ?, ?, ?, ?, ?)`;
+    const query = `CALL USP_UPD_INS_PRODUCTO_COMPUESTO(?, ?, ?, ?, ?, ?)`;
     const row = await pool.query(query,
     [
         id,
-        body.nombre,
-        (body.descripcion=='')?null:body.descripcion,
-        body.categoria,
-        body.compuesto,
+        body.idPadre,
+        body.producto,
+        body.cantidad,
         'edita',
         body.sesId
     ]);
@@ -42,7 +40,7 @@ const editarProducto = async (id,body)=>{
     
 }
 
-const buscarProducto = async(id,tabla,sesId)=>{
+const buscarProductoCompuesto = async(id,tabla,sesId)=>{
     const query = `CALL USP_SEL_VERLISTAID(?, ?, ?)`;
     const row = await pool.query(query,
     [
@@ -59,7 +57,7 @@ const buscarProducto = async(id,tabla,sesId)=>{
     
 }
 
-const listarProducto = async (id, tabla,sesId)=>{
+const listarProductoCompuesto = async (id, tabla,sesId)=>{
     const query = `CALL USP_SEL_VERLISTA(?, ?, ?)`;
     const row =  await pool.query(query,
     [
@@ -76,7 +74,7 @@ const listarProducto = async (id, tabla,sesId)=>{
 }
 
 
-const eliminarProducto = async(id,tabla)=>{
+const eliminarProductoCompuesto = async(id,tabla)=>{
     const query = `CALL USP_DEL_ELIMINA(?, ?)`;
     const row =  await pool.query(query,
     [
@@ -92,7 +90,7 @@ const eliminarProducto = async(id,tabla)=>{
     
 }
 
-const estadoProducto = async(id,tabla)=>{
+const estadoProductoCompuesto = async(id,tabla)=>{
     const query = `CALL USP_UPD_ESTADO(?, ?)`;
     const row =  await pool.query(query,
     [
@@ -109,11 +107,11 @@ const estadoProducto = async(id,tabla)=>{
 }
 
 module.exports = {
-    crearProducto,
-    editarProducto,
-    buscarProducto,
-    listarProducto,
-    estadoProducto,
-    eliminarProducto
+    crearProductoCompuesto,
+    editarProductoCompuesto,
+    buscarProductoCompuesto,
+    listarProductoCompuesto,
+    estadoProductoCompuesto,
+    eliminarProductoCompuesto
 }
 

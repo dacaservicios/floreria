@@ -159,7 +159,7 @@ function eventosMenu(objeto){
 		menuElimina({id:id,nombre:nombre,tabla:objeto.tabla});
 	});
 
-	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.detalle',function(){//estado
+	$('#'+objeto.tabla+'Tabla tbody').on( 'click','td a.detalle',function(){//detalle
 		let evento=$(this).parents("tr")
     	let id=evento.attr('id');
 		let nombre=evento.find("td div.nombre").text();

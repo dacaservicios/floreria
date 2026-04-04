@@ -224,6 +224,24 @@ function limpiaTodoConfiguracion(tabla){
 	$("#"+tabla+" span.muestraNombre").text('');
 }
 
+function quitaElemento(objeto){
+	$('#elementoSeleccionado').val(null).trigger('change');
+	$(`#elementoSeleccionado option[value="${objeto.id}"]`).remove();
+	$('#elementoSeleccionado').trigger('change.select2');
+	$('#elementoSeleccionado').off('select2:opening');
+	$('#idElementoEditar').text('');
+	quitaValidacionTodo(objeto.tabla);
+}
+
+function agregaElemento(objeto) {
+    // 1. Creamos la nueva opción
+    const nuevaOpcion = new Option(objeto.nombre, objeto.id, false, false);
+    $('#elementoSeleccionado').append(nuevaOpcion);
+    $('#elementoSeleccionado').trigger('change');
+    quitaValidacionTodo(objeto.tabla);
+}
+
+
 function muestraMensaje(objeto){
     let nombre="";
     let separa=" ";
