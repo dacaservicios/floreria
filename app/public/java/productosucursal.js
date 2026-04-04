@@ -105,6 +105,7 @@ async function vistaProductoSucursal(){
 										</td>
 										<td>
 											<div class="estadoTachado nombre muestraMensaje ${mestado}">${resp[i].NOMBRE}</div>
+                                            <div><span class="compuesto badge bg-primary">${(resp[i].ES_COMPUESTO==1)?'Compuesto':''}</span></div>
 										</td>
 										<td>
 											<div class="estadoTachado stockMin ${mestado}">${ resp[i].STOCK_MINIMO }</div>
@@ -237,7 +238,6 @@ async function productoSucursalEdita(objeto){
 	});
 	desbloquea();
 	const resp=busca.data.valor.info;
-	objeto.stockMin.val(resp.STOCK_MINIMO);
 	objeto.precioVenta.val(parseFloat(resp.PRECIO_VENTA).toFixed(2));
 	objeto.descuento.val(parseFloat(resp.DESCUENTO).toFixed(2));
 
@@ -249,6 +249,11 @@ async function productoSucursalEdita(objeto){
 		$('#elementoSeleccionado').on('select2:opening', function(e) {
 			e.preventDefault();
 		});
+    }
+    if(resp.ES_COMPUESTO==1){
+        objeto.stockMin.val(0).prop("readonly", true);
+    }else{
+	    objeto.stockMin.val(resp.STOCK_MINIMO);
     }
 	quitaValidacionTodo(objeto.tabla)
 	
@@ -309,7 +314,7 @@ function enviaFormularioProductoSucursal(objeto){
 					let t = $('#'+objeto.tabla+'Tabla').DataTable();
 					let rowNode =t.row.add( [
 						`<div class="estadoTachado codigo">${resp.info.CODIGO_PRODUCTO}</div>`,
-						`<div class="estadoTachado producto muestraMensaje">${resp.info.NOMBRE_PRODUCTO}</div>`,
+						`<div class="estadoTachado producto muestraMensaje">${resp.info.NOMBRE_PRODUCTO}</div><div><span class="compuesto badge bg-primary">${(resp.info.ES_COMPUESTO==1)?'Compuesto':''}</span></div>`,
 						`<div class="estadoTachado stockMin">${resp.info.STOCK_MINIMO}</div>`,
 						`<div class="estadoTachado stock">0</div>`,
 						`<div class="estadoTachado precioVenta">${parseFloat(resp.info.PRECIO_VENTA).toFixed(2)}</div>`,

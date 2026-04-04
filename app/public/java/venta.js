@@ -303,15 +303,17 @@ function eventosVenta(objeto){
 				success: function(data){
 					let datos=data.valor.info;
 					response( $.map( datos, function( item ){
+                        let compuesto=(item.ES_COMPUESTO==1)?'(Compuesto)':'';
 						return {
 							idVenta: objeto.id,
 							idProducto: item.ID_PRODUCTO,
 							codigo: item.CODIGO_PRODUCTO,
 							nombre: item.NOMBRE,
 							cantidad: 1,
+                            esCompuesto: item.ES_COMPUESTO,
 							tabla: objeto.tabla,
-							label: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+"<br><strong>Stock: </strong>"+item.STOCK,
-							value: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+"<br><strong>Stock: </strong>"+item.STOCK,
+							label: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+" "+compuesto+"<br><strong>Stock: </strong>"+item.STOCK,
+							value: '<strong>Codigo:</strong> '+item.CODIGO_PRODUCTO+"<br><strong>Producto: </strong>"+item.NOMBRE+" "+compuesto+"<br><strong>Stock: </strong>"+item.STOCK,
 							sesId: verSesion()
 						}
 					}));

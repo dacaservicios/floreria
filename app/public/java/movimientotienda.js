@@ -66,21 +66,26 @@ async function vistaMovimiento(){
 							</div>
 						</div>
 						<div class="row">
-							<div class="form-group col-md-4">
+							<div class="form-group col-md-3">
 								<label>Fecha (*)</label>
 								<input name="fecha" autocomplete="off" maxlength="10" type="fecha" class="form-control datepicker" placeholder="Seleccione la Fecha" value="${moment().format('DD-MM-YYYY')}">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
-							<div class="form-group col-md-4">
+							<div class="form-group col-md-3">
 								<label>Hora (*)</label>
 								<input name="hora" autocomplete="off" maxlength="10" type="hora" class="form-control timepicker" placeholder="Seleccione la Hora" value="${moment().format('HH:mm:ss')}">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
 							</div>
-							<div class="form-group col-md-4">
+							<div class="form-group col-md-3">
 								<label>Cantidad (*)</label>
 								<input name="cantidad" autocomplete="off" maxlength="10" type="tel" class="form-control p-1" placeholder="Ingrese la cantidad">
 								<div class="vacio oculto">¡Campo obligatorio!</div>
-							</div> 
+							</div>
+                            <div class="form-group col-md-3">
+                                <label>Costo Referencial (*)</label>
+                                <input name="costo" autocomplete="off" maxlength="10" type="tel" class="form-control p-1 focus" placeholder="Ingrese el costo">
+                                <div class="vacio oculto">¡Campo obligatorio!</div>
+                            </div>
 						</div>
 						<div class="row">
 							<div class="form-group col-md-12">
@@ -103,7 +108,8 @@ async function vistaMovimiento(){
 									<th style="width: 10%;">Fecha</th>
 									<th style="width: 25%;">Producto</th>
 									<th style="width: 5%;">cantidad</th>
-									<th style="width: 45%;">Motivo</th>
+                                    <th style="width: 5%;">Costo Ref.</th>
+									<th style="width: 40%;">Motivo</th>
 								</tr>
 							</thead>
 							<tbody>`;
@@ -133,6 +139,9 @@ async function vistaMovimiento(){
 									</td>
 									<td>
 										<div class="estadoTachado cantidad ${mestado}">${ resp[i].CANTIDAD }</div>
+									</td>
+                                    <td>
+										<div class="estadoTachado costo ${mestado}">${ parseFloat(resp[i].COSTO_REF).toFixed(4) }</div>
 									</td>
 									<td>
 										<div class="estadoTachado motivo ${mestado}">${(resp[i].MOTIVO===null)?'':resp[i].MOTIVO}</div>
@@ -192,6 +201,7 @@ async function vistaMovimiento(){
 		hora:$("#"+tabla+" input[name=hora]"),
 		motivo:$("#"+tabla+" textarea[name=motivo]"),
 		cantidad:$("#"+tabla+" input[name=cantidad]"),
+        costo:$("#"+tabla+" input[name=costo]"),
 		ubicacion:$("#"+tabla+" input[name=ubicacion]"),
 		tabla:tabla,
 	}
@@ -253,7 +263,7 @@ function eventosMovimiento(objeto){
     $('#'+objeto.tabla+' div').on( 'keyup','input[type=tel]',function(){
 		let name=$(this).attr('name');
 		let elemento=$("#"+objeto.tabla+" input[name="+name+"]");
-		if(name=='cantidad'){
+		if(name=='cantidad' || name=='costo'){
 			decimalRegex(elemento);
 			validaVacio(elemento);
 		}
@@ -396,6 +406,7 @@ async function movimientoEdita(objeto){
 	objeto.hora.val(moment.utc(resp.FECHA).local().format('HH:mm:ss'));
 	objeto.motivo.val(resp.MOTIVO);
 	objeto.cantidad.val(resp.CANTIDAD);
+    objeto.costo.val(resp.COSTO);
 }
 
 function validaFormularioMovimiento(objeto){
@@ -404,11 +415,12 @@ function validaFormularioMovimiento(objeto){
 	validaVacioSelect(concepto);
 	validaVacio(objeto.autocompletaProd);
 	validaVacio(objeto.cantidad);
+    validaVacio(objeto.costo);
 	validaVacio(objeto.motivo);
 	validaVacio(objeto.fecha);
 	validaVacio(objeto.hora);
 
-	if(objeto.movimiento.val()=="" || objeto.autocompletaProd.val()=="" || objeto.cantidad.val()=="" || objeto.motivo.val()=="" || objeto.fecha.val()=="" || objeto.hora.val()=="" || concepto.val()==""){
+	if(objeto.movimiento.val()=="" || objeto.autocompletaProd.val()=="" || objeto.cantidad.val()=="" || objeto.motivo.val()=="" || objeto.fecha.val()=="" || objeto.hora.val()=="" || concepto.val()=="" || objeto.costo.val()==""){
 		return false;
 	}else{
 		enviaFormularioMovimiento(objeto);
@@ -453,6 +465,7 @@ function enviaFormularioMovimiento(objeto){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .movimiento").html(`<span class='estadoTachado badge bg-${mov}'>${resp.info.TIPO_MOVIMIENTO}</span>`);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .producto").text(resp.info.PRODUCTO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .cantidad").text(resp.info.CANTIDAD);
+                    $("#"+objeto.tabla+"Tabla #"+objeto.id+" .costo").text(parseFloat(resp.info.COSTO).toFixed(4));
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .motivo").text(resp.info.MOTIVO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fecha").text(moment.utc(resp.info.FECHA).local().format('DD/MM/YYYY  HH:mm:ss'));
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
@@ -466,6 +479,7 @@ function enviaFormularioMovimiento(objeto){
 						`<div class="estadoTachado fecha">${moment.utc(resp.info.FECHA).local().format('DD/MM/YYYY HH:mm:ss')}</div>`,
 						`<div class="estadoTachado producto muestraMensaje">${resp.info.PRODUCTO}</div>`,
 						`<div class="estadoTachado cantidad">${resp.info.CANTIDAD}</div>`,
+						`<div class="estadoTachado costo">${parseFloat(resp.info.COSTO).toFixed(4)}</div>`,
 						`<div class="estadoTachado motivo">${resp.info.MOTIVO}</div>`
 					] ).draw( false ).node();
 					$( rowNode ).attr('id',resp.info.ID_MOVIMIENTO);

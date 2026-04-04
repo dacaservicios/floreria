@@ -160,7 +160,7 @@ function eventosCompra(objeto){
 				dataType: "json",
 				data:{
 					producto:request.term,
-					tipo:'autocompletaVenta',
+					tipo:'autocompletaVenta2',
 					sesId:verSesion(),
 					token:verToken()
 				},
