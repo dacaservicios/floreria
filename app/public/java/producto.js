@@ -59,6 +59,7 @@ async function vistaProducto(){
                             <div class="form-group col-md-2">
 								<label>Compuesto (*)</label>
 								<select name="compuesto" class="form-control select2">
+                                    <option value="">Select...</option>
 									<option value="0">No</option>
                                     <option value="1">Si</option>
 						        </select>
@@ -110,7 +111,7 @@ async function vistaProducto(){
 									<td>
 										<div class="estadoTachado descripcion ${mestado}">${(resp[i].DESCRIPCION===null)?'':resp[i].DESCRIPCION}</div>
 									</td>
-									<td>
+									<td class="opciones">
 										${((resp[i].ES_COMPUESTO==1)?compuesto():'')+estado()+modifica()+elimina()}
 									</td>
 								</tr>`;
@@ -267,11 +268,18 @@ function enviaFormularioProducto(objeto){
 			resp=creaEdita.data.valor;
 			if(resp.resultado){
 				if(objeto.id>0){
+                    let opcion=((resp.info.ES_COMPUESTO==1)?compuesto():'')
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .nombre").text(resp.info.NOMBRE);
                     $("#"+objeto.tabla+"Tabla #"+objeto.id+" .compuesto").text((resp.info.ES_COMPUESTO==1)?'Compuesto':'');
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .descripcion").text((resp.info.DESCRIPCION===null)?'':resp.info.DESCRIPCION);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .categoria").text(resp.info.CATEGORIA);
+                    if(resp.info.ES_COMPUESTO==1){
+                        $("#"+objeto.tabla+"Tabla #"+objeto.id+" .opciones").prepend(compuesto());
+                    }else{
+                        $("#"+objeto.tabla+"Tabla #"+objeto.id+" .compuesto ").remove();
+                    }
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
+                   
 					
 					//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
 				}else{
@@ -281,7 +289,7 @@ function enviaFormularioProducto(objeto){
 						`<div class="estadoTachado nombre muestraMensaje">${resp.info.NOMBRE}</div><div><span class="compuesto badge bg-primary">${(resp.info.ES_COMPUESTO==1)?'Compuesto':''}</span></div>`,
 						`<div class="estadoTachado categoria">${resp.info.CATEGORIA}</div>`,
 						`<div class="estadoTachado descripcion">${(resp.info.DESCRIPCION===null)?'':resp.info.DESCRIPCION}</div>`,
-						estado()+modifica()+elimina()
+						((resp.info.ES_COMPUESTO==1)?compuesto():'')+estado()+modifica()+elimina()
 					] ).draw( false ).node();
 					$( rowNode ).attr('id',resp.info.ID_PRODUCTO);
 					
