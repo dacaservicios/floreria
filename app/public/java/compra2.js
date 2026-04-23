@@ -93,7 +93,7 @@ async function vistaCompra(){
                                                                 <div><span class="precioCompra2 badge bg-primary">${ (resp[i].PRECIO_COMPRA==resp[i].PRECIO_COMPRA2)?'':parseFloat(resp[i].PRECIO_COMPRA2).toFixed(4) }</span></div>
 															</td>
 															<td>
-																<div class="precioVenta">${ parseFloat(resp[i].PRECIO_VENTA).toFixed(2) }</div>
+																<div class="precioVenta">${ parseFloat(resp[i].PRECIO_VENTA_FINAL).toFixed(2) }</div>
                                                                 <div><span class="precioVenta2 badge bg-primary">${ (resp[i].PRECIO_VENTA==resp[i].PRECIO_VENTA2)?'':parseFloat(resp[i].PRECIO_VENTA2).toFixed(2) }</span></div>
 															</td>
 															<td>
@@ -624,7 +624,7 @@ async function agregaCompra(objeto){
 			`<div class="estadoTachado codigo">${resp.info.CODIGO}</div>`,
 			`<div class="estadoTachado nombre muestraMensaje">${resp.info.PRODUCTO}</div>`,
 			`<div class="estadoTachado precioCompra">${parseFloat(resp.info.PRECIO_COMPRA).toFixed(4)}</div><div><span class="precioCompra2 badge bg-primary"></span></div>`,
-			`<div class="estadoTachado precioVenta">${parseFloat(resp.info.PRECIO_VENTA).toFixed(2)}</div><div><span class="precioVenta2 badge bg-primary"></span></div>`,
+			`<div class="estadoTachado precioVenta">${parseFloat(resp.info.PRECIO_VENTA_FINAL).toFixed(2)}</div><div><span class="precioVenta2 badge bg-primary"></span></div>`,
 			`<div class="estadoTachado cantidad">${resp.info.CANTIDAD}</div>`,
 			`<div class="estadoTachado total">${parseFloat(resp.info.MONTO_TOTAL).toFixed(2)}</div>`,
 			decide()+modifica()+elimina()
@@ -658,7 +658,7 @@ async function compraEdita(objeto){
 				</div>
 				<div class="form-group col-md-4">
 					<label>P. Venta (*)</label>
-					<input name="precioVenta" autocomplete="off" maxlength="10" type="tel" class="form-control p-1 focus" placeholder="Ingrese el precio venta" value="${parseFloat(resp.PRECIO_VENTA).toFixed(2)}">
+					<input name="precioVenta" autocomplete="off" maxlength="10" type="tel" class="form-control p-1 focus" placeholder="Ingrese el precio venta" value="${parseFloat(resp.PRECIO_VENTA_FINAL).toFixed(2)}">
 					<div class="vacio oculto">¡Campo obligatorio!</div>
 				</div>
 				<div class="form-group col-md-4">
