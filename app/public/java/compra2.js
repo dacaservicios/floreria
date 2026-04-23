@@ -845,7 +845,7 @@ function enviaNuevoPrecioVenta(objeto){
 			$("#subtituloGeneral1").html('');
 			resp=edita.data.valor;
 			if(resp.resultado){
-				//$("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioVenta").text(parseFloat(resp.info.PRECIO_VENTA_FINAL).toFixed(2));
+				$("#"+objeto.tabla+"Tabla #"+objeto.id+" .precioVenta").text(parseFloat(resp.info.PRECIO_VENTA_FINAL).toFixed(2));
 			}else{
 				mensajeSistema(resp.mensaje);
 			}	
