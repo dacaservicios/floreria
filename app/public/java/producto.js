@@ -103,7 +103,7 @@ async function vistaProducto(){
 									</td>
 									<td>
 										<div class="estadoTachado nombre muestraMensaje ${mestado}">${resp[i].NOMBRE}</div>
-                                        <div><span class="compuesto badge bg-primary">${(resp[i].ES_COMPUESTO==1)?'Compuesto':''}</span></div>
+                                        <div><span class="escompuesto badge bg-primary">${(resp[i].ES_COMPUESTO==1)?'Compuesto':''}</span></div>
 									</td>
 									<td>
 										<div class="estadoTachado categoria ${mestado}">${resp[i].CATEGORIA}</div>
@@ -268,14 +268,14 @@ function enviaFormularioProducto(objeto){
 			resp=creaEdita.data.valor;
 			if(resp.resultado){
 				if(objeto.id>0){
-                    let opcion=((resp.info.ES_COMPUESTO==1)?compuesto():'')
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .nombre").text(resp.info.NOMBRE);
-                    $("#"+objeto.tabla+"Tabla #"+objeto.id+" .compuesto").text((resp.info.ES_COMPUESTO==1)?'Compuesto':'');
+                    $("#"+objeto.tabla+"Tabla #"+objeto.id+" .escompuesto").text((resp.info.ES_COMPUESTO==1)?'Compuesto':'');
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .descripcion").text((resp.info.DESCRIPCION===null)?'':resp.info.DESCRIPCION);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .categoria").text(resp.info.CATEGORIA);
-                    if(resp.info.ES_COMPUESTO==1){
+                
+                    if(resp.info.ES_COMPUESTO==1 && $("#"+objeto.tabla+"Tabla #"+objeto.id+" .opciones").find('a.compuesto').length==0){
                         $("#"+objeto.tabla+"Tabla #"+objeto.id+" .opciones").prepend(compuesto());
-                    }else{
+                    }else if(resp.info.ES_COMPUESTO==0){
                         $("#"+objeto.tabla+"Tabla #"+objeto.id+" .compuesto ").remove();
                     }
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
@@ -286,7 +286,7 @@ function enviaFormularioProducto(objeto){
 					let t = $('#'+objeto.tabla+'Tabla').DataTable();
 					let rowNode =t.row.add( [
 						`<div class="estadoTachado codigo">${resp.info.CODIGO_PRODUCTO}</div>`,
-						`<div class="estadoTachado nombre muestraMensaje">${resp.info.NOMBRE}</div><div><span class="compuesto badge bg-primary">${(resp.info.ES_COMPUESTO==1)?'Compuesto':''}</span></div>`,
+						`<div class="estadoTachado nombre muestraMensaje">${resp.info.NOMBRE}</div><div><span class="escompuesto badge bg-primary">${(resp.info.ES_COMPUESTO==1)?'Compuesto':''}</span></div>`,
 						`<div class="estadoTachado categoria">${resp.info.CATEGORIA}</div>`,
 						`<div class="estadoTachado descripcion">${(resp.info.DESCRIPCION===null)?'':resp.info.DESCRIPCION}</div>`,
 						((resp.info.ES_COMPUESTO==1)?compuesto():'')+estado()+modifica()+elimina()
