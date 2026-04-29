@@ -20,7 +20,7 @@ async function vistaKardex(){
 	
 	desbloquea();
 	const resp=lista.data.valor.info;
-
+    console.log(resp)
 	let listado=`
 	<div class="row row-sm mg-t-10">
 		<div class="col-lg-12">
@@ -36,7 +36,7 @@ async function vistaKardex(){
 								<select name="producto" class="muestraMensaje form-control select2">
 									<option value="">Select...</option>`;
 									for(var i=0;i<resp.length;i++){
-										if(resp[i].ES_VIGENTE==1){
+										if(resp[i].ES_VIGENTE==1 && resp[i].ES_COMPUESTO==0){
 									listado+=`<option value="${resp[i].ID_PRODUCTO}">${resp[i].CODIGO_PRODUCTO+" - "+resp[i].NOMBRE}</option>`;
 										}
 									}
