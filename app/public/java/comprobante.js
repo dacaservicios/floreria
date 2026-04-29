@@ -122,7 +122,7 @@ async function vistaComprobante(){
 										<div class="estadoTachado inicio ${mestado}">${resp[i].CORRELATIVO_INICIAL}</div>
 									</td>
 									<td>
-										<div class="estadoTachado actual ${mestado}">${ (resp[i].CORRELATIVO_ACTUAL===null)?'': resp[i].CORRELATIVO_ACTUAL}</div>
+										<div class="estadoTachado actual ${mestado}">${ resp[i].CORRELATIVO_ACTUAL}</div>
 									</td>
 									<td>
 										${estado()+modifica()+elimina()}
