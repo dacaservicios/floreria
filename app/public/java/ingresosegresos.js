@@ -142,7 +142,7 @@ async function vistaIngresosegresos(){
 										<div class="movimiento"><span class='estadoTachado ${mestado} badge bg-${mov}'>${resp[i].TIPO_MOVIMIENTO}</span></div>
 									</td>
 									<td>
-										<div class="estadoTachado fecha ${mestado}">${ moment.utc(resp[i].FECHA).local().format('DD/MM/YYYY HH:mm:ss') }</div>
+										<div class="estadoTachado fecha ${mestado}">${ moment(resp[i].FECHA).format('DD/MM/YYYY HH:mm:ss') }</div>
 									</td>
 									<td>
 										<div class="estadoTachado empleado ${mestado}">${ (resp[i].EMPLEADO===null)?'':resp[i].EMPLEADO }</div>
@@ -342,8 +342,8 @@ async function ingresosegresosEdita(objeto){
 	objeto.movimiento.val(resp.ID_MOVIMIENTO).trigger('change.select2');
 	buscarConcepto({id_movimiento:resp.ID_MOVIMIENTO, tabla:objeto.tabla, id_concepto:resp.ID_CONCEPTO});
 	objeto.empleado.val(resp.ID_EMPLEADO).trigger('change.select2');
-	objeto.fecha.val(moment.utc(resp.FECHA).local().format('DD-MM-YYYY'));
-	objeto.hora.val(moment.utc(resp.FECHA).local().format('HH:mm:ss'));
+	objeto.fecha.val(moment(resp.FECHA).format('DD-MM-YYYY'));
+	objeto.hora.val(moment(resp.FECHA).format('HH:mm:ss'));
 	objeto.descripcion.val(resp.DESCRIPCION);
 	objeto.monto.val(resp.MONTO);
 }
@@ -402,7 +402,7 @@ function enviaFormularioIngresosegresos(objeto){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .empleado").text((resp.info.EMPLEADO===null)?'':resp.info.EMPLEADO);
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .monto").text(parseFloat(resp.info.MONTO).toFixed(2));
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .descripcion").text((resp.info.DESCRIPCION===null)?'':resp.info.DESCRIPCION);
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fecha").text(moment.utc(resp.info.FECHA).local().format('DD/MM/YYYY HH:mm:ss'));
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fecha").text(moment(resp.info.FECHA).format('DD/MM/YYYY HH:mm:ss'));
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
 					
 					//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
@@ -411,7 +411,7 @@ function enviaFormularioIngresosegresos(objeto){
 					let rowNode =t.row.add( [
 						`<div class="estadoTachado concepto muestraMensaje">${resp.info.CONCEPTO }</div>
 						<div class="movimiento"><span class='estadoTachado badge bg-${mov}'>${resp.info.TIPO_MOVIMIENTO}</span></div>`,
-						`<div class="estadoTachado fecha">${moment.utc(resp.info.FECHA).local().format('DD/MM/YYYY HH:mm:ss')}</div>`,
+						`<div class="estadoTachado fecha">${moment(resp.info.FECHA).format('DD/MM/YYYY HH:mm:ss')}</div>`,
 						`<div class="estadoTachado empleado">${(resp.info.EMPLEADO===null)?'':resp.info.EMPLEADO}</div>`,
 						`<div class="estadoTachado monto">${parseFloat(resp.info.MONTO).toFixed(2)}</div>`,
 						`<div class="estadoTachado descripcion">${(resp.info.DESCRIPCION===null)?'':resp.info.DESCRIPCION}</div>`,

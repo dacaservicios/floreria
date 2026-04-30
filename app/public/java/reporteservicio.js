@@ -107,7 +107,7 @@ async function vistaReporteservicio(){
 											${ resp3[i].NOMBRE_SERVICIO }
 										</td>
 										<td>
-											${ moment.utc(resp3[i].FECHA_ATENCION).local().format('DD/MM/YYYY HH:mm:ss') }
+											${ moment(resp3[i].FECHA_ATENCION).format('DD/MM/YYYY HH:mm:ss') }
 										</td>
 										<td>
 											${ resp3[i].CLIENTE }
@@ -299,7 +299,7 @@ let msg=`
 							${ reporteservicio[i].NOMBRE_SERVICIO }
 						</td>
 						<td>
-							${ moment.utc(reporteservicio[i].FECHA_ATENCION).local().format('DD/MM/YYYY HH:mm:ss') }
+							${ moment(reporteservicio[i].FECHA_ATENCION).format('DD/MM/YYYY HH:mm:ss') }
 						</td>
 						<td>
 							${ reporteservicio[i].CLIENTE }

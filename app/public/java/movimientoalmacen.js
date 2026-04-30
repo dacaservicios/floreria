@@ -133,7 +133,7 @@ async function vistaMovimiento(){
 									</td>
 									<td>
 										<div class="estadoTachado fecha ${mestado}">${ 
-										moment.utc(resp[i].FECHA).local().format('DD/MM/YYYY HH:mm:ss')}</div>
+										moment(resp[i].FECHA).format('DD/MM/YYYY HH:mm:ss')}</div>
 									</td>
 									<td>
 										<div class="estadoTachado producto ${mestado}">${ resp[i].PRODUCTO }</div>
@@ -403,8 +403,8 @@ async function movimientoEdita(objeto){
 	buscarConcepto({id_movimiento:resp.ID_MOVIMIENTO, tabla:objeto.tabla, id_concepto:resp.ID_CONCEPTO});
 	objeto.produto.val(resp.ID_PRODUCTO);
 	objeto.autocompletaProd.val(resp.NOMBRE);
-	objeto.fecha.val(moment.utc(resp.FECHA).local().format('DD-MM-YYYY'));
-	objeto.hora.val(moment.utc(resp.FECHA).local().format('HH:mm:ss'));
+	objeto.fecha.val(moment(resp.FECHA).format('DD-MM-YYYY'));
+	objeto.hora.val(moment(resp.FECHA).format('HH:mm:ss'));
 	objeto.motivo.val(resp.MOTIVO);
 	objeto.cantidad.val(resp.CANTIDAD);
     objeto.costo.val(resp.COSTO);
@@ -468,7 +468,7 @@ function enviaFormularioMovimiento(objeto){
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .cantidad").text(resp.info.CANTIDAD);
                     $("#"+objeto.tabla+"Tabla #"+objeto.id+" .costo").text(parseFloat(resp.info.COSTO).toFixed(4));
 					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .motivo").text(resp.info.MOTIVO);
-					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fecha").text(moment.utc(resp.info.FECHA).local().format('DD/MM/YYYY  HH:mm:ss'));
+					$("#"+objeto.tabla+"Tabla #"+objeto.id+" .fecha").text(moment(resp.info.FECHA).format('DD/MM/YYYY  HH:mm:ss'));
 					$('#'+objeto.tabla+'Tabla').DataTable().draw(false);
 					
 					//success("Modificado","¡Se ha modificado el registro: "+dato+"!");
@@ -477,7 +477,7 @@ function enviaFormularioMovimiento(objeto){
 					let rowNode =t.row.add( [
 						`<div class="estadoTachado concepto muestraMensaje">${resp.info.CONCEPTO }</div>
 						<div class="movimiento"><span class='estadoTachado badge bg-${mov}'>${resp.info.TIPO_MOVIMIENTO}</span></div>`,
-						`<div class="estadoTachado fecha">${moment.utc(resp.info.FECHA).local().format('DD/MM/YYYY HH:mm:ss')}</div>`,
+						`<div class="estadoTachado fecha">${moment(resp.info.FECHA).format('DD/MM/YYYY HH:mm:ss')}</div>`,
 						`<div class="estadoTachado producto muestraMensaje">${resp.info.PRODUCTO}</div>`,
 						`<div class="estadoTachado cantidad">${resp.info.CANTIDAD}</div>`,
                         `<div class="estadoTachado costo">${parseFloat(resp.info.COSTO).toFixed(4)}</div>`,

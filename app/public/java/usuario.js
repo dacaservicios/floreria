@@ -346,7 +346,7 @@ async function usuarioEdita(objeto){
 	if(resp.FEC_NACIMIENTO===null){
 		objeto.fechaNacimiento.val('');
 	}else{
-		objeto.fechaNacimiento.val(moment.utc(resp.FEC_NACIMIENTO).local().format('DD-MM-YYYY'));
+		objeto.fechaNacimiento.val(moment(resp.FEC_NACIMIENTO).format('DD-MM-YYYY'));
 	}
 }
 

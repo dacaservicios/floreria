@@ -69,7 +69,7 @@ async function vistaListacompra(){
                                                         <div class="serie cursor"><span class="badge bg-primary">${ resp3[i].SERIE+" - "+resp3[i].NUMERO_DOCUMENTO }</span></div>
                                                     </td>
                                                     <td>
-                                                        <div class="fechaCompra">${ moment.utc(resp3[i].FECHA_COMPRA).local().format('DD/MM/YYYY  HH:mm:ss') }</div>
+                                                        <div class="fechaCompra">${ moment(resp3[i].FECHA_COMPRA).format('DD/MM/YYYY  HH:mm:ss') }</div>
                                                     </td>
                                                     <td>
                                                         <div class="proveedor">${ resp3[i].RAZON}</div>
@@ -306,7 +306,7 @@ async function compraHistorial(objeto){
 												<div class="serieNumero">${ resp[i].SERIE_DOCUMENTO+" - "+resp[i].NRO_DOCUMENTO }</div>
 											</td>
 											<td>
-												<div class="fecha">${ moment.utc(resp[i].FECHA_ESTADO).local().format('DD/MM/YYYY HH:mm:ss') }</div>
+												<div class="fecha">${ moment(resp[i].FECHA_ESTADO).format('DD/MM/YYYY HH:mm:ss') }</div>
 											</td>
 											<td>
 												<div class="comentario">${ resp[i].COMENTARIO }</div>

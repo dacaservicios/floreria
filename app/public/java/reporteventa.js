@@ -114,7 +114,7 @@ async function vistaReporteventa(){
 											${ resp3[i].NOMBRE }
 										</td>
 										<td>
-											${ moment.utc(resp3[i].FECHA_VENTA).local().format('DD/MM/YYYY HH:mm:ss') }
+											${ moment(resp3[i].FECHA_VENTA).format('DD/MM/YYYY HH:mm:ss') }
 										</td>
 										
 										<td>
@@ -315,7 +315,7 @@ let msg=`
 							${ reporteventa[i].NOMBRE }
 						</td>
 						<td>
-							${ moment.utc(reporteventa[i].FECHA_VENTA).local().format('DD/MM/YYYY HH:mm:ss') }
+							${ moment(reporteventa[i].FECHA_VENTA).format('DD/MM/YYYY HH:mm:ss') }
 						</td>
 						
 						<td>

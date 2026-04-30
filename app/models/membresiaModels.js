@@ -9,7 +9,7 @@ const crearMembresia = async (body)=>{
         body.empresa,
         body.tipoMoneda,
         body.monto, 
-        moment(body.fechaInicio,'DD-MM-YYYY').utc().format('YYYY-MM-DD'),
+        moment(body.fechaInicio,'DD-MM-YYYY').format('YYYY-MM-DD'),
         'crea',
         body.sesId
     ]);
@@ -29,7 +29,7 @@ const editarMembresia = async (id,body)=>{
         body.empresa,
         body.tipoMoneda,
         body.monto, 
-        moment(body.fechaInicio,'DD-MM-YYYY').utc().format('YYYY-MM-DD'),
+        moment(body.fechaInicio,'DD-MM-YYYY').format('YYYY-MM-DD'),
         'edita',
         body.sesId
     ]);

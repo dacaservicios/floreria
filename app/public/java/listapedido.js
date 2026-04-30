@@ -69,7 +69,7 @@ async function vistaListapedido(){
                                                         <div class="serie cursor"><span class="badge bg-primary">${ resp3[i].SERIE+" - "+resp3[i].NUMERO_DOCUMENTO }</span></div>
                                                     </td>
                                                     <td>
-                                                        <div class="fechaPedido">${ moment.utc(resp3[i].FECHA_PEDIDO).local().format('DD/MM/YYYY  HH:mm:ss') }</div>
+                                                        <div class="fechaPedido">${ moment(resp3[i].FECHA_PEDIDO).format('DD/MM/YYYY  HH:mm:ss') }</div>
                                                     </td>
                                                     <td>
                                                         <div class="usuario">${ resp3[i].USUARIO}</div>

@@ -74,7 +74,7 @@ function resumenUltimasVenta(ultimasVentas,ventaDia,ventaMes,productoMas,totalMa
                                         <td class="mediano">${ultimasVentas[i].TIPO_DOCUMENTO}</td>
                                         <td class="mediano">${ultimasVentas[i].SERIE+" - "+ultimasVentas[i].NUMERO_DOCUMENTO}</td>
                                         <td class="mediano">${(ultimasVentas[i].APELLIDOS===null)?ultimasVentas[i].NOMBRE:ultimasVentas[i].NOMBRE+' '+ultimasVentas[i].APELLIDOS}</td>
-                                        <td class="mediano">${moment.utc(ultimasVentas[i].FECHA_VENTA).local().format('DD-MM-YYYY')}</td>
+                                        <td class="mediano">${moment(ultimasVentas[i].FECHA_VENTA).format('DD-MM-YYYY')}</td>
                                         <td class="mediano">${parseFloat(ultimasVentas[i].TOTAL-ultimasVentas[i].DESCUENTO).toFixed(2)}</td>
                                     </tr>`;
                                 }
@@ -219,8 +219,8 @@ function graficaVentasDias(graficaVentaDia){
     let arrayMes=[];
     for(var i=0;i<graficaVentaDia.length;i++){
         arrayVentaDia.push(parseFloat(graficaVentaDia[i].TOTAL).toFixed(2));
-        arrayDia.push(moment.utc(graficaVentaDia[i].FECHA).local().format('DD'));
-        arrayMes.push(moment.utc(graficaVentaDia[i].FECHA).local().format('MM'));
+        arrayDia.push(moment(graficaVentaDia[i].FECHA).format('DD'));
+        arrayMes.push(moment(graficaVentaDia[i].FECHA).format('MM'));
     }
 
     let arrayMesesEntero=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SETIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
@@ -302,8 +302,8 @@ function graficaVentasMeses(graficaVentaMes){
     let arrayMesesCorto=['ene','feb','mar','abr','may','jun','jul','ago','set','oct','nov','dic'];
     for(var i=0;i<graficaVentaMes.length;i++){
         arrayVentaMes.push(parseFloat(graficaVentaMes[i].TOTAL).toFixed(2));
-        arrayMesi.push(arrayMesesCorto[parseInt(moment.utc(graficaVentaMes[i].FECHA).local().format('MM'))-1]);
-        arrayAnio.push(moment.utc(graficaVentaMes[i].FECHA).local().format('YYYY'));
+        arrayMesi.push(arrayMesesCorto[parseInt(moment(graficaVentaMes[i].FECHA).format('MM'))-1]);
+        arrayAnio.push(moment(graficaVentaMes[i].FECHA).format('YYYY'));
     }
 
     let datosMes ={
